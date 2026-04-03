@@ -196,6 +196,77 @@
         .edit-link { font-size: 0.6rem; color: #444; margin-left: 0.5rem; }
         .edit-link:hover { color: #00ff88; }
 
+        /* NAV */
+        .site-nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10,10,15,0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.6rem 2rem; margin: -2rem -2rem 0;
+            display: flex; align-items: center; gap: 2rem;
+        }
+        .site-nav .nav-logo { font-size: 0.75rem; font-weight: 700; color: #00ff88; text-decoration: none; white-space: nowrap; }
+        .site-nav .nav-links { display: flex; gap: 1.5rem; list-style: none; flex: 1; }
+        .site-nav .nav-links a { font-size: 0.7rem; color: #555; text-decoration: none; transition: color 0.15s; }
+        .site-nav .nav-links a:hover { color: #e0e0e0; }
+        .site-nav .nav-gh { font-size: 0.68rem; color: #444; text-decoration: none; margin-left: auto; }
+        .site-nav .nav-gh:hover { color: #00ff88; }
+
+        /* NAV */
+        .site-nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10,10,15,0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.6rem 2rem; display: flex; align-items: center;
+            gap: 2rem; font-size: 0.72rem;
+        }
+        .site-nav .nav-brand { color: #00ff88; font-weight: 700; text-decoration: none; white-space: nowrap; }
+        .site-nav .nav-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .site-nav .nav-links a {
+            color: #555; text-decoration: none; transition: color 0.15s;
+            white-space: nowrap;
+        }
+        .site-nav .nav-links a:hover { color: #e0e0e0; }
+        .site-nav .nav-cta {
+            margin-left: auto; font-size: 0.65rem; color: #00ff88;
+            border: 1px solid rgba(0,255,136,0.3); padding: 0.25rem 0.65rem;
+            border-radius: 4px; text-decoration: none; white-space: nowrap;
+        }
+        .site-nav .nav-cta:hover { background: rgba(0,255,136,0.08); }
+
+        /* FORMULA CARDS */
+        .formula-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-top: 1.25rem; }
+        @media (max-width: 800px) { .formula-grid { grid-template-columns: 1fr; } }
+        .formula-card {
+            border-radius: 12px; padding: 1.25rem 1.25rem 1rem;
+            background: rgba(255,255,255,0.02);
+        }
+        .formula-card.local  { border: 1px solid rgba(0,255,136,0.25); }
+        .formula-card.sub    { border: 1px solid rgba(124,58,237,0.25); }
+        .formula-card.api    { border: 1px solid rgba(255,107,107,0.25); }
+        .formula-card h4 { font-size: 0.85rem; margin-bottom: 1rem; }
+        .formula-card.local h4 { color: #00ff88; }
+        .formula-card.sub   h4 { color: #7c3aed; }
+        .formula-card.api   h4 { color: #ff6b6b; }
+        .formula-visual {
+            font-size: 0.78rem; line-height: 2.2; color: #ccc;
+            border-radius: 8px; padding: 0.75rem 1rem;
+            background: rgba(0,0,0,0.3);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .formula-card.local  .formula-visual { border-left: 3px solid #00ff88; }
+        .formula-card.sub    .formula-visual { border-left: 3px solid #7c3aed; }
+        .formula-card.api    .formula-visual { border-left: 3px solid #ff6b6b; }
+        .fv { display: block; white-space: nowrap; }
+        .fv-op { color: #555; }
+        .fv-var { font-weight: 600; }
+        .fv-local  { color: #00ff88; }
+        .fv-sub    { color: #7c3aed; }
+        .fv-api    { color: #ff6b6b; }
+        .fv-qual   { color: #ffc800; }
+        .fv-result { color: #fff; font-weight: 700; font-size: 0.85rem; }
+        .fv-divider { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 0.4rem 0; }
+        .formula-note { font-size: 0.62rem; color: #555; margin-top: 0.6rem; }
+
         /* FOOTER */
         .footer { text-align: center; padding: 2rem 0 1rem; font-size: 0.65rem; color: #444; }
         .footer a { color: #555; text-decoration: none; }
@@ -203,6 +274,16 @@
     </style>
 </head>
 <body>
+<nav class="site-nav">
+    <a class="nav-brand" href="#">⚡ LLM Value</a>
+    <div class="nav-links">
+        <a href="#winners">🏆 Winners</a>
+        <a href="#how">📐 How it works</a>
+        <a href="#calculator">📊 Calculator</a>
+        <a href="#data">📋 Data</a>
+    </div>
+    <a class="nav-cta" href="https://github.com/desktop-commander/llm-value-comparison" target="_blank">Contribute data ↗</a>
+</nav>
 <div class="container">
 
     <!-- HERO -->
@@ -225,7 +306,7 @@
     </div>
 
     <!-- WINNER CARDS -->
-    <p class="section-title">🏆 Best value right now</p>
+    <p class="section-title" id="winners">🏆 Best value right now</p>
     <div class="winners">
         <div class="winner-card local">
             <div class="winner-badge">🖥️ Local</div>
@@ -253,31 +334,52 @@
         </div>
     </div>
 
-    <!-- METHODOLOGY -->
     <hr class="section-divider">
-    <p class="section-title">📐 How we calculate this</p>
+    <p class="section-title" id="how">📐 How we calculate this</p>
     <div class="methodology">
         <p>Not all tokens are equal — a token from a smarter model is worth more than one from a weaker model. We multiply raw token volume by model quality score (from independent benchmarks), then divide by total cost. The result: <strong style="color:#fff">quality-adjusted tokens per dollar</strong> — one number that lets you compare a $3,500 GPU, a $20/month subscription, and a $0.07/M API directly.</p>
-        <div class="method-grid">
-            <div class="method-item local">
-                <h4>🖥️ Local</h4>
-                <p>tok/s × hours/day × 365 × years × quality% ÷ hardware cost</p>
+
+        <div class="formula-grid">
+            <div class="formula-card local">
+                <h4>🖥️ Local Hardware</h4>
+                <div class="formula-visual">
+                    <span class="fv"><span class="fv-var fv-local">tok/s</span> <span class="fv-op">×</span> hours/day <span class="fv-op">×</span> 365 <span class="fv-op">×</span> years</span>
+                    <span class="fv"><span class="fv-op">×</span> <span class="fv-var fv-qual">quality %</span></span>
+                    <hr class="fv-divider">
+                    <span class="fv">hardware cost ($)</span>
+                    <span class="fv" style="margin-top:0.4rem"><span class="fv-op">= </span><span class="fv-result">quality tokens / $</span></span>
+                </div>
+                <p class="formula-note">tok/s measured on your hardware. One-time cost amortized over years of use.</p>
             </div>
-            <div class="method-item sub">
+            <div class="formula-card sub">
                 <h4>💳 Subscription</h4>
-                <p>tokens/day limit × 365 × years × quality% ÷ total subscription cost</p>
+                <div class="formula-visual">
+                    <span class="fv"><span class="fv-var fv-sub">tokens/day</span> <span class="fv-op">×</span> 365 <span class="fv-op">×</span> years</span>
+                    <span class="fv"><span class="fv-op">×</span> <span class="fv-var fv-qual">quality %</span></span>
+                    <hr class="fv-divider">
+                    <span class="fv">$/mo <span class="fv-op">×</span> 12 <span class="fv-op">×</span> years</span>
+                    <span class="fv" style="margin-top:0.4rem"><span class="fv-op">= </span><span class="fv-result">quality tokens / $</span></span>
+                </div>
+                <p class="formula-note">⚠️ Token limits are estimated — providers don't publish exact numbers.</p>
             </div>
-            <div class="method-item api">
-                <h4>🔌 API</h4>
-                <p>1M ÷ weighted price (75% input + 25% output) × quality%</p>
+            <div class="formula-card api">
+                <h4>🔌 API (pay per token)</h4>
+                <div class="formula-visual">
+                    <span class="fv">1,000,000</span>
+                    <hr class="fv-divider">
+                    <span class="fv"><span class="fv-var fv-api">price/M</span> <span class="fv-op">(75% in + 25% out)</span></span>
+                    <span class="fv"><span class="fv-op">×</span> <span class="fv-var fv-qual">quality %</span></span>
+                    <span class="fv" style="margin-top:0.4rem"><span class="fv-op">= </span><span class="fv-result">quality tokens / $</span></span>
+                </div>
+                <p class="formula-note">75/25 input/output ratio reflects typical real-world usage patterns.</p>
             </div>
         </div>
-        <p class="method-note">Quality scores: AA Intelligence Index (0–100) from <a href="https://artificialanalysis.ai/" target="_blank" style="color:#555">Artificial Analysis</a> + Arena ELO normalized to 0–100 where 1000 ELO = 0%, 1500 ELO = 100%.</p>
+        <p class="method-note">Quality scores: AA Intelligence Index (0–100) from <a href="https://artificialanalysis.ai/" target="_blank" style="color:#555">Artificial Analysis</a> + Arena ELO normalized to 0–100 where 1000 ELO = 0%, 1500 ELO = 100%. Combined score averages all available benchmarks per model.</p>
     </div>
 
     <!-- FULL DATA TABS -->
     <hr class="section-divider">
-    <p class="section-title">🔍 Explore the full data</p>
+    <p class="section-title" id="calculator">🔍 Explore the full data</p>
 
     <div class="tabs">
         <div class="tab active" data-tab="calculator">📊 Full Calculator</div>
@@ -369,6 +471,7 @@
 
     <!-- TAB: DATA -->
     <div id="tab-data" class="tab-content">
+        <div style="scroll-margin-top:60px" id="data"></div>
         <div class="data-table-section">
             <h3>🤖 Models <a href="https://github.com/desktop-commander/llm-value-comparison/tree/master/data/models.json" class="edit-link" target="_blank">[Edit on GitHub]</a></h3>
             <table class="data-table" id="tableModels">
