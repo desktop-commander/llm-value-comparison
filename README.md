@@ -61,53 +61,78 @@ All three calculate: **Quality-Adjusted Tokens per Dollar**
 
 Weighted price = 75% input + 25% output (typical usage ratio).
 
+## Data Sources
+
+Data is pulled from multiple sources automatically and manually. See [DATA_SOURCES.md](DATA_SOURCES.md) for full details.
+
+### Automated (run `node scripts/sync-from-aa.js`)
+
+| Source | What it provides | Auth needed |
+|--------|-----------------|-------------|
+| [Artificial Analysis](https://artificialanalysis.ai/) | Benchmark scores, API pricing, **API throughput (tok/s)** | Free API key |
+| [Arena AI leaderboard](https://api.wulong.dev/arena-ai-leaderboards/v1/) | Arena ELO — human preference ranking (6M+ votes) | None |
+| [OpenRouter](https://openrouter.ai/api/v1/models) | API pricing for 300+ models, esp. open-weight models | None |
+
+> **Attribution:** Benchmark and pricing data from [artificialanalysis.ai](https://artificialanalysis.ai/) — required by their free API terms.
+
+### Manual (community PRs)
+
+| Source | What it provides |
+|--------|-----------------|
+| [SWE-bench](https://www.swebench.com/) | Coding benchmark — real GitHub issues |
+| [Aider leaderboard](https://aider.chat/docs/leaderboards/) | Coding benchmark — polyglot real tasks |
+| [llama.cpp discussions](https://github.com/ggerganov/llama.cpp/discussions) | Local inference tok/s per hardware config |
+| Provider pricing pages | Verify and supplement AA pricing data |
+| Community research | Subscription token limits (providers don't publish these) |
+
+### What each field comes from
+
+| Field | Source |
+|-------|--------|
+| `benchmarks.aa_intelligence` | Artificial Analysis API (auto) |
+| `benchmarks.arena_elo` | Arena AI via wulong.dev (auto) |
+| `benchmarks.gpqa_diamond` | Artificial Analysis API (auto) |
+| `benchmarks.swe_bench` | SWE-bench.com (manual) |
+| `benchmarks.aider_polyglot` | Aider leaderboard (manual) |
+| `api.inputPer1M` / `outputPer1M` | Artificial Analysis or OpenRouter (auto) |
+| `api.tokensPerSecAPI` | Artificial Analysis API (auto) |
+| `local.tokensPerSec` | llama.cpp discussions / community (manual) |
+| `subscriptions.tokensPerDay` | Community research (manual, often low confidence) |
+
+
 ## Data Structure
 
 ```
 /data/
-  index.json           # List of all model IDs
   hardware.json        # Hardware specs, prices, sources
   benchmarks.json      # Benchmark metadata
-  /models/
-    claude-sonnet-4.json
-    gpt-5.2.json
-    llama-3.1-70b.json
-    ...
+  models.json          # All model data
 ```
 
-Each model file contains benchmarks, API pricing, local performance, and subscription options — every data point has a source URL.
+Each model entry contains benchmarks, API pricing (incl. API throughput), local performance, and subscription options — every data point has a source URL.
 
-## Contributing
-
-**This project needs community contributions to stay accurate. Data goes stale fast.**
-
-### How to add or update a model
-
-1. Fork the repo
-2. Create or edit: `data/models/your-model-id.json`
-3. Add the model ID to `data/index.json`
-4. Submit a PR — include source URLs for every data point
-
-### Model file format
+### Model format
 
 ```json
 {
-  "id": "model-id",
   "name": "Model Name",
   "provider": "Provider",
   "releaseDate": "YYYY-MM-DD",
   "modelCard": "https://link-to-model-card",
   "benchmarks": {
-    "arena_elo": { "score": 1300, "source": "https://lmarena.ai/leaderboard" },
-    "aider_polyglot": { "score": 45.5, "source": "https://aider.chat/docs/leaderboards/" }
+    "aa_intelligence": { "score": 72.1, "source": "https://artificialanalysis.ai/models/..." },
+    "arena_elo":       { "score": 1486, "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text" },
+    "swe_bench":       { "score": 80.9, "source": "https://www.swebench.com/" },
+    "aider_polyglot":  { "score": 45.5, "source": "https://aider.chat/docs/leaderboards/" }
   },
   "api": {
     "inputPer1M": 3.00,
     "outputPer1M": 15.00,
-    "source": "https://provider.com/pricing"
+    "tokensPerSecAPI": 87.4,
+    "source": "https://artificialanalysis.ai/models/..."
   },
   "local": {
-    "rtx_3090": {
+    "rtx_4090": {
       "tokensPerSec": 45,
       "quantization": "Q4_K_M",
       "vramRequired": 24,
@@ -135,23 +160,33 @@ Each model file contains benchmarks, API pricing, local performance, and subscri
 | `medium` | Derived from official info |
 | `low` | Community estimates, reverse-engineered |
 
-### Recommended benchmarks
+## Running the Data Sync
 
-| Benchmark | Use case | Why |
-|-----------|----------|-----|
-| `arena_elo` | General quality | Human preference, most reliable |
-| `aider_polyglot` | Coding | Real-world tasks |
-| `livebench` | Knowledge | Contamination-resistant |
+```bash
+# One-time setup: get a free API key at https://artificialanalysis.ai/login
+mkdir -p ~/.config/llm-value-comparison
+echo "your_aa_key_here" > ~/.config/llm-value-comparison/aa_api_key
 
-Avoid MMLU and HumanEval — both are saturated.
+# Sync all sources (AA + Arena + OpenRouter)
+node scripts/sync-from-aa.js
+```
 
-## Data Sources
+The sync updates: API pricing, AA benchmark scores, Arena ELO, API throughput.  
+It does NOT overwrite: local inference data, subscription limits, manually verified fields.
 
-* **Human preference:** [LMSys Chatbot Arena](https://lmarena.ai/leaderboard)
-* **Coding:** [Aider Leaderboard](https://aider.chat/docs/leaderboards/)
-* **API pricing:** [Artificial Analysis](https://artificialanalysis.ai/models)
-* **Local speeds:** [llama.cpp discussions](https://github.com/ggerganov/llama.cpp/discussions)
-* **Subscription limits:** Community research (see individual source links)
+## Contributing
+
+**This project needs community contributions to stay accurate. Data goes stale fast.**
+
+1. Fork the repo
+2. Edit `data/models.json` — add or update a model entry
+3. Every data point must have a `source` URL
+4. Submit a PR
+
+Most needed contributions:
+- **Local tok/s benchmarks** — run a model, measure, submit with hardware + quantization + source
+- **Subscription token limits** — reverse-engineer or find community data
+- **New model entries** — especially smaller/cheaper models and Chinese open-weights
 
 ## License
 
