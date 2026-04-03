@@ -27,19 +27,19 @@
     "local": null,
     "subscriptions": {
       "claude_max_5x": {
-        "name": "Claude Max 5×",
+        "name": "Claude Max 5\u00d7",
         "monthlyPrice": 100,
         "tokensPerDay": 3200000,
         "confidence": "low",
-        "notes": "5× Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
+        "notes": "5\u00d7 Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
         "source": "https://a16z.com/state-of-ai/"
       },
       "claude_max_20x": {
-        "name": "Claude Max 20×",
+        "name": "Claude Max 20\u00d7",
         "monthlyPrice": 200,
         "tokensPerDay": 12800000,
         "confidence": "low",
-        "notes": "20× Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
+        "notes": "20\u00d7 Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
         "source": "https://a16z.com/state-of-ai/"
       }
     }
@@ -497,19 +497,19 @@
     "local": null,
     "subscriptions": {
       "claude_max_5x": {
-        "name": "Claude Max 5×",
+        "name": "Claude Max 5\u00d7",
         "monthlyPrice": 100,
         "tokensPerDay": 3200000,
         "confidence": "low",
-        "notes": "5× Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
+        "notes": "5\u00d7 Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
         "source": "https://a16z.com/state-of-ai/"
       },
       "claude_max_20x": {
-        "name": "Claude Max 20×",
+        "name": "Claude Max 20\u00d7",
         "monthlyPrice": 200,
         "tokensPerDay": 12800000,
         "confidence": "low",
-        "notes": "20× Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
+        "notes": "20\u00d7 Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
         "source": "https://a16z.com/state-of-ai/"
       }
     },
@@ -666,7 +666,24 @@
       "source": "https://artificialanalysis.ai/models/claude-opus-4-6"
     },
     "local": null,
-    "subscriptions": null,
+    "subscriptions": {
+      "claude_max_5x": {
+        "name": "Claude Max 5\u00d7",
+        "monthlyPrice": 100,
+        "tokensPerDay": 3200000,
+        "confidence": "low",
+        "notes": "5\u00d7 Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
+        "source": "https://www.anthropic.com/pricing"
+      },
+      "claude_max_20x": {
+        "name": "Claude Max 20\u00d7",
+        "monthlyPrice": 200,
+        "tokensPerDay": 12800000,
+        "confidence": "low",
+        "notes": "20\u00d7 Pro limits. Avg turn 6,400 tokens (OpenRouter 2025 Study).",
+        "source": "https://www.anthropic.com/pricing"
+      }
+    },
     "_aa_synced": "2026-04-03"
   },
   "claude-sonnet-4-6": {
@@ -778,7 +795,24 @@
       "source": "https://artificialanalysis.ai/models/gpt-5-4"
     },
     "local": null,
-    "subscriptions": null,
+    "subscriptions": {
+      "chatgpt_plus": {
+        "name": "ChatGPT Plus",
+        "monthlyPrice": 20,
+        "tokensPerDay": 8192000,
+        "confidence": "medium",
+        "notes": "~160 msgs/3hr. Avg turn 6,400 tokens (OpenRouter 2025 Study). GPT-5.4 Thinking is default for Plus.",
+        "source": "https://openai.com/chatgpt/pricing/"
+      },
+      "chatgpt_pro": {
+        "name": "ChatGPT Pro",
+        "monthlyPrice": 200,
+        "tokensPerDay": 81920000,
+        "confidence": "medium",
+        "notes": "Unlimited GPT-5.4 Pro access. Scaled 10x from Plus.",
+        "source": "https://openai.com/chatgpt/pricing/"
+      }
+    },
     "_aa_synced": "2026-04-03"
   },
   "gpt-5-3-codex": {
@@ -804,7 +838,16 @@
       "source": "https://artificialanalysis.ai/models/gpt-5-3-codex"
     },
     "local": null,
-    "subscriptions": null,
+    "subscriptions": {
+      "chatgpt_pro": {
+        "name": "ChatGPT Pro (Codex)",
+        "monthlyPrice": 200,
+        "tokensPerDay": 81920000,
+        "confidence": "low",
+        "notes": "Available via Codex app on Pro plan. Token limits not officially published.",
+        "source": "https://openai.com/chatgpt/pricing/"
+      }
+    },
     "_aa_synced": "2026-04-03"
   },
   "gpt-5-2-codex": {
@@ -856,7 +899,16 @@
       "source": "https://artificialanalysis.ai/models/gemini-3-1-pro-preview"
     },
     "local": null,
-    "subscriptions": null,
+    "subscriptions": {
+      "google_ai_ultra": {
+        "name": "Google AI Ultra",
+        "monthlyPrice": 250,
+        "tokensPerDay": 6400000,
+        "confidence": "low",
+        "notes": "Google AI Ultra (/mo). Estimated ~1000 msgs/day avg turn 6,400 tokens.",
+        "source": "https://one.google.com/about/plans"
+      }
+    },
     "_aa_synced": "2026-04-03"
   },
   "glm-5": {
@@ -864,7 +916,7 @@
     "name": "GLM-5 (Reasoning)",
     "provider": "Z AI",
     "releaseDate": "2026-02-11",
-    "modelCard": "https://artificialanalysis.ai/models/glm-5",
+    "modelCard": "https://huggingface.co/THUDM/GLM-5",
     "benchmarks": {
       "aa_intelligence": {
         "score": 49.8,
@@ -881,7 +933,15 @@
       "tokensPerSecAPI": 57.3,
       "source": "https://artificialanalysis.ai/models/glm-5"
     },
-    "local": null,
+    "local": {
+      "mac_m4_max_128gb": {
+        "tokensPerSec": 8,
+        "quantization": "Q4_K_M",
+        "vramRequired": 128,
+        "notes": "744B MoE, 40B active params. Requires 128GB+ unified memory. MIT license.",
+        "source": "https://huggingface.co/THUDM/GLM-5"
+      }
+    },
     "subscriptions": null,
     "_aa_synced": "2026-04-03"
   },
@@ -1098,6 +1158,66 @@
       "source": "https://artificialanalysis.ai/models/qwen3-5-122b-a10b"
     },
     "local": null,
+    "subscriptions": null,
+    "_aa_synced": "2026-04-03"
+  },
+  "gemma-4-31b": {
+    "name": "Gemma 4 31B",
+    "provider": "Google",
+    "releaseDate": "2026-02-01",
+    "modelCard": "https://huggingface.co/google/gemma-4-31b-it",
+    "benchmarks": {
+      "aa_intelligence": {
+        "score": 28.5,
+        "source": "https://artificialanalysis.ai/models/gemma-4-31b"
+      }
+    },
+    "api": null,
+    "local": {
+      "rtx_4090": {
+        "tokensPerSec": 35,
+        "quantization": "Q4_K_M",
+        "vramRequired": 20,
+        "notes": "Dense 31B model. Fits on single RTX 4090 at Q4.",
+        "source": "https://huggingface.co/google/gemma-4-31b-it"
+      },
+      "mac_m3_max_64gb": {
+        "tokensPerSec": 28,
+        "quantization": "Q4_K_M",
+        "vramRequired": 20,
+        "source": "https://huggingface.co/google/gemma-4-31b-it"
+      }
+    },
+    "subscriptions": null,
+    "_aa_synced": "2026-04-03"
+  },
+  "gemma-4-26b-a4b": {
+    "name": "Gemma 4 26B A4B",
+    "provider": "Google",
+    "releaseDate": "2026-02-01",
+    "modelCard": "https://huggingface.co/google/gemma-4-26b-a4b-it",
+    "benchmarks": {
+      "aa_intelligence": {
+        "score": 26.1,
+        "source": "https://artificialanalysis.ai/models/gemma-4-26b-a4b-it"
+      }
+    },
+    "api": null,
+    "local": {
+      "rtx_4090": {
+        "tokensPerSec": 55,
+        "quantization": "Q4_K_M",
+        "vramRequired": 8,
+        "notes": "MoE 26B total, 4B active. Runs on 8GB GPU \u2014 very accessible.",
+        "source": "https://huggingface.co/google/gemma-4-26b-a4b-it"
+      },
+      "mac_m3_max_64gb": {
+        "tokensPerSec": 45,
+        "quantization": "Q4_K_M",
+        "vramRequired": 8,
+        "source": "https://huggingface.co/google/gemma-4-26b-a4b-it"
+      }
+    },
     "subscriptions": null,
     "_aa_synced": "2026-04-03"
   }

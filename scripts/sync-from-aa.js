@@ -69,6 +69,8 @@ const PRIORITY_SLUGS = [
   'kimi-k2-5',
   'deepseek-v3-2',
   'qwen3-5-35b-a3b', 'qwen3-5-27b', 'qwen3-5-122b-a10b',
+  // Google open weights
+  'gemma-4-31b', 'gemma-4-26b-a4b-it',
 ];
 
 // Mapping: AA slug → our model ID in models.json
@@ -94,6 +96,8 @@ const SLUG_TO_OUR_ID = {
   'qwen3-5-35b-a3b':          'qwen3.5-35b-a3b',
   'qwen3-5-27b':              'qwen3.5-27b',
   'qwen3-5-122b-a10b':        'qwen3.5-122b-a10b',
+  'gemma-4-31b':              'gemma-4-31b',
+  'gemma-4-26b-a4b-it':       'gemma-4-26b-a4b',
 };
 
 // --- Convert AA model to our format ---
