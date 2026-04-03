@@ -485,6 +485,10 @@
       "aa_intelligence": {
         "score": 43.1,
         "source": "https://artificialanalysis.ai/models/claude-opus-4-5"
+      },
+      "arena_elo": {
+        "score": 1468,
+        "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text"
       }
     },
     "api": {
@@ -536,6 +540,10 @@
       "swe_bench": {
         "score": 76.2,
         "source": "https://www.swebench.com/"
+      },
+      "arena_elo": {
+        "score": 1486,
+        "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text"
       }
     },
     "api": {
@@ -577,6 +585,10 @@
       "swe_bench": {
         "score": 78,
         "source": "https://www.swebench.com/"
+      },
+      "arena_elo": {
+        "score": 1474,
+        "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text"
       }
     },
     "api": {
@@ -613,6 +625,10 @@
       "aa_intelligence": {
         "score": 51.3,
         "source": "https://artificialanalysis.ai/models/gpt-5-2"
+      },
+      "arena_elo": {
+        "score": 1478,
+        "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text"
       }
     },
     "api": {
@@ -657,6 +673,10 @@
       "gpqa_diamond": {
         "score": 84,
         "source": "https://artificialanalysis.ai/models/claude-opus-4-6"
+      },
+      "arena_elo": {
+        "score": 1499,
+        "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text"
       }
     },
     "api": {
@@ -786,6 +806,10 @@
       "gpqa_diamond": {
         "score": 92,
         "source": "https://artificialanalysis.ai/models/gpt-5-4"
+      },
+      "arena_elo": {
+        "score": 1484,
+        "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text"
       }
     },
     "api": {
@@ -890,6 +914,10 @@
       "gpqa_diamond": {
         "score": 94.1,
         "source": "https://artificialanalysis.ai/models/gemini-3-1-pro-preview"
+      },
+      "arena_elo": {
+        "score": 1494,
+        "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text"
       }
     },
     "api": {
@@ -1172,7 +1200,11 @@
         "source": "https://artificialanalysis.ai/models/gemma-4-31b"
       }
     },
-    "api": null,
+    "api": {
+      "inputPer1M": 0.14,
+      "outputPer1M": 0.4,
+      "source": "https://openrouter.ai/google/gemma-4-31b-it"
+    },
     "local": {
       "rtx_4090": {
         "tokensPerSec": 35,

@@ -33,6 +33,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const MODELS_FILE = path.join(DATA_DIR, 'models.json');
 const AA_API = 'https://artificialanalysis.ai/api/v2/data/llms/models';
+const ARENA_API = 'https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text';
+const OPENROUTER_API = 'https://openrouter.ai/api/v1/models';
 
 // --- Load API key ---
 function loadApiKey() {
@@ -150,21 +152,42 @@ function aaToOurFormat(aa) {
 // --- Main ---
 async function main() {
   const apiKey = loadApiKey();
-  console.log('Fetching from Artificial Analysis API...');
 
-  const res = await fetch(AA_API, { headers: { 'x-api-key': apiKey } });
-  if (!res.ok) {
-    console.error(`API error: ${res.status} ${res.statusText}`);
-    process.exit(1);
-  }
-  const { data: aaModels } = await res.json();
-  console.log(`Got ${aaModels.length} models from AA`);
+  // Fetch all three sources in parallel
+  console.log('Fetching from all sources in parallel...');
+  const [aaRes, arenaRes, orRes] = await Promise.all([
+    fetch(AA_API, { headers: { 'x-api-key': apiKey } }),
+    fetch(ARENA_API),
+    fetch(OPENROUTER_API),
+  ]);
 
-  // Index AA models by slug
+  const { data: aaModels } = await aaRes.json();
+  const arenaData = await arenaRes.json();
+  const orData = await orRes.json();
+
+  console.log(`AA: ${aaModels.length} models | Arena: ${arenaData.models?.length} | OpenRouter: ${orData.data?.length}`);
+
+  // Index sources
   const aaBySlug = {};
   for (const m of aaModels) aaBySlug[m.slug] = m;
 
-  // Load existing models
+  // Arena ELO by model slug
+  const arenaBySlug = {};
+  for (const m of (arenaData.models || [])) arenaBySlug[m.model] = m.score;
+
+  // OpenRouter pricing by model ID
+  const orBySlug = {};
+  for (const m of (orData.data || [])) {
+    const p = m.pricing || {};
+    if (p.prompt && parseFloat(p.prompt) > 0) {
+      orBySlug[m.id] = {
+        inputPer1M: parseFloat(p.prompt) * 1_000_000,
+        outputPer1M: parseFloat(p.completion) * 1_000_000,
+        source: `https://openrouter.ai/${m.id}`,
+      };
+    }
+  }
+
   const existing = JSON.parse(fs.readFileSync(MODELS_FILE, 'utf8'));
   let updated = 0, added = 0, skipped = 0;
 
@@ -197,6 +220,29 @@ async function main() {
         score: parseFloat(ev.artificial_analysis_intelligence_index.toFixed(1)),
         source: `https://artificialanalysis.ai/models/${aaSlug}`
       };
+    }
+
+    // Update Arena ELO — try various slug patterns
+    const arenaSlugCandidates = [aaSlug, ourId, ourId.replace(/\./g, '-')];
+    for (const slug of arenaSlugCandidates) {
+      if (arenaBySlug[slug]) {
+        existing[ourId].benchmarks = existing[ourId].benchmarks || {};
+        existing[ourId].benchmarks.arena_elo = {
+          score: arenaBySlug[slug],
+          source: 'https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text'
+        };
+        break;
+      }
+    }
+
+    // Update OpenRouter pricing if no first-party API pricing exists
+    // (useful for open-weight models like Gemma 4)
+    const orSlugCandidates = [`google/${ourId}-it`, `google/${ourId}`, ourId];
+    for (const slug of orSlugCandidates) {
+      if (orBySlug[slug] && !existing[ourId].api?.inputPer1M) {
+        existing[ourId].api = { ...orBySlug[slug] };
+        break;
+      }
     }
 
     existing[ourId]._aa_synced = new Date().toISOString().split('T')[0];
