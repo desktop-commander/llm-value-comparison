@@ -1488,13 +1488,18 @@ function renderRankedList(){
   const el=document.getElementById('calculatorContent');
   const isFirstRender = el.innerHTML === 'Loading…' || el.innerHTML === '';
   el.innerHTML=html;
-  // only animate bars on first render — re-renders from dropdown changes skip the reset-to-zero
   if(isFirstRender) {
+    // First load: animate bars 0 → target
     requestAnimationFrame(()=>{
       el.querySelectorAll('.rank-bar').forEach((bar,i)=>{
         const target=bar.style.width; bar.style.width='0%';
         setTimeout(()=>{ bar.style.width=target; }, i*18);
       });
+    });
+  } else {
+    // Re-render from dropdown change: disable CSS transition so bars jump instantly to correct width
+    el.querySelectorAll('.rank-bar').forEach(bar=>{
+      bar.style.transition='none';
     });
   }
 }
