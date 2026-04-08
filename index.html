@@ -1351,15 +1351,15 @@ function init(){
       document.querySelectorAll('.tab,.tab-content').forEach(el=>el.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
-      if(tab.dataset.tab==='chart') updateChart();
-      if(tab.dataset.tab==='compare') renderCompare();
+      if(tab.dataset.tab==='chart') requestAnimationFrame(()=>updateChart());
+      if(tab.dataset.tab==='compare') requestAnimationFrame(()=>renderCompare());
     });
   });
   document.querySelectorAll('#tab-calculator select,#tab-calculator input').forEach(el=>{
     el.addEventListener('change',updateAll); el.addEventListener('input',updateAll);
   });
   document.getElementById('hardware').addEventListener('change',()=>{populateCalcDropdowns();updateAll();});
-  ['chartBenchmark','chartType','chartProvider'].forEach(id=>document.getElementById(id).addEventListener('change',updateChart));
+  ['chartBenchmark','chartType','chartProvider'].forEach(id=>document.getElementById(id).addEventListener('change',()=>requestAnimationFrame(()=>updateChart())));
 
   // Compare tab: populate model dropdowns
   const modelIds = Object.keys(DATA.models);
@@ -1531,6 +1531,8 @@ function renderDataTables(){
 }
 
 function updateChart(){
+  const canvas=document.getElementById('valueChart');
+  if(!canvas||!canvas.offsetParent) return;
   const hwId=document.getElementById('hardware').value, hw=DATA.hardware[hwId]; if(!hw) return;
   const hours=parseFloat(document.getElementById('hoursPerDay').value)||16;
   const years=parseInt(document.getElementById('periodYears').value);
