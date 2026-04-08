@@ -893,6 +893,10 @@
       "arena_text": {
         "score": 1466,
         "source": "https://arena.ai/leaderboard/text"
+      },
+      "arena_code": {
+        "score": 1457,
+        "source": "https://arena.ai/leaderboard/code"
       }
     },
     "api": {
