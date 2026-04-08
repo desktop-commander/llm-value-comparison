@@ -226,15 +226,17 @@ async function main() {
     }
 
     // Update Arena ELO — write to arena_text and arena_code keys (stable benchmarks)
-    // Arena API uses dot-notation slugs (e.g. gpt-5.4, gemini-3.1-pro-preview)
-    // Try both dash and dot variants
+    // Arena API uses various slug conventions — try all known variants
     const arenaSlugCandidates = [
       aaSlug,
       ourId,
       ourId.replace(/\./g, '-'),
-      // dot-notation variants Arena uses
-      aaSlug.replace(/-(\d)/g, '.$1'),
+      aaSlug.replace(/-(\d)/g, '.$1'),   // dash-digit → dot-digit (e.g. gpt-5-4 → gpt-5.4)
       ourId.replace(/-(\d)/g, '.$1'),
+      // Dated model variants Arena uses
+      ourId + '-20251101',
+      ourId + '-20250929',
+      ourId + '-20251001',
     ];
     for (const slug of arenaSlugCandidates) {
       if (arenaTextBySlug[slug]) {

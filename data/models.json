@@ -782,9 +782,8 @@
         "_estimated": true
       },
       "arena_code": {
-        "score": 1300,
-        "source": "https://lmarena.ai/leaderboard",
-        "_estimated": true
+        "score": 1312,
+        "source": "https://lmarena.ai/leaderboard/code"
       }
     },
     "api": {
@@ -826,14 +825,12 @@
         "source": "https://artificialanalysis.ai/models/claude-4-5-sonnet"
       },
       "arena_text": {
-        "score": 1370,
-        "source": "https://lmarena.ai/leaderboard",
-        "_estimated": true
+        "score": 1452,
+        "source": "https://lmarena.ai/leaderboard"
       },
       "arena_code": {
-        "score": 1360,
-        "source": "https://lmarena.ai/leaderboard",
-        "_estimated": true
+        "score": 1386,
+        "source": "https://lmarena.ai/leaderboard/code"
       }
     },
     "api": {
@@ -923,9 +920,8 @@
         "_estimated": true
       },
       "arena_code": {
-        "score": 1450,
-        "source": "https://lmarena.ai/leaderboard",
-        "_estimated": true
+        "score": 1407,
+        "source": "https://lmarena.ai/leaderboard/code"
       }
     },
     "api": {
@@ -968,9 +964,8 @@
         "_estimated": true
       },
       "arena_code": {
-        "score": 1430,
-        "source": "https://lmarena.ai/leaderboard",
-        "_estimated": true
+        "score": 1335,
+        "source": "https://lmarena.ai/leaderboard/code"
       }
     },
     "api": {
@@ -1210,14 +1205,12 @@
         "source": "https://artificialanalysis.ai/models/kimi-k2-5"
       },
       "arena_text": {
-        "score": 1360,
-        "source": "https://lmarena.ai/leaderboard",
-        "_estimated": true
+        "score": 1452,
+        "source": "https://lmarena.ai/leaderboard"
       },
       "arena_code": {
-        "score": 1370,
-        "source": "https://lmarena.ai/leaderboard",
-        "_estimated": true
+        "score": 1429,
+        "source": "https://lmarena.ai/leaderboard/code"
       }
     },
     "api": {
