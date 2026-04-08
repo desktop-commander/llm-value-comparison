@@ -1486,14 +1486,17 @@ function renderRankedList(){
     </div>`;
   });
   const el=document.getElementById('calculatorContent');
+  const isFirstRender = el.innerHTML === 'Loading…' || el.innerHTML === '';
   el.innerHTML=html;
-  // animate bars in after paint
-  requestAnimationFrame(()=>{
-    el.querySelectorAll('.rank-bar').forEach((bar,i)=>{
-      const target=bar.style.width; bar.style.width='0%';
-      setTimeout(()=>{ bar.style.width=target; }, i*18);
+  // only animate bars on first render — re-renders from dropdown changes skip the reset-to-zero
+  if(isFirstRender) {
+    requestAnimationFrame(()=>{
+      el.querySelectorAll('.rank-bar').forEach((bar,i)=>{
+        const target=bar.style.width; bar.style.width='0%';
+        setTimeout(()=>{ bar.style.width=target; }, i*18);
+      });
     });
-  });
+  }
 }
 
 function renderDataTables(){
