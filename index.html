@@ -547,6 +547,113 @@
             margin-top: 0.35rem; font-family: 'DM Sans', sans-serif;
         }
 
+        /* ── BENCHMARK SECTION ── */
+        .bm-problem-grid {
+            display: grid; grid-template-columns: repeat(3,1fr);
+            gap: 1.25rem; margin-bottom: 2.5rem;
+        }
+        @media (max-width: 750px) { .bm-problem-grid { grid-template-columns: 1fr; } }
+
+        .bm-problem-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.4rem;
+            border-top: 3px solid var(--red);
+        }
+        .bmp-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+        .bm-problem-card h4 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-size: 0.95rem; font-weight: 700; color: var(--text);
+            margin-bottom: 0.6rem; letter-spacing: -0.01em;
+        }
+        .bm-problem-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.65; }
+        .bmp-examples { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+        .bmp-tag {
+            font-size: 0.62rem; font-weight: 600; padding: 0.18rem 0.5rem;
+            border-radius: 4px; letter-spacing: 0.04em;
+        }
+        .bmp-tag.dead { background: var(--red-bg); color: var(--red); }
+        .bmp-tag.warn { background: var(--amber-bg); color: var(--amber); }
+
+        .bm-stable-header { margin-bottom: 1.25rem; }
+
+        .bm-stable-grid {
+            display: grid; grid-template-columns: repeat(2,1fr);
+            gap: 1.25rem; margin-bottom: 2rem;
+        }
+        @media (max-width: 700px) { .bm-stable-grid { grid-template-columns: 1fr; } }
+
+        .bm-stable-card {
+            background: var(--surface); border: 1.5px solid rgba(26,158,92,0.25);
+            border-radius: 16px; padding: 1.5rem;
+            border-top: 3px solid var(--green);
+        }
+        .bms-header {
+            display: flex; align-items: flex-start;
+            gap: 0.85rem; margin-bottom: 0.85rem;
+        }
+        .bms-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+        .bms-name {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-size: 1.0rem; font-weight: 700; color: var(--text);
+            letter-spacing: -0.02em;
+        }
+        .bms-since {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.65rem; font-weight: 500; color: var(--faint);
+            margin-left: 0.4rem; font-weight: 400;
+        }
+        .bms-source { font-size: 0.7rem; margin-top: 0.15rem; }
+        .bms-source a { color: var(--green); text-decoration: none; }
+        .bms-source a:hover { text-decoration: underline; }
+        .bms-desc {
+            font-size: 0.8rem; color: var(--muted);
+            line-height: 1.7; margin-bottom: 1rem;
+        }
+        .bms-props { display: flex; flex-direction: column; gap: 0.3rem; }
+        .bms-prop {
+            font-size: 0.72rem; font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .bms-prop.good { color: var(--green); }
+        .bms-prop.warn { color: var(--amber); }
+
+        .bm-formula-note {
+            background: var(--surface); border: 1px solid var(--border);
+            border-left: 4px solid var(--green);
+            border-radius: 12px; padding: 1.25rem 1.5rem;
+        }
+        .bfn-label {
+            font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.75rem;
+        }
+        .bfn-formula {
+            display: flex; align-items: center; flex-wrap: wrap;
+            gap: 0.6rem; margin-bottom: 0.9rem;
+        }
+        .bfn-part {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem; font-weight: 600;
+            padding: 0.3rem 0.7rem; border-radius: 6px;
+        }
+        .bfn-part.arena  { background: var(--purple-bg); color: var(--purple); }
+        .bfn-part.aa     { background: var(--blue-bg);   color: var(--blue); }
+        .bfn-result      { background: var(--green-bg);  color: var(--green);
+                           font-family: 'JetBrains Mono', monospace;
+                           font-size: 0.78rem; font-weight: 700;
+                           padding: 0.3rem 0.7rem; border-radius: 6px; }
+        .bfn-op {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem; font-weight: 600; color: var(--faint);
+        }
+        .bfn-note {
+            font-size: 0.75rem; color: var(--muted); line-height: 1.7;
+        }
+        .bfn-note code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg); padding: 0.1rem 0.35rem;
+            border-radius: 4px; font-size: 0.72rem;
+        }
+
         /* ── COMPARE TAB ── */
         .cmp-pickers {
             display: grid; grid-template-columns: 1fr auto 1fr;
@@ -676,6 +783,7 @@
     <div class="nav-links">
         <a href="#winners">🏆 Winners</a>
         <a href="#how">📐 How it works</a>
+        <a href="#benchmarks">📏 Benchmarks</a>
         <a href="#explore">📊 Full data</a>
     </div>
     <div class="nav-right">
@@ -783,9 +891,103 @@
         </div>
     </div>
     <p class="method-note fade-up">
-        Quality scores: <a href="https://artificialanalysis.ai/" target="_blank">Artificial Analysis</a> Intelligence Index (0–100)
-        + Arena ELO normalized to 0–100. Combined score averages all available benchmarks per model.
+        Quality scores: <a href="#benchmarks">Arena ELO + AA Intelligence Index</a> — the two benchmarks that remain comparable across model generations. See the <a href="#benchmarks">Benchmarks section</a> for why other benchmarks can't fairly compare across eras.
     </p>
+</section>
+
+<!-- BENCHMARKS EXPLAINER -->
+<section class="section" id="benchmarks" style="scroll-margin-top:60px">
+    <div class="section-header fade-up">
+        <div class="tag red">📏 Why benchmarks are hard</div>
+        <div class="section-title">Not all benchmarks age equally.</div>
+        <p>Comparing GPT-3.5 to GPT-5.4 using benchmark scores sounds simple. It isn't. The tests used to measure models in 2023 are mostly useless today — either saturated or discontinued. This matters for any long-term value comparison.</p>
+    </div>
+
+    <!-- THREE PROBLEM CARDS -->
+    <div class="bm-problem-grid fade-up">
+        <div class="bm-problem-card">
+            <div class="bmp-icon">📈</div>
+            <h4>Saturation</h4>
+            <p>MMLU (2020) and HumanEval (2021) were rigorous tests when introduced. Today GPT-4 scores 87% on MMLU, GPT-5 scores ~90%. A 3% gap in a benchmark where the ceiling is 100% tells you almost nothing. The benchmark is broken as a signal, not the models.</p>
+            <div class="bmp-examples">
+                <span class="bmp-tag dead">MMLU — saturated</span>
+                <span class="bmp-tag dead">HumanEval — saturated</span>
+            </div>
+        </div>
+        <div class="bm-problem-card">
+            <div class="bmp-icon">🎯</div>
+            <h4>Different tests, different eras</h4>
+            <p>SWE-bench Verified launched in 2024. Aider Polyglot in 2024. GPQA Diamond in 2023. Models from 2022 were never measured on these. You can't compare GPT-3.5's MMLU score to GPT-5's SWE-bench score — they're measuring different things with different scales.</p>
+            <div class="bmp-examples">
+                <span class="bmp-tag warn">SWE-bench — 2024+</span>
+                <span class="bmp-tag warn">Aider — 2024+</span>
+                <span class="bmp-tag warn">GPQA — 2023+</span>
+            </div>
+        </div>
+        <div class="bm-problem-card">
+            <div class="bmp-icon">🧪</div>
+            <h4>Training contamination</h4>
+            <p>Benchmarks become worthless once labs train on them. Questions leak into pretraining data, benchmark scores stop reflecting real capability. This is why new benchmarks are invented constantly — and why scores from 2022 are especially suspect.</p>
+            <div class="bmp-examples">
+                <span class="bmp-tag dead">GSM8K — contaminated</span>
+                <span class="bmp-tag warn">Most 2022 benchmarks</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- THE TWO STABLE ONES -->
+    <div class="bm-stable-header fade-up">
+        <div class="tag green">✅ What actually works across time</div>
+        <p style="font-size:0.95rem;color:var(--muted);max-width:580px;margin-top:0.25rem">Two signals have been collected continuously since 2023 using the same methodology. They measure different things, but together they give a consistent cross-generation quality score.</p>
+    </div>
+    <div class="bm-stable-grid fade-up">
+        <div class="bm-stable-card">
+            <div class="bms-header">
+                <div class="bms-icon">⚔️</div>
+                <div>
+                    <div class="bms-name">Arena ELO <span class="bms-since">since early 2023</span></div>
+                    <div class="bms-source"><a href="https://lmarena.ai" target="_blank">lmarena.ai ↗</a></div>
+                </div>
+            </div>
+            <p class="bms-desc">Humans pick which model response is better in blind head-to-head comparisons. The ELO rating system means GPT-3.5 and GPT-5.4 are measured on the <strong>exact same scale</strong> — not by what questions they answered, but by how humans prefer their outputs relative to each other.</p>
+            <div class="bms-props">
+                <div class="bms-prop good">✓ Same methodology since launch</div>
+                <div class="bms-prop good">✓ Covers general + coding separately</div>
+                <div class="bms-prop good">✓ Can't be trained on directly</div>
+                <div class="bms-prop warn">~ Reflects human preference, not task accuracy</div>
+            </div>
+        </div>
+        <div class="bm-stable-card">
+            <div class="bms-header">
+                <div class="bms-icon">🔬</div>
+                <div>
+                    <div class="bms-name">AA Intelligence Index <span class="bms-since">since 2023</span></div>
+                    <div class="bms-source"><a href="https://artificialanalysis.ai" target="_blank">artificialanalysis.ai ↗</a></div>
+                </div>
+            </div>
+            <p class="bms-desc">Artificial Analysis runs their own evaluations on every major model using consistent infrastructure and aggregates them into a single 0–100 composite. Unlike leaderboard scores that depend on who submitted, AA re-runs everything themselves on the same hardware.</p>
+            <div class="bms-props">
+                <div class="bms-prop good">✓ Independently run, not self-reported</div>
+                <div class="bms-prop good">✓ Composite — not reliant on a single test</div>
+                <div class="bms-prop good">✓ Covers models back to GPT-3.5 era</div>
+                <div class="bms-prop warn">~ Methodology updates occasionally</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOW WE USE THEM -->
+    <div class="bm-formula-note fade-up">
+        <div class="bfn-label">How we combine them</div>
+        <div class="bfn-formula">
+            <span class="bfn-part arena">Arena ELO → normalized 0–100</span>
+            <span class="bfn-op">+</span>
+            <span class="bfn-part aa">AA Intelligence Index (0–100)</span>
+            <span class="bfn-op">÷ 2</span>
+            <span class="bfn-op">=</span>
+            <span class="bfn-result">Stable Quality Score</span>
+        </div>
+        <p class="bfn-note">Arena ELO is normalized using <code>(ELO − 1000) / 5</code>, which maps typical frontier model ELOs (1100–1400) to a 0–100 range. The two scores are then averaged. If only one is available for a model, that single score is used. Task-specific benchmarks (SWE-bench, Aider, etc.) are shown in raw data but <strong>not used in the main value calculation</strong> — they can't fairly compare across model generations.</p>
+    </div>
 </section>
 
 <!-- FULL DATA -->
@@ -975,9 +1177,18 @@ function disp(score,bmId){
 function getScore(model,bmId){
   if(!model.benchmarks) return null;
   if(bmId==='_combined'){
-    const rec=Object.entries(DATA.benchmarks).filter(([,b])=>b.recommended).map(([id])=>id);
+    // Use ONLY stable benchmarks (Arena ELO + AA Intelligence Index)
+    // These are the only metrics that remain comparable across model generations.
+    // Task-specific benchmarks (SWE-bench, Aider, etc.) were introduced at different
+    // times and cannot reliably compare GPT-3.5-era models with GPT-5-era models.
+    const stable=Object.entries(DATA.benchmarks).filter(([,b])=>b.stable).map(([id])=>id);
     let t=0,c=0;
-    rec.forEach(id=>{ if(model.benchmarks[id]){t+=norm(model.benchmarks[id].score,id);c++;} });
+    stable.forEach(id=>{ if(model.benchmarks[id]){t+=norm(model.benchmarks[id].score,id);c++;} });
+    // Fallback: if no stable scores, use all recommended (for newer data where stable is missing)
+    if(c===0){
+      const rec=Object.entries(DATA.benchmarks).filter(([,b])=>b.recommended).map(([id])=>id);
+      rec.forEach(id=>{ if(model.benchmarks[id]){t+=norm(model.benchmarks[id].score,id);c++;} });
+    }
     return c>0?t/c:null;
   }
   return model.benchmarks[bmId]?model.benchmarks[bmId].score:null;
@@ -1099,7 +1310,7 @@ function initSelects(){
   });
   ['benchmark','chartBenchmark'].forEach(sid=>{
     const sel=document.getElementById(sid);
-    const o=document.createElement('option');o.value='_combined';o.textContent='⚡ Combined';sel.appendChild(o);
+    const o=document.createElement('option');o.value='_combined';o.textContent='⚡ Arena + AA Index (stable)';sel.appendChild(o);
     Object.entries(DATA.benchmarks).filter(([,b])=>b.recommended).forEach(([id,bm])=>{
       const o2=document.createElement('option');o2.value=id;o2.textContent=bm.name;sel.appendChild(o2);
     });
