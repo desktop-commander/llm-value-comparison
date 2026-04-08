@@ -226,8 +226,16 @@ async function main() {
     }
 
     // Update Arena ELO — write to arena_text and arena_code keys (stable benchmarks)
-    // NOT to arena_elo (legacy key no longer used for scoring)
-    const arenaSlugCandidates = [aaSlug, ourId, ourId.replace(/\./g, '-')];
+    // Arena API uses dot-notation slugs (e.g. gpt-5.4, gemini-3.1-pro-preview)
+    // Try both dash and dot variants
+    const arenaSlugCandidates = [
+      aaSlug,
+      ourId,
+      ourId.replace(/\./g, '-'),
+      // dot-notation variants Arena uses
+      aaSlug.replace(/-(\d)/g, '.$1'),
+      ourId.replace(/-(\d)/g, '.$1'),
+    ];
     for (const slug of arenaSlugCandidates) {
       if (arenaTextBySlug[slug]) {
         existing[ourId].benchmarks = existing[ourId].benchmarks || {};

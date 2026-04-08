@@ -102,6 +102,10 @@
       "aider_polyglot": {
         "score": 48.4,
         "source": "https://aider.chat/docs/leaderboards/"
+      },
+      "aa_intelligence": {
+        "score": 16.5,
+        "source": "https://artificialanalysis.ai/"
       }
     },
     "api": {
@@ -180,7 +184,7 @@
       },
       "aa_intelligence": {
         "score": 30.1,
-        "source": "https://artificialanalysis.ai/models/glm-4-7-flash"
+        "source": "https://artificialanalysis.ai/"
       }
     },
     "api": {
@@ -249,6 +253,10 @@
       "mmlu": {
         "score": 88.7,
         "source": "https://openai.com/index/hello-gpt-4o/"
+      },
+      "aa_intelligence": {
+        "score": 17.3,
+        "source": "https://artificialanalysis.ai/"
       }
     },
     "api": {
@@ -393,6 +401,10 @@
       "aider_polyglot": {
         "score": 76.9,
         "source": "https://aider.chat/docs/leaderboards/"
+      },
+      "aa_intelligence": {
+        "score": 38.4,
+        "source": "https://artificialanalysis.ai/"
       }
     },
     "api": {
@@ -522,11 +534,11 @@
     "modelCard": "https://blog.google/products/gemini/gemini-3-pro/",
     "benchmarks": {
       "arena_text": {
-        "score": 1492,
+        "score": 1486,
         "source": "https://lmarena.ai/leaderboard"
       },
       "arena_code": {
-        "score": 1501,
+        "score": 1438,
         "source": "https://lmarena.ai/leaderboard/code"
       },
       "aider_polyglot": {
@@ -536,6 +548,10 @@
       "swe_bench": {
         "score": 76.2,
         "source": "https://www.swebench.com/"
+      },
+      "aa_intelligence": {
+        "score": 48.4,
+        "source": "https://artificialanalysis.ai/"
       }
     },
     "api": {
@@ -563,11 +579,11 @@
     "modelCard": "https://blog.google/products/gemini/gemini-3-flash/",
     "benchmarks": {
       "arena_text": {
-        "score": 1450,
+        "score": 1474,
         "source": "https://lmarena.ai/leaderboard"
       },
       "arena_code": {
-        "score": 1470,
+        "score": 1436,
         "source": "https://lmarena.ai/leaderboard/code"
       },
       "aider_polyglot": {
@@ -577,6 +593,10 @@
       "swe_bench": {
         "score": 78,
         "source": "https://www.swebench.com/"
+      },
+      "aa_intelligence": {
+        "score": 35.0,
+        "source": "https://artificialanalysis.ai/"
       }
     },
     "api": {
@@ -652,7 +672,7 @@
     "benchmarks": {
       "aa_intelligence": {
         "score": 46.5,
-        "source": "https://artificialanalysis.ai/models/claude-opus-4-6"
+        "source": "https://artificialanalysis.ai/"
       },
       "gpqa_diamond": {
         "score": 84,
@@ -703,7 +723,7 @@
     "benchmarks": {
       "aa_intelligence": {
         "score": 44.4,
-        "source": "https://artificialanalysis.ai/models/claude-sonnet-4-6"
+        "source": "https://artificialanalysis.ai/"
       },
       "gpqa_diamond": {
         "score": 79.9,
@@ -844,15 +864,15 @@
     "benchmarks": {
       "aa_intelligence": {
         "score": 57.2,
-        "source": "https://artificialanalysis.ai/models/gpt-5-4"
+        "source": "https://artificialanalysis.ai/"
       },
       "gpqa_diamond": {
         "score": 92,
         "source": "https://artificialanalysis.ai/models/gpt-5-4"
       },
       "arena_text": {
-        "score": 1484,
-        "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text"
+        "score": 1466,
+        "source": "https://lmarena.ai/leaderboard"
       }
     },
     "api": {
@@ -989,15 +1009,19 @@
     "benchmarks": {
       "aa_intelligence": {
         "score": 57.2,
-        "source": "https://artificialanalysis.ai/models/gemini-3-1-pro-preview"
+        "source": "https://artificialanalysis.ai/"
       },
       "gpqa_diamond": {
         "score": 94.1,
         "source": "https://artificialanalysis.ai/models/gemini-3-1-pro-preview"
       },
       "arena_text": {
-        "score": 1494,
-        "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text"
+        "score": 1493,
+        "source": "https://lmarena.ai/leaderboard"
+      },
+      "arena_code": {
+        "score": 1456,
+        "source": "https://lmarena.ai/leaderboard/code"
       }
     },
     "api": {
