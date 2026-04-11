@@ -46,10 +46,10 @@
   },
   "mac_m4_48gb": {
     "name": "Mac M4 48GB",
-    "price": 2499,
+    "price": 2699,
     "vram": 48,
     "year": 2024,
-    "notes": "MacBook Pro M4 Pro 48GB configuration. Checked 2026-04-11.",
+    "notes": "MacBook Pro 16\" base config. Scraped from apple.com. Checked 2026-04-11.",
     "source": "https://www.apple.com/shop/buy-mac/macbook-pro",
     "lastVerified": "2026-04-11"
   },
@@ -159,10 +159,10 @@
   },
   "mac_m4_24gb": {
     "name": "Mac M4 24GB (full system)",
-    "price": 1599,
+    "price": 1699,
     "vram": 24,
     "year": 2024,
-    "notes": "MacBook Pro 14\" M4 24GB. Starting price $1599. Checked 2026-04-11.",
+    "notes": "MacBook Pro 14\" base config. Scraped from apple.com. Checked 2026-04-11.",
     "source": "https://www.apple.com/shop/buy-mac/macbook-pro",
     "lastVerified": "2026-04-11"
   },

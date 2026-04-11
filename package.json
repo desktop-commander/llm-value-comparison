@@ -1,0 +1,24 @@
+{
+  "name": "llm-value-comparison",
+  "version": "1.0.0",
+  "description": "**Compare the value of Local Hardware vs Subscriptions vs API pricing**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wonderwhy-er/llm-value-comparison.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/wonderwhy-er/llm-value-comparison/issues"
+  },
+  "homepage": "https://github.com/wonderwhy-er/llm-value-comparison#readme",
+  "devDependencies": {
+    "playwright": "^1.59.1"
+  }
+}

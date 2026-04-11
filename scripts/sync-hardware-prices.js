@@ -20,27 +20,31 @@ const GPU_SLUGS = {
   rx_7900_xtx: 'rx-7900-xtx',
 };
 
-// Apple product prices — hardcoded because:
+// Apple prices — scraped via Playwright (headless Chromium) because:
 // 1. apple.com/shop is client-rendered (no curl/fetch scraping)
 // 2. prices.appleinsider.com returns 403 to non-browser requests  
 // 3. Apple has no public pricing API
-// 4. Apple MSRP never changes until a model is discontinued (once/year)
+// Playwright renders the JS and extracts prices from the live DOM.
 //
-// HOW TO UPDATE: check these URLs annually or when new Macs launch:
-//   Current models: https://www.apple.com/shop/buy-mac/macbook-pro
-//   Refurbished:    https://www.apple.com/shop/refurbished/mac/macbook-pro
-//   Price tracker:  https://prices.appleinsider.com/macbook-pro-14-inch-m4
-//
-// Last verified: 2026-04-11 (M4 generation, launched Nov 2024)
-const APPLE_PRICES = {
-  mac_m1_max_64gb: { price: 2500, notes: 'Refurbished MacBook Pro 16" M1 Max 64GB. Uses unified memory for inference.', source: 'https://www.apple.com/shop/refurbished/mac/macbook-pro' },
-  mac_m2_8gb: { price: 800, notes: 'MacBook Air M2 8GB. Refurbished/sale price. Very limited for LLM inference.', source: 'https://www.apple.com/shop/buy-mac/macbook-air' },
-  mac_m3_max_64gb: { price: 3500, notes: 'MacBook Pro 16" M3 Max 36GB/64GB. apple.com starting price.', source: 'https://www.apple.com/shop/buy-mac/macbook-pro' },
-  mac_m3_max_128gb: { price: 5500, notes: 'MacBook Pro 16" M3 Max 128GB. apple.com configured price.', source: 'https://www.apple.com/shop/buy-mac/macbook-pro' },
-  mac_m4_24gb: { price: 1599, notes: 'MacBook Pro 14" M4 24GB. Starting price $1599.', source: 'https://www.apple.com/shop/buy-mac/macbook-pro' },
-  mac_m4_48gb: { price: 2499, notes: 'MacBook Pro M4 Pro 48GB configuration.', source: 'https://www.apple.com/shop/buy-mac/macbook-pro' },
-  mac_m4_max_128gb: { price: 4999, notes: 'MacBook Pro 16" M4 Max 128GB. apple.com configured price.', source: 'https://www.apple.com/shop/buy-mac/macbook-pro' },
-  macbook_pro_2019_i9: { price: 2000, notes: 'Refurbished/used price estimate. Uses unified/system RAM. Radeon Pro 5500M.', source: 'https://www.apple.com/shop/refurbished/mac/macbook-pro' },
+// Maps hardware IDs to Apple URLs + CSS/text selectors
+const APPLE_CONFIGS = {
+  // Current models — scrape from apple.com/shop/buy-mac
+  mac_m4_24gb:      { url: 'https://www.apple.com/shop/buy-mac/macbook-pro', search: 'MacBook Pro 14.*M4 chip.*24GB', vram: 24 },
+  mac_m4_48gb:      { url: 'https://www.apple.com/shop/buy-mac/macbook-pro', search: 'MacBook Pro.*M4 Pro.*48GB', vram: 48 },
+  mac_m4_max_128gb: { url: 'https://www.apple.com/shop/buy-mac/macbook-pro', search: 'MacBook Pro.*M4 Max.*128GB', vram: 128 },
+  // Older models — scrape from refurbished store  
+  mac_m3_max_64gb:  { url: 'https://www.apple.com/shop/refurbished/mac/macbook-pro', search: 'M3 Max.*64GB', vram: 64 },
+  mac_m3_max_128gb: { url: 'https://www.apple.com/shop/refurbished/mac/macbook-pro', search: 'M3 Max.*128GB', vram: 128 },
+  mac_m1_max_64gb:  { url: 'https://www.apple.com/shop/refurbished/mac/macbook-pro', search: 'M1 Max.*64GB', vram: 64 },
+  mac_m2_8gb:       { url: 'https://www.apple.com/shop/refurbished/mac/macbook-air', search: 'M2.*8GB', vram: 8 },
+};
+
+// Fallback prices if Playwright scraping fails (e.g. CI environment)
+const APPLE_FALLBACK = {
+  mac_m4_24gb: 1599, mac_m4_48gb: 2499, mac_m4_max_128gb: 4999,
+  mac_m3_max_64gb: 3500, mac_m3_max_128gb: 5500,
+  mac_m1_max_64gb: 2500, mac_m2_8gb: 800,
+  macbook_pro_2019_i9: 2000,
 };
 
 function fetch(url) {
@@ -127,20 +131,31 @@ async function main() {
     hw.lastVerified = today;
   }
 
-  console.log('\n=== Apple/Mac prices (manual reference) ===');
-  for (const [hwId, appleData] of Object.entries(APPLE_PRICES)) {
-    const hw = hardware[hwId];
-    if (!hw) { console.log(`  ? ${hwId} not in hardware.json, skipping`); continue; }
-    if (hw.price !== appleData.price) {
-      console.log(`  ✓ ${hwId}: $${hw.price} → $${appleData.price}`);
-      hw.price = appleData.price;
-      updated++;
-    } else {
-      console.log(`  = ${hwId}: $${hw.price} unchanged`);
+  console.log('\n=== Apple/Mac prices via Playwright ===');
+  try {
+    const { execSync } = require('child_process');
+    const result = execSync('node scripts/scrape-apple-prices.mjs', {
+      cwd: REPO,
+      encoding: 'utf-8',
+      timeout: 120000,
+      stdio: ['pipe', 'pipe', 'pipe']
+    });
+    console.log(result);
+    // Reload hardware.json since the Apple script wrote to it directly
+    const freshHw = JSON.parse(fs.readFileSync(path.join(REPO, 'data/hardware.json'), 'utf-8'));
+    Object.assign(hardware, freshHw);
+  } catch (err) {
+    console.log('  ⚠ Apple scraper failed:', err.stderr || err.message);
+    console.log('  Applying fallback prices...');
+    for (const [hwId, price] of Object.entries(APPLE_FALLBACK)) {
+      const hw = hardware[hwId];
+      if (hw && hw.price !== price) {
+        console.log(`  ✓ ${hwId}: $${hw.price} → $${price} (fallback)`);
+        hw.price = price;
+        updated++;
+      }
+      if (hw) hw.lastVerified = today;
     }
-    hw.notes = appleData.notes + ` Checked ${today}.`;
-    hw.source = appleData.source;
-    hw.lastVerified = today;
   }
 
   fs.writeFileSync(path.join(REPO, 'data/hardware.json'), JSON.stringify(hardware, null, 2));
