@@ -1,10 +1,10 @@
 # LLM Value Comparison: Local vs Subscription vs API
 
-**Compare the value of Local Hardware vs Subscriptions vs API pricing**
+**Quality-adjusted tokens per dollar — one number to compare local hardware, subscriptions, and API pricing.**
 
-🔗 **Live tool:** https://desktop-commander.github.io/llm-value-comparison/  
-📖 **Article:** [Local LLMs Are Finally Beating the Cloud! — But Are They?](https://wonderwhy-er.medium.com/local-llms-are-finally-beating-the-cloud-but-are-they-51fc0ad0dbd7)  
-🏠 **Supported by:** [Desktop Commander](https://desktopcommander.app) — a model-agnostic AI assistant that works with local models, API keys, and subscriptions. This is why we care about this question.
+🔗 **Live tool:** https://desktop-commander.github.io/llm-value-comparison/
+📖 **Article:** [Local LLMs Are Finally Beating the Cloud! — But Are They?](https://wonderwhy-er.medium.com/local-llms-are-finally-beating-the-cloud-but-are-they-51fc0ad0dbd7)
+🏠 **Supported by:** [Desktop Commander](https://desktopcommander.app) — model-agnostic AI that works with local models, API keys, and subscriptions.
 
 ---
 
@@ -16,181 +16,90 @@ A tool to calculate and compare **quality-adjusted tokens per dollar** across th
 2. **💳 Subscription** — Monthly fee, daily token limits (⚠️ estimated)
 3. **🔌 API** — Pay per token
 
-The core insight: not all tokens are equal. A token from a smarter model is worth more. We multiply raw token counts by model quality (from benchmarks) to get a fair comparison across completely different pricing models.
+The core insight: not all tokens are equal. A token from a smarter model is worth more. We multiply raw token counts by model quality to get a fair comparison across completely different pricing models.
 
-## Why Desktop Commander built this
+## Use the data
 
-Desktop Commander supports API keys, local models, and subscriptions to Claude and ChatGPT. Our users ask us constantly: *"What should I use?"* This tool is our answer — and we're keeping it open source so the community can help keep the data accurate.
+All data is open JSON — fetch directly, no API key needed:
+
+| File | URL |
+|------|-----|
+| Models (pricing, benchmarks, local perf, subscriptions) | [`models.json`](https://desktop-commander.github.io/llm-value-comparison/data/models.json) |
+| Hardware (GPUs, Macs, prices) | [`hardware.json`](https://desktop-commander.github.io/llm-value-comparison/data/hardware.json) |
+| Benchmark definitions | [`benchmarks.json`](https://desktop-commander.github.io/llm-value-comparison/data/benchmarks.json) |
+
+**Attribution:** If you use this data, please credit: *"Data from [LLM Value Comparison](https://desktop-commander.github.io/llm-value-comparison/), supported by [Desktop Commander](https://desktopcommander.app)"*
 
 ## Features
 
-* **📊 Calculator** — Ranked comparison of all models/services with step-by-step math
-* **📈 Timeline Chart** — Value trends over time by provider
-* **📋 Raw Data** — All data in tables with source links for every data point
+* **🏆 Winner cards** — Best value in each category, auto-calculated, no config needed
+* **📊 Calculator** — Ranked comparison with step-by-step math, adjustable I/O ratio
+* **⚔️ Compare** — Side-by-side model comparison with bar charts
+* **📈 Timeline** — Value trends over time by provider
+* **📏 Benchmarks** — Explainer on why we use Arena ELO + AA Intelligence (z-score normalized)
+* **📋 Raw data** — All data in tables with source links
 
-## Local Development
+## Quality scoring
 
-```bash
-# Using npx (recommended)
-npx serve
+We use **z-score normalized** Arena ELO + AA Intelligence Index as the quality metric. These are the only two benchmarks that remain comparable across model generations (2023→2026). Task-specific benchmarks (SWE-bench, Aider, etc.) are shown in raw data but not used in the main value calculation — they can't fairly compare GPT-3.5-era models with GPT-5.4-era models.
 
-# Or using Python
-python3 -m http.server 8888
-```
+See the [Benchmarks section](https://desktop-commander.github.io/llm-value-comparison/#benchmarks) on the live site for the full explanation.
 
-Then open http://localhost:3000 (serve) or http://localhost:8888 (Python).
+## Data sources
 
-## The Formula
+All data is synced from multiple sources. See [DATA_SOURCES.md](DATA_SOURCES.md) for full details.
 
-All three calculate: **Quality-Adjusted Tokens per Dollar**
+### Automated sync scripts
 
-### Local
-```
-(tokens/sec × hours/day × 3600 × 365 × years × quality%) / hardware_cost
-```
-
-### Subscription
-```
-(tokens/day × 365 × years × quality%) / (monthly_price × 12 × years)
-```
-
-### API
-```
-(1,000,000 / weighted_price_per_million) × quality%
-```
-
-Weighted price = 75% input + 25% output (typical usage ratio).
-
-## Data Sources
-
-Data is pulled from multiple sources automatically and manually. See [DATA_SOURCES.md](DATA_SOURCES.md) for full details.
-
-### Automated (run `node scripts/sync-from-aa.js`)
-
-| Source | What it provides | Auth needed |
-|--------|-----------------|-------------|
-| [Artificial Analysis](https://artificialanalysis.ai/) | Benchmark scores, API pricing, **API throughput (tok/s)** | Free API key |
-| [Arena AI leaderboard](https://api.wulong.dev/arena-ai-leaderboards/v1/) | Arena ELO — human preference ranking (6M+ votes) | None |
-| [OpenRouter](https://openrouter.ai/api/v1/models) | API pricing for 300+ models, esp. open-weight models | None |
-
-> **Attribution:** Benchmark and pricing data from [artificialanalysis.ai](https://artificialanalysis.ai/) — required by their free API terms.
+| Script | Sources | What it updates |
+|--------|---------|-----------------|
+| `node scripts/sync-from-aa.js` | [Artificial Analysis](https://artificialanalysis.ai/), [Arena AI](https://arena.ai/), [OpenRouter](https://openrouter.ai/) | API pricing, benchmark scores, Arena ELO, API throughput |
+| `node scripts/sync-from-arena.js` | [Arena AI](https://arena.ai/) full leaderboard (338 models) | Arena text + code ELO via Chrome scraping |
+| `node scripts/sync-hardware-prices.js` | [bestvaluegpu.com](https://bestvaluegpu.com/), [apple.com](https://apple.com/shop/buy-mac), [Swappa](https://swappa.com/) | GPU prices (HTTP), Mac prices (Playwright + Chrome) |
+| `node scripts/import-dc-local-data.js` | DC production database | Local model tok/s with real hardware info |
 
 ### Manual (community PRs)
 
-| Source | What it provides |
-|--------|-----------------|
-| [SWE-bench](https://www.swebench.com/) | Coding benchmark — real GitHub issues |
-| [Aider leaderboard](https://aider.chat/docs/leaderboards/) | Coding benchmark — polyglot real tasks |
-| [llama.cpp discussions](https://github.com/ggerganov/llama.cpp/discussions) | Local inference tok/s per hardware config |
-| Provider pricing pages | Verify and supplement AA pricing data |
-| Community research | Subscription token limits (providers don't publish these) |
+- **Local tok/s benchmarks** — run a model on your hardware, measure, submit with specs
+- **Subscription token limits** — providers don't publish these, community reverse-engineering needed
+- **New model entries** — especially Chinese open-weights and smaller models
 
-### What each field comes from
-
-| Field | Source |
-|-------|--------|
-| `benchmarks.aa_intelligence` | Artificial Analysis API (auto) |
-| `benchmarks.arena_elo` | Arena AI via wulong.dev (auto) |
-| `benchmarks.gpqa_diamond` | Artificial Analysis API (auto) |
-| `benchmarks.swe_bench` | SWE-bench.com (manual) |
-| `benchmarks.aider_polyglot` | Aider leaderboard (manual) |
-| `api.inputPer1M` / `outputPer1M` | Artificial Analysis or OpenRouter (auto) |
-| `api.tokensPerSecAPI` | Artificial Analysis API (auto) |
-| `local.tokensPerSec` | llama.cpp discussions / community (manual) |
-| `subscriptions.tokensPerDay` | Community research (manual, often low confidence) |
-
-
-## Data Structure
-
-```
-/data/
-  hardware.json        # Hardware specs, prices, sources
-  benchmarks.json      # Benchmark metadata
-  models.json          # All model data
-```
-
-Each model entry contains benchmarks, API pricing (incl. API throughput), local performance, and subscription options — every data point has a source URL.
-
-### Model format
-
-```json
-{
-  "name": "Model Name",
-  "provider": "Provider",
-  "releaseDate": "YYYY-MM-DD",
-  "modelCard": "https://link-to-model-card",
-  "benchmarks": {
-    "aa_intelligence": { "score": 72.1, "source": "https://artificialanalysis.ai/models/..." },
-    "arena_elo":       { "score": 1486, "source": "https://api.wulong.dev/arena-ai-leaderboards/v1/leaderboard?name=text" },
-    "swe_bench":       { "score": 80.9, "source": "https://www.swebench.com/" },
-    "aider_polyglot":  { "score": 45.5, "source": "https://aider.chat/docs/leaderboards/" }
-  },
-  "api": {
-    "inputPer1M": 3.00,
-    "outputPer1M": 15.00,
-    "tokensPerSecAPI": 87.4,
-    "source": "https://artificialanalysis.ai/models/..."
-  },
-  "local": {
-    "rtx_4090": {
-      "tokensPerSec": 45,
-      "quantization": "Q4_K_M",
-      "vramRequired": 24,
-      "source": "https://github.com/ggerganov/llama.cpp/discussions/..."
-    }
-  },
-  "subscriptions": {
-    "service_name": {
-      "name": "Service Name",
-      "monthlyPrice": 20,
-      "tokensPerDay": 200000,
-      "confidence": "low",
-      "notes": "Explanation of estimate",
-      "source": "https://..."
-    }
-  }
-}
-```
-
-### Subscription confidence levels
-
-| Level | Meaning |
-|-------|---------|
-| `high` | Official published limits |
-| `medium` | Derived from official info |
-| `low` | Community estimates, reverse-engineered |
-
-## Running the Data Sync
+## Running locally
 
 ```bash
-# One-time setup: get a free API key at https://artificialanalysis.ai/login
-mkdir -p ~/.config/llm-value-comparison
-echo "your_aa_key_here" > ~/.config/llm-value-comparison/aa_api_key
-
-# Sync all sources (AA + Arena + OpenRouter)
-node scripts/sync-from-aa.js
+npx serve
+# or
+python3 -m http.server 8888
 ```
 
-The sync updates: API pricing, AA benchmark scores, Arena ELO, API throughput.  
-It does NOT overwrite: local inference data, subscription limits, manually verified fields.
+## Running data sync
+
+```bash
+# One-time: get a free API key at https://artificialanalysis.ai/login
+echo "your_key" > ~/.config/llm-value-comparison/aa_api_key
+
+# Sync model data (API pricing, benchmarks, Arena ELO)
+node scripts/sync-from-aa.js
+
+# Sync hardware prices (GPUs + Macs)
+node scripts/sync-hardware-prices.js
+
+# Sync full Arena leaderboard (requires Chrome tabs open at arena.ai)
+node scripts/sync-from-arena.js
+```
 
 ## Contributing
 
-**This project needs community contributions to stay accurate. Data goes stale fast.**
+**This project needs community data to stay accurate.** Fork, edit `data/models.json`, and submit a PR. Every data point must have a `source` URL.
 
-1. Fork the repo
-2. Edit `data/models.json` — add or update a model entry
-3. Every data point must have a `source` URL
-4. Submit a PR
-
-Most needed contributions:
-- **Local tok/s benchmarks** — run a model, measure, submit with hardware + quantization + source
-- **Subscription token limits** — reverse-engineer or find community data
-- **New model entries** — especially smaller/cheaper models and Chinese open-weights
+Most needed:
+- Local tok/s benchmarks with hardware specs
+- Subscription token limit measurements
+- New model entries (pricing + benchmarks)
 
 ## License
 
-Apache License 2.0 — free to fork, modify, and host. The [NOTICE](NOTICE) file requires that any public deployment credits Desktop Commander with a visible link. See [LICENSE](LICENSE) for full terms.
+Apache License 2.0 — free to fork, modify, and host. The [NOTICE](NOTICE) file requires any public deployment to credit Desktop Commander with a visible link. See [LICENSE](LICENSE) for full terms.
 
 ---
 
