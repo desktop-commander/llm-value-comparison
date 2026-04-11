@@ -190,7 +190,7 @@ Most needed contributions:
 
 ## License
 
-MIT — use it however you want.
+Apache License 2.0 — free to fork, modify, and host. The [NOTICE](NOTICE) file requires that any public deployment credits Desktop Commander with a visible link. See [LICENSE](LICENSE) for full terms.
 
 ---
 

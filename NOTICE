@@ -1,0 +1,17 @@
+LLM Value Comparison
+Copyright 2025 Eduard Ruzga / Desktop Commander
+https://desktopcommander.app
+
+This product was created and is maintained by Desktop Commander.
+
+If you host or distribute a derivative of this work, you must retain
+this attribution notice and display "Supported by Desktop Commander"
+with a link to https://desktopcommander.app in the user interface.
+
+Data sources:
+- Artificial Analysis (https://artificialanalysis.ai/) — API pricing, intelligence benchmarks
+- Arena AI (https://arena.ai/) — human preference ELO rankings
+- OpenRouter (https://openrouter.ai/) — open-weight model pricing
+- Desktop Commander production data — local inference benchmarks
+- bestvaluegpu.com — GPU pricing
+- Swappa (https://swappa.com/) — used Mac pricing

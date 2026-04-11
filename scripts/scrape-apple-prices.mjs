@@ -27,6 +27,45 @@ try {
   chromium = require2(npxPath).chromium;
 }
 
+// --- Swappa scraper for older Macs (plain HTTP, no Playwright needed) ---
+const https = await import('https');
+function httpGet(url) {
+  return new Promise((resolve, reject) => {
+    https.default.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 LLM-Value-Comparison/1.0' } }, res => {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        return httpGet(res.headers.location).then(resolve, reject);
+      }
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => resolve(data));
+    }).on('error', reject);
+  });
+}
+
+// Map hardware IDs to Swappa URLs + config matchers
+const SWAPPA_CONFIGS = {
+  mac_m1_max_64gb: {
+    url: 'https://swappa.com/prices/macbook-pro-2021-16',
+    configMatch: /M1 Max.*1\s*TB/i,
+    label: 'MacBook Pro 2021 16" M1 Max (Swappa used)',
+  },
+  mac_m2_8gb: {
+    url: 'https://swappa.com/prices/macbook-air-2022-13',
+    configMatch: /M2.*256/i,
+    label: 'MacBook Air 2022 M2 8GB (Swappa used)',
+  },
+  mac_m3_max_64gb: {
+    url: 'https://swappa.com/prices/macbook-pro-late-2023-m3-16',
+    configMatch: /M3 Max/i,
+    label: 'MacBook Pro Late 2023 16" M3 Max (Swappa used)',
+  },
+  macbook_pro_2019_i9: {
+    url: 'https://swappa.com/prices/macbook-pro-2019-16',
+    configMatch: null,
+    label: 'MacBook Pro 2019 16" i9 (Swappa used)',
+  },
+};
+
 const hardware = JSON.parse(readFileSync(hwPath, 'utf-8'));
 const today = new Date().toISOString().split('T')[0];
 
@@ -94,6 +133,97 @@ async function main() {
   if (mba) console.log(`  → MBA: $${mba}`);
 
   await browser.close();
+
+  // --- Older Macs from Swappa (needs real Chrome via chrome-control, Cloudflare blocks headless) ---
+  console.log('\n=== Older Mac prices from Swappa (via chrome-control) ===');
+  const CHROME_CLI = '/Users/eduardsruzga/work/chrome-cli-proper/cli.js';
+
+  for (const [hwId, cfg] of Object.entries(SWAPPA_CONFIGS)) {
+    try {
+      const hw = hardware[hwId];
+      if (!hw) { console.log(`  ? ${hwId} not in hardware.json`); continue; }
+
+      console.log(`  Loading ${cfg.url}...`);
+      // Open in background tab, wait, scrape, close
+      const tabResult = execSync(`node ${CHROME_CLI} new_background_tab "${cfg.url}"`, { encoding: 'utf-8', timeout: 15000 }).trim();
+      const tabIdMatch = tabResult.match(/(\d+)/);
+      if (!tabIdMatch) { console.log(`  ✗ Failed to open tab for ${hwId}`); continue; }
+      const tabId = tabIdMatch[0];
+
+      // Wait for page to render
+      await new Promise(r => setTimeout(r, 6000));
+
+      // Write JS to a temp file to avoid shell quoting issues, then eval_file
+      const tmpJs = `/tmp/swappa_scrape_${hwId}.js`;
+      writeFileSync(tmpJs, `
+        (function() {
+          var text = document.body.innerText;
+          var startMatch = text.match(/Starting price:\\s*\\$([0-9,]+)/i);
+          var avgMatch = text.match(/Average price:\\s*\\$([0-9,]+)/i);
+          var rows = [];
+          document.querySelectorAll('table tr').forEach(function(tr) {
+            var cells = Array.from(tr.querySelectorAll('td, th')).map(function(c) { return c.innerText.trim(); });
+            if (cells.length >= 2) rows.push(cells.join(' | '));
+          });
+          return JSON.stringify({
+            starting: startMatch ? parseFloat(startMatch[1].replace(/,/g, '')) : null,
+            average: avgMatch ? parseFloat(avgMatch[1].replace(/,/g, '')) : null,
+            tableRows: rows,
+          });
+        })()
+      `);
+
+      const evalResult = execSync(`node ${CHROME_CLI} eval_file ${tmpJs} ${tabId}`, { encoding: 'utf-8', timeout: 10000 }).trim();
+
+      // Close the tab
+      try { execSync(`node ${CHROME_CLI} close_tab ${tabId}`, { timeout: 5000 }); } catch {}
+
+      let data;
+      try { data = JSON.parse(evalResult); } catch {
+        // Try extracting JSON from result (chrome-cli may wrap it)
+        const jsonMatch = evalResult.match(/\{.*\}/s);
+        if (jsonMatch) data = JSON.parse(jsonMatch[0]);
+        else { console.log(`  ✗ ${hwId}: couldn't parse result`); continue; }
+      }
+
+      let price = null;
+
+      // Try to match specific config in storage table
+      if (cfg.configMatch && data.tableRows && data.tableRows.length > 0) {
+        for (const row of data.tableRows) {
+          if (cfg.configMatch.test(row)) {
+            const prices = [...row.matchAll(/\$([0-9,]+)/g)].map(m => parseFloat(m[1].replace(/,/g, '')));
+            if (prices.length > 0) {
+              price = prices[prices.length - 1];
+              console.log(`    Matched: "${row.substring(0, 60)}" → $${price}`);
+            }
+            break;
+          }
+        }
+      }
+
+      if (!price) price = data.starting;
+      if (!price) price = data.average;
+
+      if (price) {
+        if (price !== hw.price) {
+          console.log(`  ✓ ${hwId}: $${hw.price} → $${price} (${cfg.label})`);
+          hw.price = price;
+          updated++;
+        } else {
+          console.log(`  = ${hwId}: $${hw.price} unchanged`);
+        }
+        hw.notes = `${cfg.label}. Checked ${today}.`;
+        hw.source = cfg.url;
+      } else {
+        console.log(`  ? ${hwId}: no price found`);
+      }
+      hw.lastVerified = today;
+    } catch (err) {
+      console.log(`  ✗ ${hwId}: ${err.message}`);
+    }
+  }
+
 
   // --- Update hardware.json ---
   // Map scraped prices to hardware entries

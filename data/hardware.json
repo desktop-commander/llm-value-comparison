@@ -28,11 +28,11 @@
   },
   "mac_m3_max_64gb": {
     "name": "Mac M3 Max 64GB",
-    "price": 3500,
+    "price": 1153,
     "vram": 64,
     "year": 2023,
-    "source": "https://www.apple.com/shop/buy-mac/macbook-pro",
-    "notes": "MacBook Pro 16\" M3 Max 36GB/64GB. apple.com starting price. Checked 2026-04-11.",
+    "source": "https://swappa.com/prices/macbook-pro-2023-16",
+    "notes": "MacBook Pro 2023 16\" M3 Max (Swappa used). Checked 2026-04-11.",
     "lastVerified": "2026-04-11"
   },
   "mac_m3_max_128gb": {
@@ -132,20 +132,20 @@
   },
   "macbook_pro_2019_i9": {
     "name": "MacBook Pro 2019 i9 64GB (full system)",
-    "price": 2000,
+    "price": 320,
     "vram": 64,
     "year": 2019,
-    "notes": "Refurbished/used price estimate. Uses unified/system RAM. Radeon Pro 5500M. Checked 2026-04-11.",
-    "source": "https://www.apple.com/shop/refurbished/mac/macbook-pro",
+    "notes": "MacBook Pro 2019 16\" i9 (Swappa used). Checked 2026-04-11.",
+    "source": "https://swappa.com/prices/macbook-pro-2019-16",
     "lastVerified": "2026-04-11"
   },
   "mac_m1_max_64gb": {
     "name": "Mac M1 Max 64GB (full system)",
-    "price": 2500,
+    "price": 1284,
     "vram": 64,
     "year": 2021,
-    "notes": "Refurbished MacBook Pro 16\" M1 Max 64GB. Uses unified memory for inference. Checked 2026-04-11.",
-    "source": "https://www.apple.com/shop/refurbished/mac/macbook-pro",
+    "notes": "MacBook Pro 2021 16\" M1 Max (Swappa used). Checked 2026-04-11.",
+    "source": "https://swappa.com/prices/macbook-pro-2021-16",
     "lastVerified": "2026-04-11"
   },
   "mac_m2_8gb": {
