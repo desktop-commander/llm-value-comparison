@@ -342,64 +342,6 @@
         }
         .warning-box a { color: var(--amber); font-weight: 600; }
 
-        /* ── CALC CARDS ── */
-        .calc-grid {
-            display: grid; grid-template-columns: repeat(3,1fr);
-            gap: 1.1rem; margin-bottom: 2rem;
-        }
-        @media (max-width: 850px) { .calc-grid { grid-template-columns: 1fr; } }
-        .calc-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 14px; padding: 1.35rem;
-            position: relative; overflow: hidden;
-        }
-        .calc-card::after {
-            content: ''; position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
-        }
-        .calc-card.local::after { background: var(--green); }
-        .calc-card.sub::after   { background: var(--purple); }
-        .calc-card.api::after   { background: var(--blue); }
-        .calc-card h4 {
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-size: 0.88rem; font-weight: 700;
-            margin-bottom: 0.85rem; letter-spacing: -0.01em;
-        }
-        .calc-card.local h4 { color: var(--green); }
-        .calc-card.sub   h4 { color: var(--purple); }
-        .calc-card.api   h4 { color: var(--blue); }
-        .calc-card select {
-            width: 100%; background: var(--bg);
-            border: 1px solid var(--border); color: var(--text);
-            padding: 0.38rem 0.5rem; border-radius: 7px;
-            font-size: 0.74rem; margin-bottom: 0.9rem;
-            font-family: 'DM Sans', sans-serif; outline: none;
-        }
-        .calc-steps {
-            font-size: 0.68rem; line-height: 2.0;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .calc-step { color: var(--muted); }
-        .calc-step .num { color: var(--amber); font-weight: 600; }
-        .calc-step .result { color: var(--text); font-weight: 600; }
-        .calc-final {
-            margin-top: 0.9rem; padding-top: 0.9rem;
-            border-top: 1px solid var(--border);
-            text-align: center;
-        }
-        .calc-final .value {
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-size: 1.6rem; font-weight: 800;
-            letter-spacing: -0.03em; line-height: 1;
-        }
-        .calc-card.local .calc-final .value { color: var(--green); }
-        .calc-card.sub   .calc-final .value { color: var(--purple); }
-        .calc-card.api   .calc-final .value { color: var(--blue); }
-        .calc-final .label {
-            font-size: 0.6rem; color: var(--faint);
-            font-weight: 500; margin-top: 0.15rem;
-        }
-
         /* ── RANKED LIST ── */
         .results-section h3 {
             font-family: 'Bricolage Grotesque', sans-serif;
@@ -1155,19 +1097,15 @@
     <!-- CALCULATOR -->
     <div id="tab-calculator" class="tab-content active">
         <div class="warning-box">
-            ⚠️ <strong>Subscription token limits are estimated</strong> — providers don't publish exact numbers.
+            ⚠️ <strong>Subscription token limits are estimated</strong> — providers don't publish exact numbers. Local values depend on hardware selection.
         </div>
         <div class="settings-bar">
             <div class="setting-group">
-                <label>Hardware (local)</label>
-                <select id="hardware"></select>
-            </div>
-            <div class="setting-group">
-                <label>Hours / day</label>
+                <label>Hours / day (local)</label>
                 <input type="number" id="hoursPerDay" value="16" min="1" max="24" style="width:64px">
             </div>
             <div class="setting-group">
-                <label>Period</label>
+                <label>Amortization</label>
                 <select id="periodYears">
                     <option value="1">1 year</option>
                     <option value="2">2 years</option>
@@ -1188,38 +1126,18 @@
                     <option value="0.95">RAG (95/5)</option>
                 </select>
             </div>
-        </div>
-        <div class="calc-grid">
-            <div class="calc-card local">
-                <h4>🖥️ Local</h4>
-                <select id="calcLocal"></select>
-                <div class="calc-steps" id="calcLocalSteps"></div>
-                <div class="calc-final">
-                    <div class="value" id="calcLocalValue">—</div>
-                    <div class="label">quality-adjusted tokens per $</div>
-                </div>
-            </div>
-            <div class="calc-card sub">
-                <h4>💳 Subscription ⚠️</h4>
-                <select id="calcSub"></select>
-                <div class="calc-steps" id="calcSubSteps"></div>
-                <div class="calc-final">
-                    <div class="value" id="calcSubValue">—</div>
-                    <div class="label">quality-adjusted tokens per $</div>
-                </div>
-            </div>
-            <div class="calc-card api">
-                <h4>🔌 API</h4>
-                <select id="calcApi"></select>
-                <div class="calc-steps" id="calcApiSteps"></div>
-                <div class="calc-final">
-                    <div class="value" id="calcApiValue">—</div>
-                    <div class="label">quality-adjusted tokens per $</div>
-                </div>
+            <div class="setting-group">
+                <label>Show</label>
+                <select id="typeFilter">
+                    <option value="all">All types</option>
+                    <option value="api">🔌 API only</option>
+                    <option value="subscription">💳 Subscription only</option>
+                    <option value="local">🖥️ Local only</option>
+                </select>
             </div>
         </div>
         <div class="results-section">
-            <h3>All options ranked</h3>
+            <h3>All options ranked by quality-adjusted tokens per dollar</h3>
             <div class="rank-list" id="calculatorContent"><div class="rank-row">
     <span class="rank-num" style="color:#7033d8">#1</span>
     <span class="rank-type" style="color:#7033d8">💳 Sub</span>
@@ -1389,11 +1307,23 @@
         <div class="cmp-pickers">
             <div class="cmp-picker-col side-a">
                 <label>Model A</label>
+                <select id="cmpTypeA" style="margin-bottom:0.4rem">
+                    <option value="all">All types</option>
+                    <option value="subscription" selected>💳 Subscription</option>
+                    <option value="api">🔌 API</option>
+                    <option value="local">🖥️ Local</option>
+                </select>
                 <select id="cmpA"></select>
             </div>
             <div class="cmp-vs">VS</div>
             <div class="cmp-picker-col side-b">
                 <label>Model B</label>
+                <select id="cmpTypeB" style="margin-bottom:0.4rem">
+                    <option value="all">All types</option>
+                    <option value="subscription">💳 Subscription</option>
+                    <option value="api" selected>🔌 API</option>
+                    <option value="local">🖥️ Local</option>
+                </select>
                 <select id="cmpB"></select>
             </div>
         </div>
@@ -1668,11 +1598,6 @@ async function loadData(){
 }
 
 function initSelects(){
-  const hwSel=document.getElementById('hardware');
-  Object.entries(DATA.hardware).forEach(([id,hw])=>{
-    const o=document.createElement('option');o.value=id;
-    o.textContent=`${hw.name} ($${hw.price.toLocaleString()})`;hwSel.appendChild(o);
-  });
   ['benchmark','chartBenchmark'].forEach(sid=>{
     const sel=document.getElementById(sid);
     const o=document.createElement('option');o.value='_combined';o.textContent='⚡ Arena + AA Index (stable)';sel.appendChild(o);
@@ -1686,29 +1611,9 @@ function initSelects(){
   });
 }
 
-function populateCalcDropdowns(){
-  const hwId=document.getElementById('hardware').value;
-  const lSel=document.getElementById('calcLocal'); lSel.innerHTML='';
-  Object.entries(DATA.models).forEach(([id,m])=>{
-    if(m.local&&m.local[hwId]){const o=document.createElement('option');o.value=id;o.textContent=`${m.name} (${m.local[hwId].tokensPerSec} tok/s)`;lSel.appendChild(o);}
-  });
-  const sSel=document.getElementById('calcSub'); sSel.innerHTML='';
-  Object.entries(DATA.models).forEach(([id,m])=>{
-    if(m.subscriptions) Object.entries(m.subscriptions).forEach(([sid,sub])=>{
-      const o=document.createElement('option');o.value=`${id}|${sid}`;
-      o.textContent=`${sub.name} → ${m.name} ($${sub.monthlyPrice}/mo)`;sSel.appendChild(o);
-    });
-  });
-  const aSel=document.getElementById('calcApi'); aSel.innerHTML='';
-  Object.entries(DATA.models).forEach(([id,m])=>{
-    if(m.api&&m.api.inputPer1M>0){const o=document.createElement('option');o.value=id;o.textContent=`${m.name} ($${m.api.inputPer1M}/M)`;aSel.appendChild(o);}
-  });
-}
-
 function init(){
   computeWinners();
   initSelects();
-  populateCalcDropdowns();
   renderDataTables();
 
   document.querySelectorAll('.tab').forEach(tab=>{
@@ -1721,108 +1626,78 @@ function init(){
     });
   });
   document.querySelectorAll('#tab-calculator select,#tab-calculator input').forEach(el=>{
-    el.addEventListener('change',updateAll); el.addEventListener('input',updateAll);
+    el.addEventListener('change', renderRankedList); el.addEventListener('input', renderRankedList);
   });
-  document.getElementById('hardware').addEventListener('change',()=>{populateCalcDropdowns();updateAll();});
   ['chartBenchmark','chartType','chartProvider'].forEach(id=>document.getElementById(id).addEventListener('change',()=>requestAnimationFrame(()=>updateChart())));
 
-  // Compare tab: populate model dropdowns with data-driven defaults
-  const modelIds = Object.keys(DATA.models);
-  ['cmpA','cmpB'].forEach((selId, i) => {
+  // Compare tab: populate model dropdowns filtered by type
+  function populateCmpDropdown(selId, typeSelId) {
     const sel = document.getElementById(selId);
-    modelIds.forEach(id => {
-      const o = document.createElement('option');
-      o.value = id;
-      o.textContent = DATA.models[id].name;
-      sel.appendChild(o);
+    const type = document.getElementById(typeSelId).value;
+    const prevVal = sel.value;
+    sel.innerHTML = '';
+    Object.entries(DATA.models).forEach(([id, m]) => {
+      let show = false;
+      if (type === 'all') show = true;
+      else if (type === 'api') show = m.api && m.api.inputPer1M > 0;
+      else if (type === 'subscription') show = m.subscriptions && Object.keys(m.subscriptions).length > 0;
+      else if (type === 'local') show = m.local && Object.keys(m.local).length > 0;
+      if (show) {
+        const o = document.createElement('option');
+        o.value = id; o.textContent = m.name; sel.appendChild(o);
+      }
     });
-    sel.addEventListener('change', renderCompare);
-  });
-  // Set defaults: best subscription model vs best API model (data-driven)
+    // Try to keep previous selection
+    if (prevVal && [...sel.options].some(o => o.value === prevVal)) sel.value = prevVal;
+  }
+  function initCmpDropdowns() {
+    populateCmpDropdown('cmpA', 'cmpTypeA');
+    populateCmpDropdown('cmpB', 'cmpTypeB');
+  }
+  initCmpDropdowns();
+  document.getElementById('cmpTypeA').addEventListener('change', () => { populateCmpDropdown('cmpA', 'cmpTypeA'); renderCompare(); });
+  document.getElementById('cmpTypeB').addEventListener('change', () => { populateCmpDropdown('cmpB', 'cmpTypeB'); renderCompare(); });
+  document.getElementById('cmpA').addEventListener('change', renderCompare);
+  document.getElementById('cmpB').addEventListener('change', renderCompare);
   setCompareDefaults();
   // scroll animations
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
   }, {threshold:0.12});
   document.querySelectorAll('.fade-up,.formula-card').forEach(el=>obs.observe(el));
-  // stagger formula cards
   document.querySelectorAll('.formula-card').forEach((el,i)=>{
     el.style.transitionDelay = (i*100)+'ms';
   });
 
-  updateAll();
+  renderRankedList();
 }
 
-function updateAll(){ updateCalcCards(); renderRankedList(); }
-
-function updateCalcCards(){
-  const hwId=document.getElementById('hardware').value;
-  const hours=parseFloat(document.getElementById('hoursPerDay').value)||16;
-  const years=parseInt(document.getElementById('periodYears').value);
-  const bmId=document.getElementById('benchmark').value;
-  const hw=DATA.hardware[hwId]; if(!hw) return;
-
-  const lId=document.getElementById('calcLocal').value, lm=DATA.models[lId];
-  if(lm&&lm.local&&lm.local[hwId]){
-    const p=lm.local[hwId],sc=getScore(lm,bmId)||0,
-      tpd=p.tokensPerSec*3600*hours,tot=tpd*365*years,
-      adj=tot*(norm(sc,bmId)/100), val=adj/hw.price;
-    document.getElementById('calcLocalSteps').innerHTML=
-      `<div class="calc-step"><span class="num">${p.tokensPerSec}</span> tok/s × 3600 × <span class="num">${hours}</span>h = <span class="result">${fmt(tpd)}</span>/day</div>`+
-      `<div class="calc-step">× 365 × <span class="num">${years}</span>y = <span class="result">${fmt(tot)}</span></div>`+
-      `<div class="calc-step">× quality <span class="num">${disp(sc,bmId)}</span> = <span class="result">${fmt(adj)}</span></div>`+
-      `<div class="calc-step">÷ $<span class="num">${hw.price.toLocaleString()}</span> = <span class="result">${fmt(val)}</span></div>`;
-    document.getElementById('calcLocalValue').textContent=fmt(val);
-  }
-
-  const sv=document.getElementById('calcSub').value;
-  if(sv){
-    const [mid,sid]=sv.split('|'), m=DATA.models[mid], sub=m?.subscriptions?.[sid];
-    if(sub&&sub.tokensPerDay){
-      const sc=getScore(m,bmId)||0, tot=sub.tokensPerDay*365*years,
-        cost=sub.monthlyPrice*12*years, adj=tot*(norm(sc,bmId)/100), val=adj/cost;
-      document.getElementById('calcSubSteps').innerHTML=
-        `<div class="calc-step"><span class="num">${fmt(sub.tokensPerDay)}</span> tok/day × 365 × <span class="num">${years}</span>y = <span class="result">${fmt(tot)}</span></div>`+
-        `<div class="calc-step">× quality <span class="num">${disp(sc,bmId)}</span> = <span class="result">${fmt(adj)}</span></div>`+
-        `<div class="calc-step">$<span class="num">${sub.monthlyPrice}</span>/mo × 12 × <span class="num">${years}</span>y = $<span class="result">${cost}</span></div>`+
-        `<div class="calc-step">÷ $<span class="num">${cost}</span> = <span class="result">${fmt(val)}</span></div>`;
-      document.getElementById('calcSubValue').textContent=fmt(val);
-    }
-  }
-
-  const aId=document.getElementById('calcApi').value, am=DATA.models[aId];
-  if(am&&am.api){
-    const sc=getScore(am,bmId)||0, wp=wap(am.api), tpd=1_000_000/wp, val=tpd*(norm(sc,bmId)/100);
-    const r=getIORatio(), inPct=Math.round(r*100), outPct=100-inPct;
-    document.getElementById('calcApiSteps').innerHTML=
-      `<div class="calc-step">$<span class="num">${am.api.inputPer1M}</span>×${inPct}% + $<span class="num">${am.api.outputPer1M}</span>×${outPct}% = $<span class="result">${wp.toFixed(3)}</span>/M</div>`+
-      `<div class="calc-step">1M ÷ $<span class="num">${wp.toFixed(3)}</span> = <span class="result">${fmt(tpd)}</span> tok/$</div>`+
-      `<div class="calc-step">× quality <span class="num">${disp(sc,bmId)}</span> = <span class="result">${fmt(val)}</span></div>`;
-    document.getElementById('calcApiValue').textContent=fmt(val);
-  }
-}
 
 function renderRankedList(){
-  const hwId=document.getElementById('hardware').value, hw=DATA.hardware[hwId]; if(!hw) return;
   const hours=parseFloat(document.getElementById('hoursPerDay').value)||16;
   const years=parseInt(document.getElementById('periodYears').value);
   const bmId=document.getElementById('benchmark').value;
+  const typeFilter=document.getElementById('typeFilter')?.value||'all';
   let results=[];
   Object.values(DATA.models).forEach(model=>{
     const score=getScore(model,bmId); if(!score) return;
     const np=norm(score,bmId), ds=disp(score,bmId);
-    if(model.api&&model.api.inputPer1M>0){
+    if((typeFilter==='all'||typeFilter==='api')&&model.api&&model.api.inputPer1M>0){
       const wp=wap(model.api), tpd=1_000_000/wp, val=tpd*(np/100);
       const r=getIORatio(), inPct=Math.round(r*100), outPct=100-inPct;
       results.push({model:model.name,type:'api',val,ds,details:`$${wp.toFixed(3)}/M avg`,
         tip:`$${model.api.inputPer1M}×${inPct}% + $${model.api.outputPer1M}×${outPct}% = $${wp.toFixed(3)}/M\n1M ÷ $${wp.toFixed(3)} = ${fmt(tpd)} tok/$\n× ${np.toFixed(1)}% = ${fmt(val)} tok/$`});
     }
-    if(model.local&&model.local[hwId]){
-      const p=model.local[hwId], tpd=p.tokensPerSec*3600*hours, tot=tpd*365*years, val=(tot/hw.price)*(np/100);
-      results.push({model:model.name,type:'local',val,ds,details:`${p.tokensPerSec} tok/s · ${hw.name}`,
-        tip:`${p.tokensPerSec} tok/s × ${hours}h = ${fmt(tpd)}/day\n× 365 × ${years}y = ${fmt(tot)}\n× ${np.toFixed(1)}% ÷ $${hw.price.toLocaleString()} = ${fmt(val)} tok/$`});
+    // ALL hardware combos for local
+    if((typeFilter==='all'||typeFilter==='local')&&model.local){
+      Object.entries(model.local).forEach(([hwId, perf])=>{
+        const hw=DATA.hardware[hwId]; if(!hw||!perf.tokensPerSec) return;
+        const tpd=perf.tokensPerSec*3600*hours, tot=tpd*365*years, val=(tot/hw.price)*(np/100);
+        results.push({model:model.name,type:'local',val,ds,details:`${perf.tokensPerSec} tok/s · ${hw.name} ($${hw.price.toLocaleString()})`,
+          tip:`${perf.tokensPerSec} tok/s × ${hours}h = ${fmt(tpd)}/day\n× 365 × ${years}y = ${fmt(tot)}\n× ${np.toFixed(1)}% ÷ $${hw.price.toLocaleString()} = ${fmt(val)} tok/$`});
+      });
     }
-    if(model.subscriptions) Object.values(model.subscriptions).forEach(sub=>{
+    if((typeFilter==='all'||typeFilter==='subscription')&&model.subscriptions) Object.values(model.subscriptions).forEach(sub=>{
       if(!sub.tokensPerDay) return;
       const tot=sub.tokensPerDay*365*years, cost=sub.monthlyPrice*12*years, val=(tot/cost)*(np/100);
       results.push({model:model.name,type:'subscription',subName:sub.name,val,ds,confidence:sub.confidence,
@@ -1909,7 +1784,7 @@ function renderDataTables(){
 function updateChart(){
   const canvas=document.getElementById('valueChart');
   if(!canvas||!canvas.offsetParent) return;
-  const hwId=document.getElementById('hardware').value, hw=DATA.hardware[hwId]; if(!hw) return;
+  const hwId=Object.keys(DATA.hardware)[0], hw=DATA.hardware[hwId]; if(!hw) return;
   const hours=parseFloat(document.getElementById('hoursPerDay').value)||16;
   const years=parseInt(document.getElementById('periodYears').value);
   const bmId=document.getElementById('chartBenchmark').value;
@@ -1963,9 +1838,9 @@ function updateChart(){
 }
 
 function renderCompare() {
-  const hwId = document.getElementById('hardware').value;
-  const hours = parseFloat(document.getElementById('hoursPerDay').value) || 16;
-  const years = parseInt(document.getElementById('periodYears').value) || 3;
+  const hwId = Object.keys(DATA.hardware)[0];
+  const hours = parseFloat(document.getElementById('hoursPerDay')?.value) || 16;
+  const years = parseInt(document.getElementById('periodYears')?.value) || 3;
   const hw = DATA.hardware[hwId];
 
   const idA = document.getElementById('cmpA').value;
@@ -2041,23 +1916,32 @@ function renderCompare() {
   const subPriceRow = barRow('Subscription · $/month', 'crl-sub', '💳 Sub price',
     subA?.price, subB?.price, v => '$'+v, true);
 
-  // Best local value on selected hardware
+  // Best local value across ALL hardware
   function bestLocalVal(m) {
-    if (!hw || !m.local || !m.local[hwId]) return null;
     const sc = getScore(m, '_combined') || 0;
-    const p = m.local[hwId];
-    return (p.tokensPerSec*3600*hours*365*years*(sc/100)) / hw.price;
+    let best = null;
+    if (m.local) Object.entries(m.local).forEach(([hid, perf]) => {
+      const h = DATA.hardware[hid]; if (!h || !perf.tokensPerSec) return;
+      const v = (perf.tokensPerSec*3600*hours*365*years*(sc/100)) / h.price;
+      if (best == null || v > best.val) best = { val: v, hw: h.name, tps: perf.tokensPerSec };
+    });
+    return best;
   }
-  function bestLocalTokS(m) {
-    if (!hw || !m.local || !m.local[hwId]) return null;
-    return m.local[hwId].tokensPerSec;
-  }
-  const localRow = barRow('Local · quality-adj tok/$ ('+((hw&&hw.name)||'—')+')', 'crl-local', '🖥️ Local value',
-    bestLocalVal(mA), bestLocalVal(mB), fmt, false);
+  const localA = bestLocalVal(mA), localB = bestLocalVal(mB);
+  const localLabelA = localA ? ` (${localA.hw})` : '';
+  const localLabelB = localB ? ` (${localB.hw})` : '';
+  const localRow = barRow('Local · quality-adj tok/$', 'crl-local', '🖥️ Local value',
+    localA?.val, localB?.val, fmt, false);
   const tokSRow = barRow('Local · tokens/sec', 'crl-local', '🖥️ Tok/s',
-    bestLocalTokS(mA), bestLocalTokS(mB), v => v+' t/s', false);
+    localA?.tps, localB?.tps, v => v+' t/s', false);
 
-  document.getElementById('cmpGrid').innerHTML = qualRow + apiRow + apiPriceRow + subRow + subPriceRow + localRow + tokSRow;
+  // API throughput
+  const apiTpsA = mA.api?.tokensPerSecAPI || null;
+  const apiTpsB = mB.api?.tokensPerSecAPI || null;
+  const apiTpsRow = barRow('API · tokens/sec', 'crl-api', '🔌 API tok/s',
+    apiTpsA, apiTpsB, v => v.toFixed(1)+' t/s', false);
+
+  document.getElementById('cmpGrid').innerHTML = qualRow + apiRow + apiPriceRow + apiTpsRow + subRow + subPriceRow + localRow + tokSRow;
 
   // Animate bars from 0
   requestAnimationFrame(() => {
@@ -2138,7 +2022,7 @@ function setCompareDefaults() {
   let bestSub = null, bestApi = null, bestLocal = null;
   const years = parseInt(document.getElementById('periodYears')?.value) || 3;
   const hours = parseFloat(document.getElementById('hoursPerDay')?.value) || 16;
-  const hwId = document.getElementById('hardware')?.value;
+  const hwId = Object.keys(DATA.hardware)[0];
   const hw = hwId ? DATA.hardware[hwId] : null;
 
   Object.entries(DATA.models).forEach(([id, model]) => {
@@ -2178,6 +2062,10 @@ function setCompareDefaults() {
 
 loadData();
 </script>
+<!-- SEO: Pre-rendered 2026-04-11 from 34 models -->
+<div id="seo-content" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
+<h2>Best Value AI Models — 2026-04-11</h2>
+<p>Comparing 34 AI models across API pricing, subscriptions, and local hardware.</p><p>Best API value: GLM-4.7 Flash at $0.15/M blended — 2.8M quality-adjusted tokens per dollar.</p><p>Best subscription value: ChatGPT Plus — 8.2M quality-adjusted tokens per dollar.</p><p>Best local value: Qwen3.5 35B A3B (Reasoning) (110 tok/s · RTX 3090) — 2.9M quality-adjusted tokens per dollar.</p><h3>Top 10 AI Models by Value (Quality-Adjusted Tokens per Dollar)</h3><ol><li>ChatGPT Plus → GPT-5.4 (xhigh) (Subscription) — 8.2M tok/$ — ChatGPT Plus · $20/mo</li><li>ChatGPT Pro → GPT-5.4 (xhigh) (Subscription) — 8.2M tok/$ — ChatGPT Pro · $200/mo</li><li>ChatGPT Pro (Codex) → GPT-5.3 Codex (xhigh) (Subscription) — 7.6M tok/$ — ChatGPT Pro (Codex) · $200/mo</li><li>ChatGPT Plus → GPT-5.2 (Subscription) — 7.3M tok/$ — ChatGPT Plus · $20/mo</li><li>ChatGPT Pro → GPT-5.2 (Subscription) — 7.3M tok/$ — ChatGPT Pro · $200/mo</li><li>ChatGPT Pro → o3 (Subscription) — 6.7M tok/$ — ChatGPT Pro · $200/mo</li><li>ChatGPT Plus → GPT-5.2 Codex (xhigh) (Subscription) — 6.6M tok/$ — ChatGPT Plus · $20/mo</li><li>ChatGPT Pro → GPT-5.2 Codex (xhigh) (Subscription) — 6.6M tok/$ — ChatGPT Pro · $200/mo</li><li>ChatGPT Plus → GPT-4o (Subscription) — 4.9M tok/$ — ChatGPT Plus · $20/mo</li><li>ChatGPT Pro → GPT-4o (Subscription) — 4.9M tok/$ — ChatGPT Pro · $200/mo</li></ol><h3>All Models Compared</h3><p>Claude Opus 4, Claude Sonnet 4, DeepSeek V3.1, Gemini 2.5 Pro, GLM-4.7 Flash, GPT-OSS 120B, GPT-4o, Llama 3.1 70B, Llama 3.1 8B, o3, Qwen QwQ-32B, Claude Opus 4.5, Gemini 3 Pro, Gemini 3 Flash, GPT-5.2, Claude Opus 4.6 (Non-reasoning, High Effort), Claude Sonnet 4.6 (Non-reasoning, High Effort), Claude 4.5 Haiku (Non-reasoning), Claude 4.5 Sonnet (Non-reasoning), GPT-5.4 (xhigh), GPT-5.3 Codex (xhigh), GPT-5.2 Codex (xhigh), Gemini 3.1 Pro Preview, GLM-5 (Reasoning), GLM-4.7 (Reasoning), MiniMax-M2.5, MiniMax-M2.7, Kimi K2.5 (Reasoning), DeepSeek V3.2 (Non-reasoning), Qwen3.5 35B A3B (Reasoning), Qwen3.5 27B (Reasoning), Qwen3.5 122B A10B (Reasoning), Gemma 4 31B, Gemma 4 26B A4B</p></div>
 <!-- SEO: Pre-rendered 2026-04-11 from 34 models -->
 <div id="seo-content" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
 <h2>Best Value AI Models — 2026-04-11</h2>
