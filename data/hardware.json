@@ -1,53 +1,66 @@
 {
   "rtx_3090": {
     "name": "RTX 3090",
-    "price": 1500,
+    "price": 975.36,
     "vram": 24,
     "year": 2020,
-    "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/30-series/rtx-3090-3090ti/"
+    "source": "https://bestvaluegpu.com/history/new-and-used-rtx-3090-price-history-and-specs/",
+    "notes": "Discontinued. Used $975.36. Retail: $1488, Used: $975.36. Checked 2026-04-11.",
+    "lastVerified": "2026-04-11"
   },
   "rtx_4090": {
     "name": "RTX 4090",
-    "price": 2000,
+    "price": 1599,
     "vram": 24,
     "year": 2022,
-    "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4090/"
+    "source": "https://bestvaluegpu.com/history/new-and-used-rtx-4090-price-history-and-specs/",
+    "notes": "MSRP $1599. Retail: $2755, Used: $2450. Checked 2026-04-11.",
+    "lastVerified": "2026-04-11"
   },
   "rtx_5090": {
     "name": "RTX 5090",
-    "price": 2500,
+    "price": 1999,
     "vram": 32,
     "year": 2025,
-    "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/"
+    "source": "https://bestvaluegpu.com/history/new-and-used-rtx-5090-price-history-and-specs/",
+    "notes": "MSRP $1999. Retail: $3899, Used: $2862. Checked 2026-04-11.",
+    "lastVerified": "2026-04-11"
   },
   "mac_m3_max_64gb": {
     "name": "Mac M3 Max 64GB",
-    "price": 4000,
+    "price": 3500,
     "vram": 64,
     "year": 2023,
-    "source": "https://www.apple.com/shop/buy-mac/macbook-pro"
+    "source": "https://www.apple.com/shop/buy-mac/macbook-pro",
+    "notes": "MacBook Pro 16\" M3 Max 36GB/64GB. apple.com starting price. Checked 2026-04-11.",
+    "lastVerified": "2026-04-11"
   },
   "mac_m3_max_128gb": {
     "name": "Mac M3 Max 128GB",
     "price": 5500,
     "vram": 128,
     "year": 2023,
-    "source": "https://www.apple.com/shop/buy-mac/macbook-pro"
+    "source": "https://www.apple.com/shop/buy-mac/macbook-pro",
+    "notes": "MacBook Pro 16\" M3 Max 128GB. apple.com configured price. Checked 2026-04-11.",
+    "lastVerified": "2026-04-11"
   },
   "mac_m4_48gb": {
     "name": "Mac M4 48GB",
-    "price": 3500,
+    "price": 2499,
     "vram": 48,
     "year": 2024,
-    "notes": "User-reported price for MacBook M4 48GB configuration.",
-    "source": "https://www.apple.com/shop/buy-mac/macbook-pro"
+    "notes": "MacBook Pro M4 Pro 48GB configuration. Checked 2026-04-11.",
+    "source": "https://www.apple.com/shop/buy-mac/macbook-pro",
+    "lastVerified": "2026-04-11"
   },
   "mac_m4_max_128gb": {
     "name": "Mac M4 Max 128GB",
-    "price": 5000,
+    "price": 4999,
     "vram": 128,
     "year": 2024,
-    "source": "https://www.apple.com/shop/buy-mac/macbook-pro"
+    "source": "https://www.apple.com/shop/buy-mac/macbook-pro",
+    "notes": "MacBook Pro 16\" M4 Max 128GB. apple.com configured price. Checked 2026-04-11.",
+    "lastVerified": "2026-04-11"
   },
   "framework_desktop_128gb": {
     "name": "Framework Desktop (Ryzen AI Max+ 395, 128GB)",
@@ -70,16 +83,18 @@
     "price": 549,
     "vram": 12,
     "year": 2025,
-    "notes": "MSRP $549. Street price $480-635 (Apr 2026).",
-    "source": "https://bestvaluegpu.com/history/new-and-used-rtx-5070-price-history-and-specs/"
+    "notes": "MSRP $549. Retail: $635, Used: $565. Checked 2026-04-11.",
+    "source": "https://bestvaluegpu.com/history/new-and-used-rtx-5070-price-history-and-specs/",
+    "lastVerified": "2026-04-11"
   },
   "rtx_4060": {
     "name": "RTX 4060",
     "price": 299,
     "vram": 8,
     "year": 2023,
-    "notes": "MSRP $299. Stable pricing since launch.",
-    "source": "https://gpudeals.net/gpus/rtx-4060.html"
+    "notes": "MSRP $299. Retail: $339, Used: $265.99. Checked 2026-04-11.",
+    "source": "https://bestvaluegpu.com/history/new-and-used-rtx-4060-price-history-and-specs/",
+    "lastVerified": "2026-04-11"
   },
   "rtx_4060_laptop": {
     "name": "RTX 4060 Laptop (full system)",
@@ -91,11 +106,12 @@
   },
   "rtx_3080_ti": {
     "name": "RTX 3080 Ti (used)",
-    "price": 425,
+    "price": 449,
     "vram": 12,
     "year": 2021,
-    "notes": "Discontinued. MSRP was $1199. Used ~$425 on eBay (Apr 2026).",
-    "source": "https://bestvaluegpu.com/history/new-and-used-rtx-3080-ti-price-history-and-specs/"
+    "notes": "Discontinued. Used $449. Retail: $1797, Used: $449. Checked 2026-04-11.",
+    "source": "https://bestvaluegpu.com/history/new-and-used-rtx-3080-ti-price-history-and-specs/",
+    "lastVerified": "2026-04-11"
   },
   "rtx_a3000_laptop": {
     "name": "RTX A3000 Laptop (full system)",
@@ -110,40 +126,45 @@
     "price": 999,
     "vram": 24,
     "year": 2022,
-    "notes": "MSRP $999. Street price ~$890-999 (Apr 2026).",
-    "source": "https://www.amd.com/en/products/graphics/amd-radeon-rx-7900xtx"
+    "notes": "MSRP $999. Retail: $1334, Used: $824.95. Checked 2026-04-11.",
+    "source": "https://bestvaluegpu.com/history/new-and-used-rx-7900-xtx-price-history-and-specs/",
+    "lastVerified": "2026-04-11"
   },
   "macbook_pro_2019_i9": {
     "name": "MacBook Pro 2019 i9 64GB (full system)",
     "price": 2000,
     "vram": 64,
     "year": 2019,
-    "notes": "Refurbished price estimate. Uses unified/system RAM for inference. Radeon Pro 5500M iGPU.",
-    "source": "https://www.apple.com/shop/refurbished/mac/macbook-pro"
+    "notes": "Refurbished/used price estimate. Uses unified/system RAM. Radeon Pro 5500M. Checked 2026-04-11.",
+    "source": "https://www.apple.com/shop/refurbished/mac/macbook-pro",
+    "lastVerified": "2026-04-11"
   },
   "mac_m1_max_64gb": {
     "name": "Mac M1 Max 64GB (full system)",
     "price": 2500,
     "vram": 64,
     "year": 2021,
-    "notes": "Refurbished MacBook Pro 16\" M1 Max 64GB. Uses unified memory for inference.",
-    "source": "https://www.apple.com/shop/refurbished/mac/macbook-pro"
+    "notes": "Refurbished MacBook Pro 16\" M1 Max 64GB. Uses unified memory for inference. Checked 2026-04-11.",
+    "source": "https://www.apple.com/shop/refurbished/mac/macbook-pro",
+    "lastVerified": "2026-04-11"
   },
   "mac_m2_8gb": {
     "name": "Mac M2 8GB (full system)",
     "price": 800,
     "vram": 8,
     "year": 2022,
-    "notes": "MacBook Air M2 8GB. Refurbished/sale price. Very limited for LLM inference.",
-    "source": "https://www.apple.com/shop/buy-mac/macbook-air"
+    "notes": "MacBook Air M2 8GB. Refurbished/sale price. Very limited for LLM inference. Checked 2026-04-11.",
+    "source": "https://www.apple.com/shop/buy-mac/macbook-air",
+    "lastVerified": "2026-04-11"
   },
   "mac_m4_24gb": {
     "name": "Mac M4 24GB (full system)",
     "price": 1599,
     "vram": 24,
     "year": 2024,
-    "notes": "MacBook Pro 14\" M4 24GB. Starting price $1599.",
-    "source": "https://www.apple.com/shop/buy-mac/macbook-pro"
+    "notes": "MacBook Pro 14\" M4 24GB. Starting price $1599. Checked 2026-04-11.",
+    "source": "https://www.apple.com/shop/buy-mac/macbook-pro",
+    "lastVerified": "2026-04-11"
   },
   "intel_iris_xe_laptop": {
     "name": "Intel Iris Xe Laptop 16GB (full system)",
