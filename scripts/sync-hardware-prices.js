@@ -20,9 +20,18 @@ const GPU_SLUGS = {
   rx_7900_xtx: 'rx-7900-xtx',
 };
 
-// Apple product prices — manually maintained since Apple has no price API
-// These are current apple.com prices or refurbished store prices
-// Update quarterly by checking apple.com/shop/buy-mac and apple.com/shop/refurbished/mac
+// Apple product prices — hardcoded because:
+// 1. apple.com/shop is client-rendered (no curl/fetch scraping)
+// 2. prices.appleinsider.com returns 403 to non-browser requests  
+// 3. Apple has no public pricing API
+// 4. Apple MSRP never changes until a model is discontinued (once/year)
+//
+// HOW TO UPDATE: check these URLs annually or when new Macs launch:
+//   Current models: https://www.apple.com/shop/buy-mac/macbook-pro
+//   Refurbished:    https://www.apple.com/shop/refurbished/mac/macbook-pro
+//   Price tracker:  https://prices.appleinsider.com/macbook-pro-14-inch-m4
+//
+// Last verified: 2026-04-11 (M4 generation, launched Nov 2024)
 const APPLE_PRICES = {
   mac_m1_max_64gb: { price: 2500, notes: 'Refurbished MacBook Pro 16" M1 Max 64GB. Uses unified memory for inference.', source: 'https://www.apple.com/shop/refurbished/mac/macbook-pro' },
   mac_m2_8gb: { price: 800, notes: 'MacBook Air M2 8GB. Refurbished/sale price. Very limited for LLM inference.', source: 'https://www.apple.com/shop/buy-mac/macbook-air' },
