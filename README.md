@@ -61,8 +61,22 @@ All data is synced from multiple sources. See [DATA_SOURCES.md](DATA_SOURCES.md)
 ### Manual (community PRs)
 
 - **Local tok/s benchmarks** — run a model on your hardware, measure, submit with specs
-- **Subscription token limits** — providers don't publish these, community reverse-engineering needed
+- **Subscription token limits** — measured empirically, see below
 - **New model entries** — especially Chinese open-weights and smaller models
+
+### Subscription token measurement
+
+Providers don't publish exact daily token quotas. We measure them empirically:
+
+1. Run a standardized coding task via Codex CLI with `--json` (exact token counts)
+2. Read `/status` before and after via tmux (quota percentage change)
+3. Calculate: `total_quota = tokens_consumed / (pct_consumed / 100)`
+
+**Scripts:** `scripts/measure-codex-quota.sh` and `scripts/measure-claude-quota.sh`
+
+**First measurement (ChatGPT Plus $20/mo, GPT-5.4 xhigh):**
+- 5h window: ~6.6M tokens, Weekly: ~13.3M, Daily: ~1.9M
+- Full details: [MEASUREMENT_METHODOLOGY.md](MEASUREMENT_METHODOLOGY.md)
 
 ## Running locally
 

@@ -26,7 +26,7 @@ This document explains where data comes from and how to update it.
 
 | Data | Reason | Workaround |
 |------|--------|-----------|
-| Subscription token limits | Providers don't publish them | Community reverse-engineering |
+| Subscription token limits | Empirically measured via CLI + /status | `scripts/measure-codex-quota.sh` |
 | Local tok/s benchmarks | Hardware-specific, no central DB | PRs from community + DC production data |
 | SWE-bench scores | No public API | Monthly manual scrape |
 
