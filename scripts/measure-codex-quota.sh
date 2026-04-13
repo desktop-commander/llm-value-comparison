@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
-# LLM Value Comparison — Subscription Token Quota Measurement Script
+# Fully automated Codex CLI subscription quota measurement
+# Usage: bash scripts/measure-codex-quota.sh [working_directory]
 #
-# Measures how many tokens your subscription plan provides by:
-# 1. Running a standardized task with --json to get exact token counts
-# 2. Comparing /status before and after to get quota percentage consumed
-# 3. Calculating: total_tokens / (pct_consumed / 100) = estimated quota
+# Requires: tmux, npx codex (logged in)
 #
-# Works with: Codex CLI (Plus $20, Pro $100)
-# For Claude Code, use measure-claude-quota.sh instead
-#
-# Usage:
-#   bash scripts/measure-codex-quota.sh
+# This script:
+# 1. Launches Codex TUI in tmux, reads /status → BEFORE percentages
+# 2. Runs a standardized task via codex exec --json → exact token counts
+# 3. Re-launches TUI, reads /status → AFTER percentages
+# 4. Calculates quota estimates
+# 5. Saves timestamped JSON
 
 set -euo pipefail
 
@@ -19,168 +18,220 @@ REPO_DIR="$(dirname "$SCRIPT_DIR")"
 RESULTS_DIR="$REPO_DIR/measurements"
 mkdir -p "$RESULTS_DIR"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-TASK_DIR=$(mktemp -d)
 RESULT_FILE="$RESULTS_DIR/codex_measurement_${TIMESTAMP}.json"
+WORK_DIR="${1:-$(mktemp -d)}"
+SESSION_NAME="codex_measure_$$"
+CODEX="npx codex"
 
 echo "╔══════════════════════════════════════════════════════════════╗"
-echo "║  LLM Value Comparison — Codex Token Quota Measurement       ║"
+echo "║  LLM Value Comparison — Codex Quota Measurement (automated) ║"
 echo "║  https://desktop-commander.github.io/llm-value-comparison   ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo ""
+echo "  Timestamp: $TIMESTAMP"
+echo "  Work dir:  $WORK_DIR"
+echo ""
 
-# Check codex is available
-if ! command -v codex &>/dev/null && ! npx codex --version &>/dev/null 2>&1; then
-    echo "✗ Codex CLI not found. Install: npm install -g @openai/codex"
-    exit 1
-fi
-CODEX="npx codex"
-echo "✓ Codex CLI found"
-
-# Get version and model info
+# ── Preflight checks ──
+command -v tmux &>/dev/null || { echo "✗ tmux not found. Install: brew install tmux"; exit 1; }
+$CODEX --version &>/dev/null 2>&1 || { echo "✗ Codex CLI not found. Install: npm install -g @openai/codex"; exit 1; }
 VERSION=$($CODEX --version 2>/dev/null || echo "unknown")
-echo "  Version: $VERSION"
+echo "✓ Codex CLI $VERSION"
+echo "✓ tmux available"
 echo ""
 
-# Step 1: Record status BEFORE
-echo "═══ Step 1: Record current quota status ═══"
-echo ""
-echo "Please run '/status' in an interactive Codex session and enter the numbers:"
-echo "(Or check https://chatgpt.com/codex/settings/usage)"
-echo ""
-read -p "  5-hour limit % LEFT (e.g., 91): " BEFORE_5H
-read -p "  Weekly limit % LEFT (e.g., 94): " BEFORE_WEEKLY
-echo ""
-
-
-# Step 2: Set up workspace
-cd "$TASK_DIR"
-git init -q
-
-# Step 3: Run standardized task with --json
-echo "═══ Step 2: Running standardized coding task ═══"
-echo ""
-TASK_PROMPT="Write a Python doubly-linked list with insert_head, insert_tail, delete_node, find, reverse, to_list methods. Include Node class, type hints, docstrings. Write exactly 10 pytest tests. Save to linked_list.py"
-echo "  Task: Doubly-linked list + 10 pytest tests"
-echo "  This will consume some of your quota."
-echo ""
-
-JSONL_FILE="$TASK_DIR/codex_output.jsonl"
-echo "$TASK_PROMPT" | $CODEX exec --json - > "$JSONL_FILE" 2>"$TASK_DIR/stderr.log"
-
-echo "  ✓ Task completed"
-echo ""
-
-# Step 4: Parse token counts from JSONL
-echo "═══ Step 3: Parsing token counts ═══"
-echo ""
-
-# Extract all turn.completed usage events
-TOTAL_INPUT=0
-TOTAL_CACHED=0
-TOTAL_OUTPUT=0
-
-while IFS= read -r line; do
-    type=$(echo "$line" | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); print(d.get('type',''))" 2>/dev/null)
-    if [ "$type" = "turn.completed" ]; then
-        usage=$(echo "$line" | python3 -c "
-import sys,json
-d=json.loads(sys.stdin.read())
-u=d.get('usage',{})
-print(u.get('input_tokens',0), u.get('cached_input_tokens',0), u.get('output_tokens',0))
-" 2>/dev/null)
-        read inp cached out <<< "$usage"
-        TOTAL_INPUT=$((TOTAL_INPUT + inp))
-        TOTAL_CACHED=$((TOTAL_CACHED + cached))
-        TOTAL_OUTPUT=$((TOTAL_OUTPUT + out))
-    fi
-done < "$JSONL_FILE"
-
-TOTAL_TOKENS=$((TOTAL_INPUT + TOTAL_OUTPUT))
-echo "  Input tokens:  $TOTAL_INPUT (cached: $TOTAL_CACHED)"
-echo "  Output tokens: $TOTAL_OUTPUT"
-echo "  Total tokens:  $TOTAL_TOKENS"
-echo ""
-
-
-# Step 5: Record status AFTER
-echo "═══ Step 4: Record quota status after task ═══"
-echo ""
-echo "Run '/status' again in Codex and enter the new numbers:"
-echo ""
-read -p "  5-hour limit % LEFT (e.g., 88): " AFTER_5H
-read -p "  Weekly limit % LEFT (e.g., 92): " AFTER_WEEKLY
-echo ""
-
-# Step 6: Calculate estimates
-echo "═══ Step 5: Calculating quota estimates ═══"
-echo ""
-
-CONSUMED_5H=$(echo "$BEFORE_5H - $AFTER_5H" | bc)
-CONSUMED_WEEKLY=$(echo "$BEFORE_WEEKLY - $AFTER_WEEKLY" | bc)
-
-echo "  Quota consumed: ${CONSUMED_5H}% of 5h window, ${CONSUMED_WEEKLY}% of weekly"
-
-if [ "$CONSUMED_5H" -gt 0 ] 2>/dev/null; then
-    EST_5H=$(python3 -c "print(int($TOTAL_TOKENS / ($CONSUMED_5H / 100)))")
-    EST_5H_M=$(python3 -c "print(f'{$TOTAL_TOKENS / ($CONSUMED_5H / 100) / 1e6:.1f}M')")
-    echo "  Estimated 5h window: $EST_5H tokens ($EST_5H_M)"
-else
-    EST_5H="unknown"
-    EST_5H_M="unknown"
-    echo "  ⚠ Could not calculate 5h estimate (0% consumed)"
+# Ensure work dir is a git repo (codex requires it)
+if [ ! -d "$WORK_DIR/.git" ]; then
+    mkdir -p "$WORK_DIR"
+    cd "$WORK_DIR" && git init -q
+    echo "✓ Initialized git repo in $WORK_DIR"
 fi
 
-if [ "$CONSUMED_WEEKLY" -gt 0 ] 2>/dev/null; then
-    EST_WEEKLY=$(python3 -c "print(int($TOTAL_TOKENS / ($CONSUMED_WEEKLY / 100)))")
-    EST_WEEKLY_M=$(python3 -c "print(f'{$TOTAL_TOKENS / ($CONSUMED_WEEKLY / 100) / 1e6:.1f}M')")
-    echo "  Estimated weekly:    $EST_WEEKLY tokens ($EST_WEEKLY_M)"
-else
-    EST_WEEKLY="unknown"
-    EST_WEEKLY_M="unknown"
-    echo "  ⚠ Could not calculate weekly estimate (0% consumed)"
-fi
-echo ""
 
+# ── Helper: get Codex /status via tmux ──
+get_codex_status() {
+    local label="$1"
+    local outfile="$2"
 
-# Step 7: Get plan info
-read -p "  Your plan (plus/pro/team): " PLAN_NAME
-echo ""
+    echo "  [$label] Launching Codex TUI in tmux..."
+    tmux kill-session -t "$SESSION_NAME" 2>/dev/null || true
+    tmux new-session -d -s "$SESSION_NAME" -x 120 -y 50 "cd '$WORK_DIR' && $CODEX"
+    
+    echo "  [$label] Waiting 18s for TUI + MCP init..."
+    sleep 18
 
-# Step 8: Save results
-cat > "$RESULT_FILE" << ENDJSON
-{
-  "tool": "codex-cli",
-  "version": "$VERSION",
-  "plan": "$PLAN_NAME",
-  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-  "task": "doubly-linked-list-with-tests",
-  "tokens": {
-    "input": $TOTAL_INPUT,
-    "cached_input": $TOTAL_CACHED,
-    "output": $TOTAL_OUTPUT,
-    "total": $TOTAL_TOKENS
-  },
-  "quota_before": { "5h_pct_left": $BEFORE_5H, "weekly_pct_left": $BEFORE_WEEKLY },
-  "quota_after": { "5h_pct_left": $AFTER_5H, "weekly_pct_left": $AFTER_WEEKLY },
-  "quota_consumed": { "5h_pct": $CONSUMED_5H, "weekly_pct": $CONSUMED_WEEKLY },
-  "estimates": {
-    "5h_window_tokens": "$EST_5H",
-    "weekly_tokens": "$EST_WEEKLY",
-    "5h_readable": "$EST_5H_M",
-    "weekly_readable": "$EST_WEEKLY_M"
-  }
+    # Send Escape to ensure clean state, then /status + Enter
+    echo "  [$label] Sending /status..."
+    tmux send-keys -t "$SESSION_NAME" Escape
+    sleep 1
+    tmux send-keys -t "$SESSION_NAME" '/status'
+    sleep 1
+    tmux send-keys -t "$SESSION_NAME" Enter
+
+    echo "  [$label] Waiting 10s for rate limit fetch..."
+    sleep 10
+
+    # Capture screen
+    tmux capture-pane -t "$SESSION_NAME" -p > "$outfile"
+    echo "  [$label] Screen captured"
+
+    # Kill session
+    tmux kill-session -t "$SESSION_NAME" 2>/dev/null || true
+    echo "  [$label] Session closed"
 }
-ENDJSON
 
+# ── Helper: parse Codex /status output ──
+parse_codex_status() {
+    local file="$1"
+    python3 -c "
+import re, json
+text = open('$file').read()
+data = {}
+# Codex shows: '5h limit: [████░░] 88% left (resets 22:14)'
+m = re.search(r'5h limit:.*?(\d+)%\s*left', text)
+if m: data['5h_pct_left'] = int(m.group(1))
+m = re.search(r'Weekly limit:.*?(\d+)%\s*left', text)
+if m: data['weekly_pct_left'] = int(m.group(1))
+m = re.search(r'Account:\s*(.*?)(?:\n|│)', text)
+if m: data['account'] = m.group(1).strip()
+m = re.search(r'Model:\s*(.*?)(?:\n|│)', text)
+if m: data['model'] = m.group(1).strip()
+print(json.dumps(data))
+"
+}
+
+
+# ── Step 1: Capture BEFORE ──
+echo "═══ Step 1: Capturing current usage (BEFORE) ═══"
+BEFORE_FILE="/tmp/codex_before_${TIMESTAMP}.txt"
+get_codex_status "BEFORE" "$BEFORE_FILE"
+
+BEFORE_JSON=$(parse_codex_status "$BEFORE_FILE")
+echo "  BEFORE: $BEFORE_JSON"
+echo ""
+
+# ── Step 2: Run standardized task ──
+echo "═══ Step 2: Running standardized coding task ═══"
+TASK_PROMPT="Write a Python doubly-linked list with insert_head, insert_tail, delete_node, find, reverse, to_list methods. Include Node class, type hints, docstrings. Write exactly 10 pytest tests. Save to linked_list.py"
+TASK_JSONL="/tmp/codex_task_${TIMESTAMP}.jsonl"
+
+echo "  Task: Doubly-linked list + 10 tests"
+TASK_START=$(date +%s)
+
+cd "$WORK_DIR"
+echo "$TASK_PROMPT" | $CODEX exec --json - > "$TASK_JSONL" 2>/tmp/codex_task_stderr_${TIMESTAMP}.log || true
+
+TASK_END=$(date +%s)
+TASK_DURATION=$((TASK_END - TASK_START))
+echo "  Completed in ${TASK_DURATION}s"
+
+# Parse token counts from JSONL
+TASK_TOKENS=$(python3 -c "
+import json
+total_input = total_cached = total_output = 0
+for line in open('$TASK_JSONL'):
+    try:
+        d = json.loads(line.strip())
+        if d.get('type') == 'turn.completed':
+            u = d.get('usage', {})
+            total_input += u.get('input_tokens', 0)
+            total_cached += u.get('cached_input_tokens', 0)
+            total_output += u.get('output_tokens', 0)
+    except: pass
+total = total_input + total_output
+print(json.dumps({'input': total_input, 'cached': total_cached, 'output': total_output, 'total': total}))
+")
+echo "  Tokens: $TASK_TOKENS"
+echo ""
+
+
+# ── Step 3: Capture AFTER ──
+echo "═══ Step 3: Capturing usage (AFTER) ═══"
+AFTER_FILE="/tmp/codex_after_${TIMESTAMP}.txt"
+get_codex_status "AFTER" "$AFTER_FILE"
+
+AFTER_JSON=$(parse_codex_status "$AFTER_FILE")
+echo "  AFTER: $AFTER_JSON"
+echo ""
+
+# ── Step 4: Calculate and save ──
+echo "═══ Step 4: Calculating quota estimates ═══"
+
+python3 << PYEOF
+import json
+from datetime import datetime, timezone
+
+before = json.loads('$BEFORE_JSON')
+after = json.loads('$AFTER_JSON')
+tokens = json.loads('$TASK_TOKENS')
+
+# Calculate deltas (Codex shows % LEFT, so consumed = before - after)
+delta_5h = before.get('5h_pct_left', 100) - after.get('5h_pct_left', 100)
+delta_weekly = before.get('weekly_pct_left', 100) - after.get('weekly_pct_left', 100)
+total = tokens.get('total', 0)
+
+estimates = {}
+if delta_5h > 0 and total > 0:
+    est = int(total / (delta_5h / 100))
+    daily_from_5h = est * (24/5)
+    estimates['5h_window_tokens'] = est
+    estimates['5h_readable'] = f"~{est/1e6:.1f}M tokens per 5h window"
+    print(f"  5h: {delta_5h}% consumed -> ~{est/1e6:.1f}M per window (~{daily_from_5h/1e6:.1f}M/day if not weekly-limited)")
+else:
+    print(f"  5h: {delta_5h}% change (not enough for estimate)")
+
+if delta_weekly > 0 and total > 0:
+    est = int(total / (delta_weekly / 100))
+    daily = est // 7
+    estimates['weekly_tokens'] = est
+    estimates['daily_tokens'] = daily
+    estimates['weekly_readable'] = f"~{est/1e6:.1f}M tokens per week"
+    estimates['daily_readable'] = f"~{daily/1e6:.1f}M tokens per day"
+    print(f"  Weekly: {delta_weekly}% consumed -> ~{est/1e6:.1f}M/week, ~{daily/1e6:.1f}M/day")
+else:
+    print(f"  Weekly: {delta_weekly}% change (not enough for estimate)")
+
+# Determine binding constraint
+if estimates.get('daily_tokens') and estimates.get('5h_window_tokens'):
+    daily_5h = int(estimates['5h_window_tokens'] * 24 / 5)
+    daily_weekly = estimates['daily_tokens']
+    estimates['binding_constraint'] = 'weekly' if daily_weekly < daily_5h else '5h'
+    estimates['effective_daily'] = min(daily_5h, daily_weekly)
+    print(f"  Binding constraint: {estimates['binding_constraint']}")
+    print(f"  Effective daily: ~{estimates['effective_daily']/1e6:.1f}M tokens/day")
+
+result = {
+    "tool": "codex-cli",
+    "version": "$VERSION",
+    "plan": after.get('account', before.get('account', 'unknown')),
+    "model": after.get('model', before.get('model', 'unknown')),
+    "timestamp": datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+    "task": "doubly-linked-list-with-tests",
+    "task_duration_seconds": $TASK_DURATION,
+    "tokens": tokens,
+    "quota_before": before,
+    "quota_after": after,
+    "quota_consumed": {"5h_pct": delta_5h, "weekly_pct": delta_weekly},
+    "estimates": estimates,
+    "raw_files": {
+        "before_screen": "$BEFORE_FILE",
+        "after_screen": "$AFTER_FILE",
+        "task_jsonl": "$TASK_JSONL"
+    }
+}
+
+with open('$RESULT_FILE', 'w') as f:
+    json.dump(result, f, indent=2)
+
+print(f"\n  ✓ Saved: $RESULT_FILE")
+PYEOF
+
+echo ""
 echo "╔══════════════════════════════════════════════════════════════╗"
 echo "║  Measurement complete!                                      ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo ""
-echo "Results: $RESULT_FILE"
+echo "  Result: $RESULT_FILE"
 echo ""
-echo "Submit via PR or issue:"
-echo "  https://github.com/desktop-commander/llm-value-comparison/issues/new"
+echo "  Submit: https://github.com/desktop-commander/llm-value-comparison/issues/new"
 echo ""
-
-# Cleanup
-rm -rf "$TASK_DIR"
