@@ -1979,62 +1979,122 @@ function renderCompare() {
     </div>`;
   }
 
-  // Quality
-  const qualRow = barRow('Quality score', 'crl-qual', '🧠 Quality',
+  // Get the selected types for each side
+  const typeA = document.getElementById('cmpTypeA').value;
+  const typeB = document.getElementById('cmpTypeB').value;
+
+  // Quality — always show, but with plain language
+  const qualRow = barRow('How smart is each model? (benchmark score)', 'crl-qual', '🧠 Smarts',
     scoreA, scoreB, v => v.toFixed(1)+'%', false);
 
-  // API value
-  const apiValA = mA.api && mA.api.inputPer1M > 0 ? (1_000_000/wap(mA.api))*(scoreA/100) : null;
-  const apiValB = mB.api && mB.api.inputPer1M > 0 ? (1_000_000/wap(mB.api))*(scoreB/100) : null;
-  const apiPriceA = mA.api && mA.api.inputPer1M > 0 ? wap(mA.api) : null;
-  const apiPriceB = mB.api && mB.api.inputPer1M > 0 ? wap(mB.api) : null;
-  const apiRow = barRow('API · quality-adj tok/$', 'crl-api', '🔌 API value', apiValA, apiValB, fmt, false);
-  const apiPriceRow = barRow('API · blended $/M tokens', 'crl-api', '🔌 API price',
-    apiPriceA, apiPriceB, v => '$'+v.toFixed(3), true);
+  // Build rows based on what's being compared
+  let comparisonRows = qualRow;
 
-  // Best subscription value
-  function bestSubVal(m) {
-    const sc = getScore(m, '_combined') || 0;
+  // THE MAIN COMPARISON: value per dollar for the selected types
+  // This is the most important row — "bang for your buck"
+  function getValueForType(model, score, type) {
+    if (type === 'api' && model.api && model.api.inputPer1M > 0) {
+      return { val: (1_000_000/wap(model.api))*(score/100), label: 'API' };
+    }
+    if (type === 'subscription') {
+      let best = null;
+      if (model.subscriptions) Object.values(model.subscriptions).forEach(sub => {
+        if (!sub.tokensPerDay) return;
+        const v = (sub.tokensPerDay*365*years*(score/100))/(sub.monthlyPrice*12*years);
+        if (!best || v > best.val) best = { val: v, label: sub.name, price: sub.monthlyPrice };
+      });
+      return best;
+    }
+    if (type === 'local') {
+      let best = null;
+      if (model.local) Object.entries(model.local).forEach(([hid, perf]) => {
+        const h = DATA.hardware[hid]; if (!h || !perf.tokensPerSec) return;
+        const v = (perf.tokensPerSec*3600*hours*365*years*(score/100)) / h.price;
+        if (!best || v > best.val) best = { val: v, label: h.name, tps: perf.tokensPerSec };
+      });
+      return best;
+    }
+    // type === 'all' — find best across everything
     let best = null;
-    if (m.subscriptions) Object.values(m.subscriptions).forEach(sub => {
+    if (model.api && model.api.inputPer1M > 0) {
+      const v = (1_000_000/wap(model.api))*(score/100);
+      if (!best || v > best.val) best = { val: v, label: 'API' };
+    }
+    if (model.subscriptions) Object.values(model.subscriptions).forEach(sub => {
       if (!sub.tokensPerDay) return;
-      const v = (sub.tokensPerDay*365*years*(sc/100))/(sub.monthlyPrice*12*years);
-      if (best == null || v > best.val) best = { val: v, name: sub.name, price: sub.monthlyPrice };
+      const v = (sub.tokensPerDay*365*years*(score/100))/(sub.monthlyPrice*12*years);
+      if (!best || v > best.val) best = { val: v, label: sub.name, price: sub.monthlyPrice };
     });
-    return best;
-  }
-  const subA = bestSubVal(mA), subB = bestSubVal(mB);
-  const subRow = barRow('Subscription · quality-adj tok/$', 'crl-sub', '💳 Sub value',
-    subA?.val, subB?.val, fmt, false);
-  const subPriceRow = barRow('Subscription · $/month', 'crl-sub', '💳 Sub price',
-    subA?.price, subB?.price, v => '$'+v, true);
-
-  // Best local value across ALL hardware
-  function bestLocalVal(m) {
-    const sc = getScore(m, '_combined') || 0;
-    let best = null;
-    if (m.local) Object.entries(m.local).forEach(([hid, perf]) => {
+    if (model.local) Object.entries(model.local).forEach(([hid, perf]) => {
       const h = DATA.hardware[hid]; if (!h || !perf.tokensPerSec) return;
-      const v = (perf.tokensPerSec*3600*hours*365*years*(sc/100)) / h.price;
-      if (best == null || v > best.val) best = { val: v, hw: h.name, tps: perf.tokensPerSec };
+      const v = (perf.tokensPerSec*3600*hours*365*years*(score/100)) / h.price;
+      if (!best || v > best.val) best = { val: v, label: h.name, tps: perf.tokensPerSec };
     });
     return best;
   }
-  const localA = bestLocalVal(mA), localB = bestLocalVal(mB);
-  const localHwA = localA ? ` on ${localA.hw}` : '';
-  const localHwB = localB ? ` on ${localB.hw}` : '';
-  const localRow = barRow(`Local value${localA||localB ? ' · ' + [localA&&(mA.name+localHwA), localB&&(mB.name+localHwB)].filter(Boolean).join(' vs ') : ''}`, 'crl-local', '🖥️ Local tok/$',
-    localA?.val, localB?.val, fmt, false);
-  const tokSRow = barRow(`Local tok/s${localA ? ' · A: '+localA.hw : ''}${localB ? ' · B: '+localB.hw : ''}`, 'crl-local', '🖥️ Local t/s',
-    localA?.tps, localB?.tps, v => v+' t/s', false);
 
-  // API throughput
-  const apiTpsA = mA.api?.tokensPerSecAPI || null;
-  const apiTpsB = mB.api?.tokensPerSecAPI || null;
-  const apiTpsRow = barRow('API throughput (provider-reported)', 'crl-api', '🔌 API t/s',
-    apiTpsA, apiTpsB, v => v.toFixed(1)+' t/s', false);
+  const valA = getValueForType(mA, scoreA, typeA);
+  const valB = getValueForType(mB, scoreB, typeB);
 
-  document.getElementById('cmpGrid').innerHTML = qualRow + apiRow + apiPriceRow + apiTpsRow + subRow + subPriceRow + localRow + tokSRow;
+  // Main value comparison — THE key row
+  const valLabelA = valA ? ` (${valA.label})` : '';
+  const valLabelB = valB ? ` (${valB.label})` : '';
+  comparisonRows += barRow(`Value for money — how much quality output per dollar?`, 'crl-qual', '💰 Value',
+    valA?.val, valB?.val, fmt, false);
+
+  // Cost row — what does it actually cost?
+  function getCost(model, type) {
+    if (type === 'subscription' && model.subscriptions) {
+      let best = null;
+      Object.values(model.subscriptions).forEach(sub => {
+        if (!best || sub.monthlyPrice < best.price) best = { price: sub.monthlyPrice, label: sub.name + ' · $' + sub.monthlyPrice + '/mo' };
+      });
+      return best;
+    }
+    if (type === 'api' && model.api) return { price: wap(model.api), label: '$' + wap(model.api).toFixed(2) + '/M tokens' };
+    if (type === 'local' && model.local) {
+      let cheapest = null;
+      Object.entries(model.local).forEach(([hid]) => {
+        const h = DATA.hardware[hid]; if (!h) return;
+        if (!cheapest || h.price < cheapest.price) cheapest = { price: h.price, label: h.name + ' · $' + h.price.toLocaleString() + ' one-time' };
+      });
+      return cheapest;
+    }
+    return null;
+  }
+  const costA = getCost(mA, typeA);
+  const costB = getCost(mB, typeB);
+
+  // Show cost differently based on comparison type
+  if (typeA === typeB) {
+    // Same type — direct price comparison makes sense
+    if (typeA === 'subscription')
+      comparisonRows += barRow('Monthly cost', 'crl-sub', '💳 Price', costA?.price, costB?.price, v => '$'+v+'/mo', true);
+    else if (typeA === 'api')
+      comparisonRows += barRow('Price per million tokens', 'crl-api', '🔌 Price', costA?.price, costB?.price, v => '$'+v.toFixed(2)+'/M', true);
+    else if (typeA === 'local')
+      comparisonRows += barRow('Hardware cost (one-time)', 'crl-local', '🖥️ Price', costA?.price, costB?.price, v => '$'+v.toLocaleString(), true);
+  } else {
+    // Different types — show what each costs (can't directly compare $/mo vs one-time)
+    comparisonRows += `<div class="cmp-row">
+      <div class="cmp-row-label"><span class="crl-tag crl-sub">💰 Cost</span> What you pay</div>
+      <div class="cmp-bars" style="justify-content:space-between;padding:0.5rem 0">
+        <div style="flex:1;text-align:left"><span class="cmp-val cmp-val-a" style="font-size:0.82rem">${costA?.label || 'n/a'}</span></div>
+        <div style="flex:0;padding:0 0.5rem;color:var(--faint);font-size:0.7rem">vs</div>
+        <div style="flex:1;text-align:right"><span class="cmp-val cmp-val-b" style="font-size:0.82rem">${costB?.label || 'n/a'}</span></div>
+      </div>
+    </div>`;
+  }
+
+  // Speed — only show if relevant data exists
+  const tpsA = typeA === 'local' ? (valA?.tps || null) : (mA.api?.tokensPerSecAPI || null);
+  const tpsB = typeB === 'local' ? (valB?.tps || null) : (mB.api?.tokensPerSecAPI || null);
+  if (tpsA || tpsB) {
+    const speedLabel = (typeA === 'local' || typeB === 'local') ? 'Generation speed' : 'API response speed';
+    comparisonRows += barRow(speedLabel, 'crl-local', '⚡ Speed', tpsA, tpsB, v => v + ' tok/s', false);
+  }
+
+  document.getElementById('cmpGrid').innerHTML = comparisonRows;
 
   // Animate bars from 0
   requestAnimationFrame(() => {
@@ -2045,56 +2105,36 @@ function renderCompare() {
     });
   });
 
-  // Verdict — based on best quality-adjusted tokens per dollar across all types
+  // Verdict — clear, human-readable
   const verdictEl = document.getElementById('cmpVerdict');
   verdictEl.style.display = '';
   const aName = mA.name, bName = mB.name;
 
-  // Find the best value for each model across all types
-  function bestValue(model, score) {
-    let best = { val: 0, type: '' };
-    if (model.api && model.api.inputPer1M > 0) {
-      const v = (1_000_000 / wap(model.api)) * (score / 100);
-      if (v > best.val) best = { val: v, type: 'API' };
-    }
-    if (model.subscriptions) Object.values(model.subscriptions).forEach(sub => {
-      if (!sub.tokensPerDay) return;
-      const years = parseInt(document.getElementById('periodYears')?.value) || 3;
-      const v = (sub.tokensPerDay * 365 * years * (score / 100)) / (sub.monthlyPrice * 12 * years);
-      if (v > best.val) best = { val: v, type: `${sub.name} subscription` };
-    });
-    if (hw && model.local && model.local[hwId]) {
-      const hours = parseFloat(document.getElementById('hoursPerDay')?.value) || 16;
-      const years = parseInt(document.getElementById('periodYears')?.value) || 3;
-      const p = model.local[hwId];
-      const v = (p.tokensPerSec * 3600 * hours * 365 * years * (score / 100)) / hw.price;
-      if (v > best.val) best = { val: v, type: `Local (${hw.name})` };
-    }
-    return best;
-  }
-
-  const bestA = bestValue(mA, scoreA);
-  const bestB = bestValue(mB, scoreB);
-
   let icon, html;
-  if (bestA.val === 0 && bestB.val === 0) {
+  if (!valA && !valB) {
     icon = '❓';
-    html = `<div class="cmp-verdict-text">Insufficient data to compare</div>`;
-  } else if (Math.abs(bestA.val - bestB.val) / Math.max(bestA.val, bestB.val) < 0.05) {
+    html = `<div class="cmp-verdict-text">Not enough data to compare</div>`;
+  } else if (!valA || !valB) {
+    const winner = valA ? aName : bName;
+    const wVal = valA || valB;
+    icon = '🏆';
+    html = `<div class="cmp-verdict-text"><span class="${valA?'cv-a':'cv-b'}">${winner}</span> is the only option with data</div>
+            <div class="cmp-verdict-sub">${fmt(wVal.val)} quality-adjusted tokens per dollar via ${wVal.label}</div>`;
+  } else if (Math.abs(valA.val - valB.val) / Math.max(valA.val, valB.val) < 0.05) {
     icon = '🤝';
-    html = `<div class="cmp-verdict-text"><span class="cv-tie">${aName}</span> and <span class="cv-tie">${bName}</span> are roughly equal in value</div>
-            <div class="cmp-verdict-sub">${aName} best via ${bestA.type} (${fmt(bestA.val)} tok/$) vs ${bName} via ${bestB.type} (${fmt(bestB.val)} tok/$)</div>`;
+    html = `<div class="cmp-verdict-text"><span class="cv-tie">${aName}</span> and <span class="cv-tie">${bName}</span> give roughly equal value</div>
+            <div class="cmp-verdict-sub">${aName} via ${valA.label}: ${fmt(valA.val)} tok/$ · ${bName} via ${valB.label}: ${fmt(valB.val)} tok/$</div>`;
   } else {
-    const aWins = bestA.val > bestB.val;
+    const aWins = valA.val > valB.val;
     const winner = aWins ? aName : bName;
     const loser = aWins ? bName : aName;
-    const wBest = aWins ? bestA : bestB;
-    const lBest = aWins ? bestB : bestA;
+    const wVal = aWins ? valA : valB;
+    const lVal = aWins ? valB : valA;
     const wClass = aWins ? 'cv-a' : 'cv-b';
-    const pctBetter = Math.round(((wBest.val - lBest.val) / lBest.val) * 100);
+    const pctBetter = Math.round(((wVal.val - lVal.val) / lVal.val) * 100);
     icon = '🏆';
     html = `<div class="cmp-verdict-text"><span class="${wClass}">${winner}</span> delivers <em>${pctBetter}%</em> more value per dollar</div>
-            <div class="cmp-verdict-sub">Best via ${wBest.type} (${fmt(wBest.val)} quality-adj tok/$) vs ${loser} via ${lBest.type} (${fmt(lBest.val)} tok/$)</div>`;
+            <div class="cmp-verdict-sub">Best via ${wVal.label} (${fmt(wVal.val)} tok/$) vs ${loser} via ${lVal.label} (${fmt(lVal.val)} tok/$)</div>`;
   }
   verdictEl.innerHTML = `<div class="cmp-verdict-icon">${icon}</div><div>${html}</div>`;
 }
@@ -2155,9 +2195,9 @@ function setCompareDefaults() {
 
 loadData();
 </script>
-<!-- SEO: Pre-rendered 2026-04-13 from 34 models -->
+<!-- SEO: Pre-rendered 2026-04-14 from 34 models -->
 <div id="seo-content" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
-<h2>Best Value AI Models — 2026-04-13</h2>
+<h2>Best Value AI Models — 2026-04-14</h2>
 <p>Comparing 34 AI models across API pricing, subscriptions, and local hardware.</p><p>Best API value: GLM-4.7 Flash at $0.15/M blended — 2.8M quality-adjusted tokens per dollar.</p><p>Best subscription value: ChatGPT Plus — 1.9M quality-adjusted tokens per dollar.</p><p>Best local value: Qwen3.5 35B A3B (Reasoning) (110 tok/s · RTX 3090) — 2.9M quality-adjusted tokens per dollar.</p><h3>Top 10 AI Models by Value (Quality-Adjusted Tokens per Dollar)</h3><ol><li>Qwen3.5 35B A3B (Reasoning) (Local) — 2.9M tok/$ — 110 tok/s · RTX 3090</li><li>GLM-4.7 Flash (API) — 2.8M tok/$ — $0.15/M blended</li><li>Gemma 4 31B (API) — 2.3M tok/$ — $0.21/M blended</li><li>Gemma 4 31B (Local) — 2.1M tok/$ — 21.9 tok/s · MacBook Pro 2019 i9 64GB (full system)</li><li>Qwen3.5 35B A3B (Reasoning) (Local) — 2.0M tok/$ — 122 tok/s · RTX 4090</li><li>ChatGPT Plus → GPT-5.4 (xhigh) (Subscription) — 1.9M tok/$ — ChatGPT Plus · $20/mo</li><li>ChatGPT Plus → GPT-5.2 (Subscription) — 1.7M tok/$ — ChatGPT Plus · $20/mo</li><li>Qwen3.5 27B (Reasoning) (Local) — 1.5M tok/$ — 48 tok/s · RTX 3090</li><li>ChatGPT Plus → GPT-5.2 Codex (xhigh) (Subscription) — 1.5M tok/$ — ChatGPT Plus · $20/mo</li><li>Qwen3.5 35B A3B (Reasoning) (Local) — 1.5M tok/$ — 65 tok/s · Mac M3 Max 64GB</li></ol><h3>All Models Compared</h3><p>Claude Opus 4, Claude Sonnet 4, DeepSeek V3.1, Gemini 2.5 Pro, GLM-4.7 Flash, GPT-OSS 120B, GPT-4o, Llama 3.1 70B, Llama 3.1 8B, o3, Qwen QwQ-32B, Claude Opus 4.5, Gemini 3 Pro, Gemini 3 Flash, GPT-5.2, Claude Opus 4.6 (Non-reasoning, High Effort), Claude Sonnet 4.6 (Non-reasoning, High Effort), Claude 4.5 Haiku (Non-reasoning), Claude 4.5 Sonnet (Non-reasoning), GPT-5.4 (xhigh), GPT-5.3 Codex (xhigh), GPT-5.2 Codex (xhigh), Gemini 3.1 Pro Preview, GLM-5 (Reasoning), GLM-4.7 (Reasoning), MiniMax-M2.5, MiniMax-M2.7, Kimi K2.5 (Reasoning), DeepSeek V3.2 (Non-reasoning), Qwen3.5 35B A3B (Reasoning), Qwen3.5 27B (Reasoning), Qwen3.5 122B A10B (Reasoning), Gemma 4 31B, Gemma 4 26B A4B</p></div>
 </body>
 </html>

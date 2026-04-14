@@ -134,38 +134,65 @@ BEFORE_JSON=$(parse_codex_status "$BEFORE_FILE")
 echo "  BEFORE: $BEFORE_JSON"
 echo ""
 
-# ── Step 2: Run standardized task ──
-echo "═══ Step 2: Running standardized coding task ═══"
-TASK_PROMPT="Write a Python doubly-linked list with insert_head, insert_tail, delete_node, find, reverse, to_list methods. Include Node class, type hints, docstrings. Write exactly 10 pytest tests. Save to linked_list.py"
-TASK_JSONL="/tmp/codex_task_${TIMESTAMP}.jsonl"
+# ── Step 2: Run standardized task MULTIPLE TIMES for accuracy ──
+echo "═══ Step 2: Running standardized coding tasks ═══"
+echo "  Running multiple iterations to consume >5% quota (reduces rounding error)"
+echo ""
 
-echo "  Task: Doubly-linked list + 10 tests"
-TASK_START=$(date +%s)
+TASK_PROMPT="Write a Python doubly-linked list with insert_head, insert_tail, delete_node, find, reverse, to_list methods. Include Node class, type hints, docstrings. Write exactly 10 pytest tests. Save to linked_list.py"
+
+TOTAL_INPUT=0
+TOTAL_CACHED=0
+TOTAL_OUTPUT=0
+TOTAL_DURATION=0
+NUM_RUNS=0
+MAX_RUNS=5
 
 cd "$WORK_DIR"
-echo "$TASK_PROMPT" | $CODEX exec --json - > "$TASK_JSONL" 2>/tmp/codex_task_stderr_${TIMESTAMP}.log || true
 
-TASK_END=$(date +%s)
-TASK_DURATION=$((TASK_END - TASK_START))
-echo "  Completed in ${TASK_DURATION}s"
-
-# Parse token counts from JSONL
-TASK_TOKENS=$(python3 -c "
+for i in $(seq 1 $MAX_RUNS); do
+    TASK_JSONL="/tmp/codex_task_${TIMESTAMP}_run${i}.jsonl"
+    echo "  Run $i/$MAX_RUNS..."
+    
+    RUN_START=$(date +%s)
+    echo "$TASK_PROMPT" | $CODEX exec --json - > "$TASK_JSONL" 2>/dev/null || true
+    RUN_END=$(date +%s)
+    RUN_DURATION=$((RUN_END - RUN_START))
+    TOTAL_DURATION=$((TOTAL_DURATION + RUN_DURATION))
+    
+    # Parse tokens from this run
+    RUN_TOKENS=$(python3 -c "
 import json
-total_input = total_cached = total_output = 0
+inp = cached = out = 0
 for line in open('$TASK_JSONL'):
     try:
         d = json.loads(line.strip())
         if d.get('type') == 'turn.completed':
             u = d.get('usage', {})
-            total_input += u.get('input_tokens', 0)
-            total_cached += u.get('cached_input_tokens', 0)
-            total_output += u.get('output_tokens', 0)
+            inp += u.get('input_tokens', 0)
+            cached += u.get('cached_input_tokens', 0)
+            out += u.get('output_tokens', 0)
     except: pass
-total = total_input + total_output
-print(json.dumps({'input': total_input, 'cached': total_cached, 'output': total_output, 'total': total}))
+print(f'{inp} {cached} {out}')
 ")
+    read run_inp run_cached run_out <<< "$RUN_TOKENS"
+    run_total=$((run_inp + run_out))
+    
+    TOTAL_INPUT=$((TOTAL_INPUT + run_inp))
+    TOTAL_CACHED=$((TOTAL_CACHED + run_cached))
+    TOTAL_OUTPUT=$((TOTAL_OUTPUT + run_out))
+    NUM_RUNS=$((NUM_RUNS + 1))
+    
+    echo "    ${RUN_DURATION}s, ${run_total} tokens (total so far: $((TOTAL_INPUT + TOTAL_OUTPUT)))"
+done
+
+TOTAL_TOKENS=$((TOTAL_INPUT + TOTAL_OUTPUT))
+echo ""
+echo "  Total: $NUM_RUNS runs, ${TOTAL_TOKENS} tokens, ${TOTAL_DURATION}s"
+
+TASK_TOKENS="{\"input\": $TOTAL_INPUT, \"cached\": $TOTAL_CACHED, \"output\": $TOTAL_OUTPUT, \"total\": $TOTAL_TOKENS, \"num_runs\": $NUM_RUNS}"
 echo "  Tokens: $TASK_TOKENS"
+TASK_DURATION=$TOTAL_DURATION
 echo ""
 
 
