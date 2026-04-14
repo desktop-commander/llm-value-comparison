@@ -126,15 +126,24 @@ echo "BEFORE=$BEFORE_JSON"
 # STEP 2: RUN TASKS
 # ═══════════════════════════════════════
 echo ""
-echo "--- TASK: running iterations ---"
+echo "--- TASK: running until quota moves ---"
+echo "Claude tasks use ~17K tokens each. Running in batches until /status shows a change."
 PROMPT="Write a Python doubly-linked list with insert_head, insert_tail, delete_node, find, reverse, to_list. Include Node class, type hints, docstrings. Write exactly 10 pytest tests. Output only the code."
 TOTAL_IN=0; TOTAL_CACHED=0; TOTAL_OUT=0; TOTAL_DUR=0; RUNS=0
-NUM_RUNS=${NUM_RUNS:-5}
+MAX_RUNS=${MAX_RUNS:-200}
+CHECK_EVERY=${CHECK_EVERY:-10}
+MIN_PCT_CHANGE=${MIN_PCT_CHANGE:-1}
+
+# Get the BEFORE weekly % to compare against
+BEFORE_WEEKLY=$(echo "$BEFORE_JSON" | python3 -c "import json,sys; print(json.loads(sys.stdin.read()).get('weekly_all_pct_used', -1))")
+echo "Target: detect ≥${MIN_PCT_CHANGE}% weekly change from ${BEFORE_WEEKLY}%"
+echo "Will check /status every $CHECK_EVERY runs (max $MAX_RUNS runs)"
+echo ""
 
 cd "$WORK_DIR"
-for i in $(seq 1 $NUM_RUNS); do
+for i in $(seq 1 $MAX_RUNS); do
     JF="/tmp/claude_run_${TS}_${i}.json"
-    echo "  Run $i/$NUM_RUNS..."
+    echo -n "  Run $i..."
     T0=$(date +%s)
     echo "" | claude -p "$PROMPT" --output-format json > "$JF" 2>/dev/null || true
     T1=$(date +%s)
@@ -142,42 +151,59 @@ for i in $(seq 1 $NUM_RUNS); do
     TOTAL_DUR=$((TOTAL_DUR + DUR))
     RUNS=$((RUNS + 1))
 
-    # Parse tokens from Claude JSON output
+    # Parse tokens
     TOKS=$(python3 -c "
-import json, sys
+import json
 try:
-    data = json.load(open('$JF'))
-    usage = data.get('usage', {})
-    if not usage and 'result' in data:
-        usage = data.get('result', {}).get('usage', {})
-    inp = usage.get('input_tokens', 0)
-    out = usage.get('output_tokens', 0)
-    cache_read = usage.get('cache_read_input_tokens', 0)
-    cache_create = usage.get('cache_creation_input_tokens', 0)
-    # Total input = input_tokens + cache_read + cache_create
-    total_input = inp + cache_read + cache_create
-    cached = cache_read + cache_create
-    print(total_input, cached, out)
-except Exception as e:
-    print('0 0 0')
-    sys.stderr.write(f'Parse error: {e}\n')
-" 2>&1)
+    d=json.load(open('$JF'))
+    u=d.get('usage',{})
+    inp=u.get('input_tokens',0)+u.get('cache_creation_input_tokens',0)+u.get('cache_read_input_tokens',0)
+    cached=u.get('cache_read_input_tokens',0)+u.get('cache_creation_input_tokens',0)
+    out=u.get('output_tokens',0)
+    print(inp, cached, out)
+except: print('0 0 0')
+")
     read ri rc ro <<< "$TOKS"
     TOTAL_IN=$((TOTAL_IN + ri))
     TOTAL_CACHED=$((TOTAL_CACHED + rc))
     TOTAL_OUT=$((TOTAL_OUT + ro))
-    echo "    ${DUR}s · in=$ri cached=$rc out=$ro · cumulative=$((TOTAL_IN+TOTAL_OUT))"
+    echo " ${DUR}s · tok=$((ri+ro)) · total=$((TOTAL_IN+TOTAL_OUT))"
+
+    # Every CHECK_EVERY runs, check if quota has moved
+    if [ $((i % CHECK_EVERY)) -eq 0 ]; then
+        echo ""
+        echo "  --- Checking /status after $i runs ---"
+        MID="/tmp/claude_mid_${TS}_${i}.txt"
+        capture_status "CHECK-$i" "$MID"
+        MID_JSON=$(parse_status "$MID")
+        MID_WEEKLY=$(echo "$MID_JSON" | python3 -c "import json,sys; print(json.loads(sys.stdin.read()).get('weekly_all_pct_used', -1))")
+        DELTA=$((MID_WEEKLY - BEFORE_WEEKLY))
+        echo "  Weekly: ${BEFORE_WEEKLY}% → ${MID_WEEKLY}% (delta: ${DELTA}%)"
+
+        if [ "$DELTA" -ge "$MIN_PCT_CHANGE" ] 2>/dev/null; then
+            echo "  ✓ Quota moved by ${DELTA}% — enough for estimate!"
+            # Save this as the AFTER
+            AFTER_JSON="$MID_JSON"
+            AFTER_CAPTURED=1
+            break
+        else
+            echo "  Not enough change yet, continuing..."
+        fi
+        echo ""
+    fi
 done
 TOTAL=$((TOTAL_IN + TOTAL_OUT))
 echo ""
 echo "TASK TOTALS: $RUNS runs · ${TOTAL} tokens (in=$TOTAL_IN cached=$TOTAL_CACHED out=$TOTAL_OUT) · ${TOTAL_DUR}s"
 
 # ═══════════════════════════════════════
-# STEP 3: AFTER
+# STEP 3: AFTER (skip if already captured in loop)
 # ═══════════════════════════════════════
-AF="/tmp/claude_af_${TS}.txt"
-capture_status "AFTER" "$AF"
-AFTER_JSON=$(parse_status "$AF")
+if [ "${AFTER_CAPTURED:-0}" != "1" ]; then
+    AF="/tmp/claude_af_${TS}.txt"
+    capture_status "AFTER" "$AF"
+    AFTER_JSON=$(parse_status "$AF")
+fi
 echo ""
 echo "AFTER=$AFTER_JSON"
 
