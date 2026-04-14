@@ -2042,46 +2042,51 @@ function renderCompare() {
   comparisonRows += barRow(`Value for money — how much quality output per dollar?`, 'crl-qual', '💰 Value',
     valA?.val, valB?.val, fmt, false);
 
-  // Cost row — what does it actually cost?
-  function getCost(model, type) {
+  // Cost row — normalized to $/month for apples-to-apples comparison
+  function getMonthlyCost(model, type, valInfo) {
+    const amortMonths = years * 12;
     if (type === 'subscription' && model.subscriptions) {
       let best = null;
       Object.values(model.subscriptions).forEach(sub => {
-        if (!best || sub.monthlyPrice < best.price) best = { price: sub.monthlyPrice, label: sub.name + ' · $' + sub.monthlyPrice + '/mo' };
+        if (!best || sub.monthlyPrice < best.monthly) best = { monthly: sub.monthlyPrice, detail: sub.name };
       });
       return best;
     }
-    if (type === 'api' && model.api) return { price: wap(model.api), label: '$' + wap(model.api).toFixed(2) + '/M tokens' };
-    if (type === 'local' && model.local) {
-      let cheapest = null;
-      Object.entries(model.local).forEach(([hid]) => {
-        const h = DATA.hardware[hid]; if (!h) return;
-        if (!cheapest || h.price < cheapest.price) cheapest = { price: h.price, label: h.name + ' · $' + h.price.toLocaleString() + ' one-time' };
+    if (type === 'api' && model.api) {
+      // Can't convert API to $/month without knowing usage, show per-M instead
+      return { monthly: null, perM: wap(model.api), detail: 'pay per use' };
+    }
+    if (type === 'local' && valInfo?.label) {
+      // Find the hardware used in the best value calculation
+      let hw = null;
+      if (model.local) Object.entries(model.local).forEach(([hid, perf]) => {
+        const h = DATA.hardware[hid];
+        if (h && h.name === valInfo.label) hw = h;
       });
-      return cheapest;
+      if (hw) return { monthly: Math.round(hw.price / amortMonths * 100) / 100, detail: hw.name + ' over ' + years + 'y', fullPrice: hw.price };
     }
     return null;
   }
-  const costA = getCost(mA, typeA);
-  const costB = getCost(mB, typeB);
+  const costA = getMonthlyCost(mA, typeA, valA);
+  const costB = getMonthlyCost(mB, typeB, valB);
 
-  // Show cost differently based on comparison type
-  if (typeA === typeB) {
-    // Same type — direct price comparison makes sense
-    if (typeA === 'subscription')
-      comparisonRows += barRow('Monthly cost', 'crl-sub', '💳 Price', costA?.price, costB?.price, v => '$'+v+'/mo', true);
-    else if (typeA === 'api')
-      comparisonRows += barRow('Price per million tokens', 'crl-api', '🔌 Price', costA?.price, costB?.price, v => '$'+v.toFixed(2)+'/M', true);
-    else if (typeA === 'local')
-      comparisonRows += barRow('Hardware cost (one-time)', 'crl-local', '🖥️ Price', costA?.price, costB?.price, v => '$'+v.toLocaleString(), true);
-  } else {
-    // Different types — show what each costs (can't directly compare $/mo vs one-time)
+  // If both have monthly costs, show direct comparison bar
+  const hasMonthlyA = costA?.monthly != null;
+  const hasMonthlyB = costB?.monthly != null;
+  
+  if (hasMonthlyA && hasMonthlyB) {
+    comparisonRows += barRow('Cost per month', 'crl-sub', '💰 $/month', 
+      costA.monthly, costB.monthly, v => '$' + v.toFixed(0) + '/mo', true);
+  } else if (hasMonthlyA || hasMonthlyB) {
+    // One is monthly, other is API (pay-per-use) — show what we can
+    const mA_label = hasMonthlyA ? `$${costA.monthly.toFixed(0)}/mo` + (costA.fullPrice ? ` ($${costA.fullPrice.toLocaleString()} ÷ ${years*12}mo)` : '') : `$${costA?.perM?.toFixed(2)}/M tokens`;
+    const mB_label = hasMonthlyB ? `$${costB.monthly.toFixed(0)}/mo` + (costB.fullPrice ? ` ($${costB.fullPrice.toLocaleString()} ÷ ${years*12}mo)` : '') : `$${costB?.perM?.toFixed(2)}/M tokens`;
     comparisonRows += `<div class="cmp-row">
       <div class="cmp-row-label"><span class="crl-tag crl-sub">💰 Cost</span> What you pay</div>
       <div class="cmp-bars" style="justify-content:space-between;padding:0.5rem 0">
-        <div style="flex:1;text-align:left"><span class="cmp-val cmp-val-a" style="font-size:0.82rem">${costA?.label || 'n/a'}</span></div>
+        <div style="flex:1;text-align:left"><span class="cmp-val cmp-val-a" style="font-size:0.82rem">${mA_label}</span></div>
         <div style="flex:0;padding:0 0.5rem;color:var(--faint);font-size:0.7rem">vs</div>
-        <div style="flex:1;text-align:right"><span class="cmp-val cmp-val-b" style="font-size:0.82rem">${costB?.label || 'n/a'}</span></div>
+        <div style="flex:1;text-align:right"><span class="cmp-val cmp-val-b" style="font-size:0.82rem">${mB_label}</span></div>
       </div>
     </div>`;
   }
