@@ -290,6 +290,32 @@ if (measStart !== -1 && measEnd !== -1) {
 }
 console.log(`  ✓ Measurements: ${Object.keys(measByPlan).length} plans from ${measFiles.length} files`);
 
+// Embed measurement timeline data as JS variable for the subscription tokens chart
+const measTimeline = [];
+for (const f of measFiles) {
+  try {
+    const d = JSON.parse(fs.readFileSync(path.join(MEAS_DIR, f)));
+    let plan = d.plan || 'unknown';
+    const pm = plan.match(/\((\w+)\)$/); if (pm) plan = pm[1];
+    const pm2 = plan.match(/^(\w[\w\s]*?)\s*\(/); if (pm2) plan = pm2[1];
+    const est = d.estimates || {};
+    const daily = est.daily_tokens || est.daily_tokens_effective;
+    const session = est.session_tokens || est['5h_tokens'];
+    if (!daily && !session) continue;
+    measTimeline.push({
+      plan,
+      date: d.timestamp ? d.timestamp.split('T')[0] : null,
+      daily: daily || null,
+      session: session || null,
+      tool: d.tool,
+      delta: Math.max(d.quota_consumed?.['5h_pct'] || 0, d.quota_consumed?.weekly_pct || d.quota_consumed?.weekly_all_pct || 0),
+    });
+  } catch(e) {}
+}
+// Inject into HTML before closing </body>
+const measTimelineJson = JSON.stringify(measTimeline);
+html = html.replace('</body>', `<script>window.MEASUREMENT_TIMELINE=${measTimelineJson};</script>\n</body>`);
+
 fs.writeFileSync(path.join(REPO, 'index.html'), html);
 
 console.log(`Pre-rendered SEO content into index.html:`);

@@ -1434,6 +1434,13 @@
             </div>
             <div class="chart-wrapper"><canvas id="valueChart"></canvas></div>
         </div>
+
+        <!-- Subscription tokens timeline -->
+        <div class="chart-card" style="margin-top:1.5rem">
+            <h2>Subscription tokens over time</h2>
+            <p style="font-size:0.78rem;color:var(--muted);margin-top:-0.25rem;margin-bottom:0.75rem">How many tokens each plan gives you per day, based on our <a href="#subscription-method" style="color:var(--blue)">empirical measurements</a>.</p>
+            <div class="chart-wrapper"><canvas id="subTokensChart"></canvas></div>
+        </div>
     </div>
 
     <!-- RAW DATA -->
@@ -1707,7 +1714,7 @@ function init(){
       document.querySelectorAll('.tab,.tab-content').forEach(el=>el.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
-      if(tab.dataset.tab==='chart') requestAnimationFrame(()=>updateChart());
+      if(tab.dataset.tab==='chart') { requestAnimationFrame(()=>updateChart()); requestAnimationFrame(()=>updateSubTokensChart()); }
       if(tab.dataset.tab==='compare') requestAnimationFrame(()=>renderCompare());
     });
   });
@@ -1939,6 +1946,72 @@ function updateChart(){
       legend:{display:true,labels:{color:'#6b6b72',usePointStyle:true}}
     }
   }});
+}
+
+let subChart = null;
+function updateSubTokensChart() {
+  const canvas = document.getElementById('subTokensChart');
+  if (!canvas || !canvas.offsetParent) return;
+  const timeline = window.MEASUREMENT_TIMELINE || [];
+  if (!timeline.length) {
+    canvas.parentElement.style.display = 'none';
+    return;
+  }
+
+  // Group by plan
+  const PLAN_COLORS = { Plus: '#10a37f', Pro: '#10a37f', Business: '#6e6e80', 'Claude Max': '#d97706', 'Claude Pro': '#d97706' };
+  const groups = {};
+  timeline.forEach(m => {
+    if (!m.daily && !m.session) return;
+    if (!groups[m.plan]) groups[m.plan] = [];
+    groups[m.plan].push({
+      x: new Date(m.date),
+      y: m.daily || m.session,
+      label: m.daily ? 'daily' : 'session',
+      delta: m.delta,
+      tool: m.tool
+    });
+  });
+
+  const datasets = Object.entries(groups).map(([plan, points]) => {
+    points.sort((a, b) => a.x - b.x);
+    const col = PLAN_COLORS[plan] || '#888';
+    return {
+      label: plan,
+      data: points,
+      backgroundColor: col,
+      borderColor: col,
+      borderWidth: 2,
+      pointRadius: 6,
+      showLine: true,
+      tension: 0.2
+    };
+  });
+
+  if (subChart) { subChart.destroy(); subChart = null; }
+  const oldCanvas = document.getElementById('subTokensChart');
+  const newCanvas = document.createElement('canvas');
+  newCanvas.id = 'subTokensChart';
+  oldCanvas.parentNode.replaceChild(newCanvas, oldCanvas);
+
+  subChart = new Chart(newCanvas, {
+    type: 'scatter',
+    data: { datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { type: 'time', time: { unit: 'day' }, title: { display: true, text: 'Measurement date', color: '#6b6b72' }, ticks: { color: '#6b6b72' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { title: { display: true, text: 'Tokens / day (estimated)', color: '#6b6b72' }, ticks: { color: '#6b6b72', callback: v => fmt(v) }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      },
+      plugins: {
+        tooltip: { callbacks: {
+          title: ctx => `${ctx[0].raw.tool} · ${ctx[0].dataset.label}`,
+          label: ctx => [`${fmt(ctx.raw.y)} tokens/${ctx.raw.label}`, `Δ${ctx.raw.delta}% quota consumed`]
+        }},
+        legend: { display: true, labels: { color: '#6b6b72', usePointStyle: true } }
+      }
+    }
+  });
 }
 
 function renderCompare() {
@@ -2215,5 +2288,6 @@ loadData();
 <div id="seo-content" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
 <h2>Best Value AI Models — 2026-04-15</h2>
 <p>Comparing 34 AI models across API pricing, subscriptions, and local hardware.</p><p>Best API value: GLM-4.7 Flash at $0.15/M blended — 2.8M quality-adjusted tokens per dollar.</p><p>Best subscription value: ChatGPT Plus — 1.9M quality-adjusted tokens per dollar.</p><p>Best local value: Qwen3.5 35B A3B (Reasoning) (110 tok/s · RTX 3090) — 2.9M quality-adjusted tokens per dollar.</p><h3>Top 10 AI Models by Value (Quality-Adjusted Tokens per Dollar)</h3><ol><li>Qwen3.5 35B A3B (Reasoning) (Local) — 2.9M tok/$ — 110 tok/s · RTX 3090</li><li>GLM-4.7 Flash (API) — 2.8M tok/$ — $0.15/M blended</li><li>Gemma 4 31B (API) — 2.3M tok/$ — $0.21/M blended</li><li>Gemma 4 31B (Local) — 2.1M tok/$ — 21.9 tok/s · MacBook Pro 2019 i9 64GB (full system)</li><li>Qwen3.5 35B A3B (Reasoning) (Local) — 2.0M tok/$ — 122 tok/s · RTX 4090</li><li>ChatGPT Plus → GPT-5.4 (xhigh) (Subscription) — 1.9M tok/$ — ChatGPT Plus · $20/mo</li><li>ChatGPT Plus → GPT-5.2 (Subscription) — 1.7M tok/$ — ChatGPT Plus · $20/mo</li><li>Qwen3.5 27B (Reasoning) (Local) — 1.5M tok/$ — 48 tok/s · RTX 3090</li><li>ChatGPT Plus → GPT-5.2 Codex (xhigh) (Subscription) — 1.5M tok/$ — ChatGPT Plus · $20/mo</li><li>Qwen3.5 35B A3B (Reasoning) (Local) — 1.5M tok/$ — 65 tok/s · Mac M3 Max 64GB</li></ol><h3>All Models Compared</h3><p>Claude Opus 4, Claude Sonnet 4, DeepSeek V3.1, Gemini 2.5 Pro, GLM-4.7 Flash, GPT-OSS 120B, GPT-4o, Llama 3.1 70B, Llama 3.1 8B, o3, Qwen QwQ-32B, Claude Opus 4.5, Gemini 3 Pro, Gemini 3 Flash, GPT-5.2, Claude Opus 4.6 (Non-reasoning, High Effort), Claude Sonnet 4.6 (Non-reasoning, High Effort), Claude 4.5 Haiku (Non-reasoning), Claude 4.5 Sonnet (Non-reasoning), GPT-5.4 (xhigh), GPT-5.3 Codex (xhigh), GPT-5.2 Codex (xhigh), Gemini 3.1 Pro Preview, GLM-5 (Reasoning), GLM-4.7 (Reasoning), MiniMax-M2.5, MiniMax-M2.7, Kimi K2.5 (Reasoning), DeepSeek V3.2 (Non-reasoning), Qwen3.5 35B A3B (Reasoning), Qwen3.5 27B (Reasoning), Qwen3.5 122B A10B (Reasoning), Gemma 4 31B, Gemma 4 26B A4B</p></div>
+<script>window.MEASUREMENT_TIMELINE=[{"plan":"Claude Max","date":"2026-04-14","daily":null,"session":20340900,"tool":"claude-code","delta":0},{"plan":"Claude Max","date":"2026-04-14","daily":null,"session":20253300,"tool":"claude-code","delta":0},{"plan":"Plus","date":"2026-04-13","daily":1193388,"session":null,"tool":"codex-cli","delta":9},{"plan":"Plus","date":"2026-04-13","daily":18799878,"session":null,"tool":"codex-cli","delta":10},{"plan":"Plus","date":"2026-04-13","daily":15784935,"session":null,"tool":"codex-cli","delta":10},{"plan":"Plus","date":"2026-04-14","daily":null,"session":29365200,"tool":"codex-cli","delta":2},{"plan":"Business","date":"2026-04-15","daily":8586860,"session":11449147,"tool":"codex-cli","delta":21},{"plan":"Business","date":"2026-04-15","daily":9810176,"session":10300685,"tool":"codex-cli","delta":20},{"plan":"Plus","date":"2026-04-15","daily":39622342,"session":34669550,"tool":"codex-cli","delta":8},{"plan":"Plus","date":"2026-04-13","daily":1897269,"session":null,"tool":"codex-cli","delta":12}];</script>
 </body>
 </html>
