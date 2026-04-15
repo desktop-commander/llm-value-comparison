@@ -1,0 +1,40 @@
+{
+  "tool": "codex-cli",
+  "version": "codex-cli 0.120.0",
+  "plan": "Business",
+  "account": "er@desktopcommander.app (Business)",
+  "model": "gpt-5.4 (reasoning xhigh, summaries auto)",
+  "timestamp": "2026-04-15T08:14:34Z",
+  "task": "doubly-linked-list-with-tests",
+  "num_runs": 5,
+  "duration_seconds": 426,
+  "tokens": {
+    "input": 2389154,
+    "cached": 2138880,
+    "output": 15167,
+    "total": 2404321
+  },
+  "quota_before": {
+    "5h_pct_left": 100,
+    "weekly_pct_left": 97,
+    "account": "er@desktopcommander.app (Business)",
+    "plan": "Business",
+    "model": "gpt-5.4 (reasoning xhigh, summaries auto)"
+  },
+  "quota_after": {
+    "5h_pct_left": 79,
+    "weekly_pct_left": 93,
+    "account": "er@desktopcommander.app (Business)",
+    "plan": "Business",
+    "model": "gpt-5.4 (reasoning xhigh, summaries auto)"
+  },
+  "quota_consumed": {
+    "5h_pct": 21,
+    "weekly_pct": 4
+  },
+  "estimates": {
+    "5h_tokens": 11449147,
+    "weekly_tokens": 60108025,
+    "daily_tokens": 8586860
+  }
+}
