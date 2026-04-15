@@ -884,7 +884,7 @@
         <a href="#explore">📊 Compare</a>
         <a href="#how">📐 Method</a>
         <a href="#benchmarks">📏 Benchmarks</a>
-        <a href="#subscription-method">💳 Subscriptions</a>
+        <a href="#subscription-method">💳 Measurements</a>
     </div>
     <div class="nav-right">
         <a class="nav-cta" href="https://github.com/desktop-commander/llm-value-comparison" target="_blank">
@@ -905,6 +905,7 @@
             Data from <a href="https://artificialanalysis.ai/" target="_blank">Artificial Analysis</a> ·
             <a href="https://arena.ai/leaderboard" target="_blank">Arena AI</a> ·
             <a href="https://openrouter.ai" target="_blank">OpenRouter</a> ·
+            <a href="https://desktopcommander.app" target="_blank">Desktop Commander</a> ·
             <a href="https://github.com/desktop-commander/llm-value-comparison" target="_blank">open source</a>
         </p>
 
@@ -1018,148 +1019,6 @@
     <p class="method-note fade-up">
         Quality scores: <a href="#benchmarks">Arena ELO + AA Intelligence Index</a> — the two benchmarks that remain comparable across model generations. See the <a href="#benchmarks">Benchmarks section</a> for why other benchmarks can't fairly compare across eras.
     </p>
-</section>
-
-<!-- BENCHMARKS EXPLAINER -->
-<section class="section" id="benchmarks" style="scroll-margin-top:60px">
-    <div class="section-header fade-up">
-        <div class="tag red">📏 Why benchmarks are hard</div>
-        <div class="section-title">Not all benchmarks age equally.</div>
-        <p>Comparing GPT-3.5 to GPT-5.4 using benchmark scores sounds simple. It isn't. The tests used to measure models in 2023 are mostly useless today — either saturated or discontinued. This matters for any long-term value comparison.</p>
-    </div>
-
-    <!-- THREE PROBLEM CARDS -->
-    <div class="bm-problem-grid fade-up">
-        <div class="bm-problem-card">
-            <div class="bmp-icon">📈</div>
-            <h4>Saturation</h4>
-            <p>MMLU (2020) and HumanEval (2021) were rigorous tests when introduced. Today GPT-4 scores 87% on MMLU, GPT-5 scores ~90%. A 3% gap in a benchmark where the ceiling is 100% tells you almost nothing. The benchmark is broken as a signal, not the models.</p>
-            <div class="bmp-examples">
-                <span class="bmp-tag dead">MMLU — saturated</span>
-                <span class="bmp-tag dead">HumanEval — saturated</span>
-            </div>
-        </div>
-        <div class="bm-problem-card">
-            <div class="bmp-icon">🎯</div>
-            <h4>Different tests, different eras</h4>
-            <p>SWE-bench Verified launched in 2024. Aider Polyglot in 2024. GPQA Diamond in 2023. Models from 2022 were never measured on these. You can't compare GPT-3.5's MMLU score to GPT-5's SWE-bench score — they're measuring different things with different scales.</p>
-            <div class="bmp-examples">
-                <span class="bmp-tag warn">SWE-bench — 2024+</span>
-                <span class="bmp-tag warn">Aider — 2024+</span>
-                <span class="bmp-tag warn">GPQA — 2023+</span>
-            </div>
-        </div>
-        <div class="bm-problem-card">
-            <div class="bmp-icon">🧪</div>
-            <h4>Training contamination</h4>
-            <p>Benchmarks become worthless once labs train on them. Questions leak into pretraining data, benchmark scores stop reflecting real capability. This is why new benchmarks are invented constantly — and why scores from 2022 are especially suspect.</p>
-            <div class="bmp-examples">
-                <span class="bmp-tag dead">GSM8K — contaminated</span>
-                <span class="bmp-tag warn">Most 2022 benchmarks</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- THE TWO STABLE ONES -->
-    <div class="bm-stable-header fade-up">
-        <div class="tag green">✅ What actually works across time</div>
-        <p style="font-size:0.95rem;color:var(--muted);max-width:580px;margin-top:0.25rem">Two signals have been collected continuously since 2023 using the same methodology. They measure different things, but together they give a consistent cross-generation quality score.</p>
-    </div>
-    <div class="bm-stable-grid fade-up">
-        <div class="bm-stable-card">
-            <div class="bms-header">
-                <div class="bms-icon">⚔️</div>
-                <div>
-                    <div class="bms-name">Arena ELO <span class="bms-since">since early 2023</span></div>
-                    <div class="bms-source"><a href="https://lmarena.ai" target="_blank">lmarena.ai ↗</a></div>
-                </div>
-            </div>
-            <p class="bms-desc">Humans pick which model response is better in blind head-to-head comparisons. The ELO rating system means GPT-3.5 and GPT-5.4 are measured on the <strong>exact same scale</strong> — not by what questions they answered, but by how humans prefer their outputs relative to each other.</p>
-            <div class="bms-props">
-                <div class="bms-prop good">✓ Same methodology since launch</div>
-                <div class="bms-prop good">✓ Covers general + coding separately</div>
-                <div class="bms-prop good">✓ Can't be trained on directly</div>
-                <div class="bms-prop warn">~ Reflects human preference, not task accuracy</div>
-            </div>
-        </div>
-        <div class="bm-stable-card">
-            <div class="bms-header">
-                <div class="bms-icon">🔬</div>
-                <div>
-                    <div class="bms-name">AA Intelligence Index <span class="bms-since">since 2023</span></div>
-                    <div class="bms-source"><a href="https://artificialanalysis.ai" target="_blank">artificialanalysis.ai ↗</a></div>
-                </div>
-            </div>
-            <p class="bms-desc">Artificial Analysis runs their own evaluations on every major model using consistent infrastructure and aggregates them into a single 0–100 composite. Unlike leaderboard scores that depend on who submitted, AA re-runs everything themselves on the same hardware.</p>
-            <div class="bms-props">
-                <div class="bms-prop good">✓ Independently run, not self-reported</div>
-                <div class="bms-prop good">✓ Composite — not reliant on a single test</div>
-                <div class="bms-prop good">✓ Covers models back to GPT-3.5 era</div>
-                <div class="bms-prop warn">~ Methodology updates occasionally</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- HOW WE USE THEM -->
-    <div class="bm-formula-note fade-up">
-        <div class="bfn-label">How we combine them</div>
-        <div class="bfn-formula">
-            <span class="bfn-part arena">Arena ELO → z-score (0–100)</span>
-            <span class="bfn-op">+</span>
-            <span class="bfn-part aa">AA Intelligence Index (0–100)</span>
-            <span class="bfn-op">÷ 2</span>
-            <span class="bfn-op">=</span>
-            <span class="bfn-result">Stable Quality Score</span>
-        </div>
-        <p class="bfn-note">Both scores are z-score normalized: <code>(score − mean) / std × 15 + 50</code>, centering each at 50 on its own distribution. This ensures Arena ELO and AA Intelligence contribute equally to the average — without normalization, Arena's larger numbers would dominate. The two normalized scores are then averaged. If only one is available for a model, that single score is used. Task-specific benchmarks (SWE-bench, Aider, etc.) are shown in raw data but <strong>not used in the main value calculation</strong> — they can't fairly compare across model generations.</p>
-    </div>
-</section>
-
-<!-- SUBSCRIPTION MEASUREMENT -->
-<section class="section" id="subscription-method" style="scroll-margin-top:60px">
-    <div class="section-header fade-up">
-        <div class="tag purple">💳 How we measure subscription quotas</div>
-        <div class="section-title">Providers don't publish token limits. We measure them.</div>
-        <p style="font-size:0.95rem;color:var(--muted);max-width:620px;margin-top:0.25rem">Neither OpenAI nor Anthropic publish exact daily token quotas for subscriptions. Both use rolling 5-hour windows and weekly limits expressed as percentages — not absolute numbers. So we measure empirically.</p>
-    </div>
-
-    <div class="formula-grid fade-up" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="formula-card">
-            <h4 style="color:var(--blue)">1. Run a standardized task</h4>
-            <p style="font-size:0.78rem;color:var(--muted);line-height:1.65">We run the same coding task (doubly-linked list + 10 tests) through Codex CLI or Claude Code with <code>--json</code> output, which gives <strong>exact token counts</strong> per API turn — input, cached, output, and reasoning tokens.</p>
-        </div>
-        <div class="formula-card">
-            <h4 style="color:var(--green)">2. Read quota before &amp; after</h4>
-            <p style="font-size:0.78rem;color:var(--muted);line-height:1.65">The CLI's <code>/status</code> command shows your 5-hour and weekly limits as percentages. We record these before and after the task. The delta tells us what fraction of the quota our known token count consumed.</p>
-        </div>
-        <div class="formula-card">
-            <h4 style="color:var(--purple)">3. Calculate total quota</h4>
-            <p style="font-size:0.78rem;color:var(--muted);line-height:1.65"><code>total_quota = tokens_consumed ÷ (pct_consumed / 100)</code><br>Example: 797K tokens consumed 12% of the 5h window → 5h quota ≈ 6.6M tokens. Weekly is the binding constraint → <strong>~1.9M tokens/day</strong> for ChatGPT Plus.</p>
-        </div>
-    </div>
-
-    <div class="fade-up" style="max-width:750px;margin:1.5rem auto 0;text-align:center">
-        <p style="font-size:0.78rem;color:var(--muted);line-height:1.65">
-            Token counts include system prompt (~70K), cached input, reasoning overhead, and tool calls — not just user-visible output.
-            Reasoning effort matters: <strong>xhigh uses 1.7× more tokens</strong> than medium for the same task.
-            <a href="https://github.com/desktop-commander/llm-value-comparison/blob/master/MEASUREMENT_METHODOLOGY.md" target="_blank" style="color:var(--blue)">Full methodology →</a>
-        </p>
-    </div>
-
-    <!-- Measurement results table — populated by prerender -->
-    <div id="measurementResults" class="fade-up" style="max-width:750px;margin:1.5rem auto 0">
-        <h4 style="font-size:0.85rem;color:var(--text);margin-bottom:0.75rem;text-align:center">📊 Our measurements</h4>
-        <table style="width:100%;border-collapse:collapse;font-size:0.72rem;color:var(--text)"><thead><tr style="border-bottom:1px solid var(--border);text-align:left"><th style="padding:0.35rem">Plan</th><th>Tool</th><th>Date</th><th>Runs</th><th>Δ%</th><th>5h window</th><th>Daily est</th><th>Confidence</th></tr></thead><tbody><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Business</td><td>Codex</td><td>2026-04-15</td><td>5</td><td>21%/4%</td><td>11.4M</td><td>8.6M</td><td>🟢 high</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Claude Max</td><td>Claude</td><td>2026-04-14</td><td>1</td><td>0%/0%</td><td>—</td><td>—</td><td>🔴 low</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Plus</td><td>Codex</td><td>2026-04-13</td><td>?</td><td>12%/6%</td><td>—</td><td>1.9M</td><td>🟡 medium</td></tr></tbody></table>
-        <p style="font-size:0.68rem;color:var(--muted);margin-top:0.5rem;text-align:center">Δ% = 5h/weekly quota consumed. Higher = more reliable. <a href="https://github.com/desktop-commander/llm-value-comparison/tree/master/measurements" target="_blank" style="color:var(--blue)">Raw data →</a></p>
-    </div>
-    <!-- /measurementResults -->
-
-    <div class="fade-up" style="max-width:700px;margin:1rem auto 0;text-align:center">
-        <p style="font-size:0.78rem;color:var(--muted)">
-            <strong>Help improve this data.</strong> Run <code>bash scripts/measure-codex-quota.sh</code> on your plan and
-            <a href="https://github.com/desktop-commander/llm-value-comparison/issues/new" target="_blank" style="color:var(--blue)">submit your results</a>.
-        </p>
-    </div>
 </section>
 
 <!-- FULL DATA -->
@@ -1471,7 +1330,149 @@
         </div>
     </div>
 </section>
-</div><!-- /container (wraps #how + #benchmarks + #explore) -->
+
+<!-- BENCHMARKS EXPLAINER -->
+<section class="section" id="benchmarks" style="scroll-margin-top:60px">
+    <div class="section-header fade-up">
+        <div class="tag red">📏 Why benchmarks are hard</div>
+        <div class="section-title">Not all benchmarks age equally.</div>
+        <p>Comparing GPT-3.5 to GPT-5.4 using benchmark scores sounds simple. It isn't. The tests used to measure models in 2023 are mostly useless today — either saturated or discontinued. This matters for any long-term value comparison.</p>
+    </div>
+
+    <!-- THREE PROBLEM CARDS -->
+    <div class="bm-problem-grid fade-up">
+        <div class="bm-problem-card">
+            <div class="bmp-icon">📈</div>
+            <h4>Saturation</h4>
+            <p>MMLU (2020) and HumanEval (2021) were rigorous tests when introduced. Today GPT-4 scores 87% on MMLU, GPT-5 scores ~90%. A 3% gap in a benchmark where the ceiling is 100% tells you almost nothing. The benchmark is broken as a signal, not the models.</p>
+            <div class="bmp-examples">
+                <span class="bmp-tag dead">MMLU — saturated</span>
+                <span class="bmp-tag dead">HumanEval — saturated</span>
+            </div>
+        </div>
+        <div class="bm-problem-card">
+            <div class="bmp-icon">🎯</div>
+            <h4>Different tests, different eras</h4>
+            <p>SWE-bench Verified launched in 2024. Aider Polyglot in 2024. GPQA Diamond in 2023. Models from 2022 were never measured on these. You can't compare GPT-3.5's MMLU score to GPT-5's SWE-bench score — they're measuring different things with different scales.</p>
+            <div class="bmp-examples">
+                <span class="bmp-tag warn">SWE-bench — 2024+</span>
+                <span class="bmp-tag warn">Aider — 2024+</span>
+                <span class="bmp-tag warn">GPQA — 2023+</span>
+            </div>
+        </div>
+        <div class="bm-problem-card">
+            <div class="bmp-icon">🧪</div>
+            <h4>Training contamination</h4>
+            <p>Benchmarks become worthless once labs train on them. Questions leak into pretraining data, benchmark scores stop reflecting real capability. This is why new benchmarks are invented constantly — and why scores from 2022 are especially suspect.</p>
+            <div class="bmp-examples">
+                <span class="bmp-tag dead">GSM8K — contaminated</span>
+                <span class="bmp-tag warn">Most 2022 benchmarks</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- THE TWO STABLE ONES -->
+    <div class="bm-stable-header fade-up">
+        <div class="tag green">✅ What actually works across time</div>
+        <p style="font-size:0.95rem;color:var(--muted);max-width:580px;margin-top:0.25rem">Two signals have been collected continuously since 2023 using the same methodology. They measure different things, but together they give a consistent cross-generation quality score.</p>
+    </div>
+    <div class="bm-stable-grid fade-up">
+        <div class="bm-stable-card">
+            <div class="bms-header">
+                <div class="bms-icon">⚔️</div>
+                <div>
+                    <div class="bms-name">Arena ELO <span class="bms-since">since early 2023</span></div>
+                    <div class="bms-source"><a href="https://lmarena.ai" target="_blank">lmarena.ai ↗</a></div>
+                </div>
+            </div>
+            <p class="bms-desc">Humans pick which model response is better in blind head-to-head comparisons. The ELO rating system means GPT-3.5 and GPT-5.4 are measured on the <strong>exact same scale</strong> — not by what questions they answered, but by how humans prefer their outputs relative to each other.</p>
+            <div class="bms-props">
+                <div class="bms-prop good">✓ Same methodology since launch</div>
+                <div class="bms-prop good">✓ Covers general + coding separately</div>
+                <div class="bms-prop good">✓ Can't be trained on directly</div>
+                <div class="bms-prop warn">~ Reflects human preference, not task accuracy</div>
+            </div>
+        </div>
+        <div class="bm-stable-card">
+            <div class="bms-header">
+                <div class="bms-icon">🔬</div>
+                <div>
+                    <div class="bms-name">AA Intelligence Index <span class="bms-since">since 2023</span></div>
+                    <div class="bms-source"><a href="https://artificialanalysis.ai" target="_blank">artificialanalysis.ai ↗</a></div>
+                </div>
+            </div>
+            <p class="bms-desc">Artificial Analysis runs their own evaluations on every major model using consistent infrastructure and aggregates them into a single 0–100 composite. Unlike leaderboard scores that depend on who submitted, AA re-runs everything themselves on the same hardware.</p>
+            <div class="bms-props">
+                <div class="bms-prop good">✓ Independently run, not self-reported</div>
+                <div class="bms-prop good">✓ Composite — not reliant on a single test</div>
+                <div class="bms-prop good">✓ Covers models back to GPT-3.5 era</div>
+                <div class="bms-prop warn">~ Methodology updates occasionally</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOW WE USE THEM -->
+    <div class="bm-formula-note fade-up">
+        <div class="bfn-label">How we combine them</div>
+        <div class="bfn-formula">
+            <span class="bfn-part arena">Arena ELO → z-score (0–100)</span>
+            <span class="bfn-op">+</span>
+            <span class="bfn-part aa">AA Intelligence Index (0–100)</span>
+            <span class="bfn-op">÷ 2</span>
+            <span class="bfn-op">=</span>
+            <span class="bfn-result">Stable Quality Score</span>
+        </div>
+        <p class="bfn-note">Both scores are z-score normalized: <code>(score − mean) / std × 15 + 50</code>, centering each at 50 on its own distribution. This ensures Arena ELO and AA Intelligence contribute equally to the average — without normalization, Arena's larger numbers would dominate. The two normalized scores are then averaged. If only one is available for a model, that single score is used. Task-specific benchmarks (SWE-bench, Aider, etc.) are shown in raw data but <strong>not used in the main value calculation</strong> — they can't fairly compare across model generations.</p>
+    </div>
+</section>
+
+<!-- SUBSCRIPTION MEASUREMENT -->
+<section class="section" id="subscription-method" style="scroll-margin-top:60px">
+    <div class="section-header fade-up">
+        <div class="tag purple">💳 How we measure subscription quotas</div>
+        <div class="section-title">Providers don't publish token limits. We measure them.</div>
+        <p style="font-size:0.95rem;color:var(--muted);max-width:620px;margin-top:0.25rem">Neither OpenAI nor Anthropic publish exact daily token quotas for subscriptions. Both use rolling 5-hour windows and weekly limits expressed as percentages — not absolute numbers. So we measure empirically.</p>
+    </div>
+
+    <div class="formula-grid fade-up" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="formula-card">
+            <h4 style="color:var(--blue)">1. Run a standardized task</h4>
+            <p style="font-size:0.78rem;color:var(--muted);line-height:1.65">We run the same coding task (doubly-linked list + 10 tests) through Codex CLI or Claude Code with <code>--json</code> output, which gives <strong>exact token counts</strong> per API turn — input, cached, output, and reasoning tokens.</p>
+        </div>
+        <div class="formula-card">
+            <h4 style="color:var(--green)">2. Read quota before &amp; after</h4>
+            <p style="font-size:0.78rem;color:var(--muted);line-height:1.65">The CLI's <code>/status</code> command shows your 5-hour and weekly limits as percentages. We record these before and after the task. The delta tells us what fraction of the quota our known token count consumed.</p>
+        </div>
+        <div class="formula-card">
+            <h4 style="color:var(--purple)">3. Calculate total quota</h4>
+            <p style="font-size:0.78rem;color:var(--muted);line-height:1.65"><code>total_quota = tokens_consumed ÷ (pct_consumed / 100)</code><br>Example: 797K tokens consumed 12% of the 5h window → 5h quota ≈ 6.6M tokens. Weekly is the binding constraint → <strong>~1.9M tokens/day</strong> for ChatGPT Plus.</p>
+        </div>
+    </div>
+
+    <div class="fade-up" style="max-width:750px;margin:1.5rem auto 0;text-align:center">
+        <p style="font-size:0.78rem;color:var(--muted);line-height:1.65">
+            Token counts include system prompt (~70K), cached input, reasoning overhead, and tool calls — not just user-visible output.
+            Reasoning effort matters: <strong>xhigh uses 1.7× more tokens</strong> than medium for the same task.
+            <a href="https://github.com/desktop-commander/llm-value-comparison/blob/master/MEASUREMENT_METHODOLOGY.md" target="_blank" style="color:var(--blue)">Full methodology →</a>
+        </p>
+    </div>
+
+    <!-- Measurement results table — populated by prerender -->
+    <div id="measurementResults" class="fade-up" style="max-width:750px;margin:1.5rem auto 0">
+        <h4 style="font-size:0.85rem;color:var(--text);margin-bottom:0.75rem;text-align:center">📊 Our measurements</h4>
+        <table style="width:100%;border-collapse:collapse;font-size:0.72rem;color:var(--text)"><thead><tr style="border-bottom:1px solid var(--border);text-align:left"><th style="padding:0.35rem">Plan</th><th>Tool</th><th>Date</th><th>Runs</th><th>Δ%</th><th>5h window</th><th>Daily est</th><th>Confidence</th></tr></thead><tbody><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Business</td><td>Codex</td><td>2026-04-15</td><td>5</td><td>21%/4%</td><td>11.4M</td><td>8.6M</td><td>🟢 high</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Claude Max</td><td>Claude</td><td>2026-04-14</td><td>1</td><td>0%/0%</td><td>—</td><td>—</td><td>🔴 low</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Plus</td><td>Codex</td><td>2026-04-13</td><td>?</td><td>12%/6%</td><td>—</td><td>1.9M</td><td>🟡 medium</td></tr></tbody></table>
+        <p style="font-size:0.68rem;color:var(--muted);margin-top:0.5rem;text-align:center">Δ% = 5h/weekly quota consumed. Higher = more reliable. <a href="https://github.com/desktop-commander/llm-value-comparison/tree/master/measurements" target="_blank" style="color:var(--blue)">Raw data →</a></p>
+    </div>
+    <!-- /measurementResults -->
+
+    <div class="fade-up" style="max-width:700px;margin:1rem auto 0;text-align:center">
+        <p style="font-size:0.78rem;color:var(--muted)">
+            <strong>Help improve this data.</strong> Run <code>bash scripts/measure-codex-quota.sh</code> on your plan and
+            <a href="https://github.com/desktop-commander/llm-value-comparison/issues/new" target="_blank" style="color:var(--blue)">submit your results</a>.
+        </p>
+    </div>
+</section>
+</div><!-- /container (wraps #how + #explore + #benchmarks + #subscription-method) -->
 
 <!-- DATA ACCESS + CONTRIBUTE -->
 <div class="container">
@@ -2284,6 +2285,7 @@ function setCompareDefaults() {
 
 loadData();
 </script>
+<script>window.MEASUREMENT_TIMELINE=[{"plan":"Claude Max","date":"2026-04-14","daily":null,"session":20340900,"tool":"claude-code","delta":0},{"plan":"Claude Max","date":"2026-04-14","daily":null,"session":20253300,"tool":"claude-code","delta":0},{"plan":"Plus","date":"2026-04-13","daily":1193388,"session":null,"tool":"codex-cli","delta":9},{"plan":"Plus","date":"2026-04-13","daily":18799878,"session":null,"tool":"codex-cli","delta":10},{"plan":"Plus","date":"2026-04-13","daily":15784935,"session":null,"tool":"codex-cli","delta":10},{"plan":"Plus","date":"2026-04-14","daily":null,"session":29365200,"tool":"codex-cli","delta":2},{"plan":"Business","date":"2026-04-15","daily":8586860,"session":11449147,"tool":"codex-cli","delta":21},{"plan":"Business","date":"2026-04-15","daily":9810176,"session":10300685,"tool":"codex-cli","delta":20},{"plan":"Plus","date":"2026-04-15","daily":39622342,"session":34669550,"tool":"codex-cli","delta":8},{"plan":"Plus","date":"2026-04-13","daily":1897269,"session":null,"tool":"codex-cli","delta":12}];</script>
 <!-- SEO: Pre-rendered 2026-04-15 from 34 models -->
 <div id="seo-content" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
 <h2>Best Value AI Models — 2026-04-15</h2>
