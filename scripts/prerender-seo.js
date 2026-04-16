@@ -321,6 +321,90 @@ html = html.replace('</body>', `<script>window.MEASUREMENT_TIMELINE=${measTimeli
 
 fs.writeFileSync(path.join(REPO, 'index.html'), html);
 
+// Generate llms.txt — single source of truth is models.json + measurements
+// Follows https://llmstxt.org/ spec: H1 title, blockquote summary, linked sections
+const BASE_URL = 'https://desktop-commander.github.io/llm-value-comparison';
+const REPO_URL = 'https://github.com/desktop-commander/llm-value-comparison';
+
+const top10Lines = results.slice(0, 10).map((r, i) => {
+  return `${i + 1}. **${r.model}** (${r.type}) — ${fmt(r.val)} tok/$ · ${r.detail}`;
+}).join('\n');
+
+const measurementLines = Object.entries(measByPlan)
+  .sort()
+  .map(([plan, ms]) => {
+    const best = [...ms].sort((a, b) => b.delta - a.delta)[0];
+    const conf = best.delta >= 20 ? 'high' : best.delta >= 10 ? 'medium' : 'low';
+    const weekly = best.estWeekly ? `${(best.estWeekly / 1e6).toFixed(1)}M tokens/week` : 'no weekly estimate';
+    const dt = best.ts ? best.ts.split('T')[0] : 'unknown date';
+    return `- **${plan}**: ${weekly} · ${conf} confidence · measured ${dt} via ${best.tool} (${best.runs || '?'} runs, ${best.d5}%/5h ${best.dw}%/week consumed)`;
+  }).join('\n');
+
+const llmsTxt = `# LLM Value Calculator
+
+> Quality-adjusted tokens per dollar across local hardware, subscription plans, and API pricing for ${Object.keys(models).length}+ large language models. Unlike provider-published pricing, subscription token limits are empirically measured by running standardized tasks through Codex CLI and Claude Code and reading quota deltas before and after. All three access modes (local, subscription, API) are expressed on the same scale and directly comparable. Last updated: ${today}.
+
+## Current winners
+
+- **Best subscription**: ${bestSub?.model || 'n/a'} via ${bestSub?.detail || '—'} — ${bestSub ? fmt(bestSub.val) : '—'} tok/$
+- **Best API**: ${bestApi?.model || 'n/a'} — ${bestApi ? fmt(bestApi.val) : '—'} tok/$ at ${bestApi?.detail || '—'}
+- **Best local**: ${bestLocal?.model || 'n/a'} on ${bestLocal?.detail || '—'} — ${bestLocal ? fmt(bestLocal.val) : '—'} tok/$
+
+## Top 10 models by quality-adjusted value per dollar
+
+${top10Lines}
+
+## Empirical subscription measurements
+
+${measurementLines || '_No measurements yet._'}
+
+Full measurement history: ${REPO_URL}/tree/master/measurements
+
+## How value is calculated
+
+All three formulas produce "quality-adjusted tokens per dollar" and are directly comparable:
+
+- **Subscription**: \`tokens_per_week × 4 × quality_percent / monthly_price\`
+- **Local**: \`tokens_per_second × 3600 × hours_per_day × 365 × years × quality_percent / hardware_price\`
+- **API**: \`1,000,000 × quality_percent / blended_price_per_million\`
+
+Quality is a z-score normalized composite of Arena ELO (text and coding) and Artificial Analysis Intelligence Index.
+
+## Important caveats
+
+- Subscription value assumes 100% weekly quota usage. Light users see much lower effective value.
+- Local value assumes the chosen hours/day (default 16) and amortization years (default 3).
+- Entries marked with "est." in the ranking have no direct measurement — Claude Max 5x, ChatGPT Pro, Claude Pro, and Gemini Advanced are estimated from related plans.
+- Quality benchmarks (Arena, Artificial Analysis) change methodology occasionally and can shift rankings by 10-20%.
+
+## Main pages
+
+- [LLM Value Calculator (interactive site)](${BASE_URL}/): Ranking, compare tool, timeline charts, raw data tables
+- [GitHub repository](${REPO_URL}): Source code, data, measurement scripts
+
+## Data files (JSON, Apache 2.0 licensed — free to use)
+
+- [models.json](${REPO_URL}/blob/master/data/models.json): All ${Object.keys(models).length} models with benchmarks, API pricing, local performance, subscription data
+- [hardware.json](${REPO_URL}/blob/master/data/hardware.json): Hardware configurations with prices and VRAM specs
+- [benchmarks.json](${REPO_URL}/blob/master/data/benchmarks.json): Quality benchmark scores used for z-score normalization
+- [measurements/](${REPO_URL}/tree/master/measurements): Raw JSON output from each Codex CLI or Claude Code measurement run
+
+## Methodology and contributing
+
+- [MEASUREMENT_METHODOLOGY.md](${REPO_URL}/blob/master/MEASUREMENT_METHODOLOGY.md): How subscription quotas are measured
+- [CONTRIBUTING.md](${REPO_URL}/blob/master/CONTRIBUTING.md): How humans or AI agents can submit new measurements
+- [DATA_SOURCES.md](${REPO_URL}/blob/master/DATA_SOURCES.md): Where benchmark and pricing data comes from
+- [Measurement scripts](${REPO_URL}/tree/master/scripts): Bash automation for Codex and Claude Code
+
+## Attribution
+
+If you use this data or host a fork, please credit:
+"Data from [LLM Value Calculator](${BASE_URL}/), supported by [Desktop Commander](https://desktopcommander.app)"
+`;
+
+fs.writeFileSync(path.join(REPO, 'llms.txt'), llmsTxt);
+console.log(`  ✓ Generated llms.txt: ${llmsTxt.split('\n').length} lines`);
+
 console.log(`Pre-rendered SEO content into index.html:`);
 console.log(`  ✓ Ranked list: ${top20.length} models pre-rendered (was "Loading…")`);
 console.log(`  ✓ Winners: Local=${bestLocal?.model || 'none'}, Sub=${bestSub?.model || 'none'}, API=${bestApi?.model || 'none'}`);
