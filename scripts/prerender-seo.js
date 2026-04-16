@@ -373,7 +373,7 @@ Quality is a z-score normalized composite of Arena ELO (text and coding) and Art
 ## Important caveats
 
 - Subscription value assumes 100% weekly quota usage. Light users see much lower effective value.
-- Local value assumes the chosen hours/day (default 16) and amortization years (default 3).
+- Local value assumes the chosen hours/day (default 16) and amortization years (default 3). Electricity is not yet included in the calculation (typically $5–$60/month depending on hardware and usage patterns — an RTX 3090 draws ~70W idle, a Mac Mini ~30W under load).
 - Entries marked with "est." in the ranking have no direct measurement — Claude Max 5x, ChatGPT Pro, Claude Pro, and Gemini Advanced are estimated from related plans.
 - Quality benchmarks (Arena, Artificial Analysis) change methodology occasionally and can shift rankings by 10-20%.
 
