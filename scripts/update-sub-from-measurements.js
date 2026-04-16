@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Update models.json subscription tokensPerDay from measurement files.
+ * Update models.json subscription tokensPerWeek from measurement files.
  * 
  * Reads measurements/*.json, finds the best estimate per plan,
  * and updates data/models.json with measured values.

@@ -300,13 +300,13 @@ for (const f of measFiles) {
     const pm = plan.match(/\((\w+)\)$/); if (pm) plan = pm[1];
     const pm2 = plan.match(/^(\w[\w\s]*?)\s*\(/); if (pm2) plan = pm2[1];
     const est = d.estimates || {};
-    const daily = est.daily_tokens || est.daily_tokens_effective;
+    const weekly = est.weekly_tokens;
     const session = est.session_tokens || est['5h_tokens'];
-    if (!daily && !session) continue;
+    if (!weekly && !session) continue;
     measTimeline.push({
       plan,
       date: d.timestamp ? d.timestamp.split('T')[0] : null,
-      daily: daily || null,
+      weekly: weekly || null,
       session: session || null,
       tool: d.tool,
       delta: Math.max(d.quota_consumed?.['5h_pct'] || 0, d.quota_consumed?.weekly_pct || d.quota_consumed?.weekly_all_pct || 0),

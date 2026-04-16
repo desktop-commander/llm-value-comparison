@@ -116,10 +116,10 @@ This means reasoning effort directly affects how many tasks fit in your quota.
 
 ### For the Value Calculator
 
-We use `tokensPerDay = 1,900,000` for ChatGPT Plus in our formula.
-This is the weekly-limited rate at xhigh reasoning effort.
+We use `tokensPerWeek = 13,280,883` for ChatGPT Plus in our formula.
+Value = `tokensPerWeek × 4 × quality% / monthlyPrice`.
 
-Pro ($100/mo) is officially 5x Plus → `tokensPerDay = 9,500,000`.
+Pro ($100/mo) is officially 5x Plus → `tokensPerWeek = 66,500,000`.
 (Currently has 2x boost ending May 31, 2026, making it effectively 10x.)
 
 ## How to Contribute Your Own Measurements
