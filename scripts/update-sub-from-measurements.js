@@ -19,7 +19,7 @@ const DRY_RUN = process.argv.includes('--dry-run');
 const PLAN_MAP = {
   'Plus': { subId: 'chatgpt_plus', monthlyPrice: 20 },
   'Pro': { subId: 'chatgpt_pro', monthlyPrice: 200 },
-  'Business': { subId: 'chatgpt_business', monthlyPrice: null },
+  'Business': { subId: 'chatgpt_business', monthlyPrice: 30 },
   'Claude Pro': { subId: 'claude_pro', monthlyPrice: 20 },
   'Claude Max': { subId: 'claude_max_5x', monthlyPrice: 100 },
   'Claude Max 5x': { subId: 'claude_max_5x', monthlyPrice: 100 },

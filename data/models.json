@@ -294,6 +294,14 @@
         "confidence": "low",
         "notes": "Estimated as 5x Plus (measured Plus = 1900000/day). Pro $100 is officially 5x Plus. With current 2x boost (ending May 31, 2026) effective is 10x.",
         "source": "https://developers.openai.com/codex/pricing"
+      },
+      "chatgpt_business": {
+        "name": "ChatGPT Business",
+        "monthlyPrice": 30,
+        "tokensPerDay": 8586860,
+        "confidence": "high",
+        "source": "https://github.com/desktop-commander/llm-value-comparison/blob/master/measurements/codex_measurement_20260415_110603.json",
+        "notes": "Measured 2026-04-15 via codex-cli. 5 runs, 2,404,321 tokens, 21% 5h / 4% weekly consumed."
       }
     }
   },
@@ -683,6 +691,14 @@
         "confidence": "low",
         "notes": "Estimated as 5x Plus (measured Plus = 1900000/day). Pro $100 is officially 5x Plus. With current 2x boost (ending May 31, 2026) effective is 10x.",
         "source": "https://developers.openai.com/codex/pricing"
+      },
+      "chatgpt_business": {
+        "name": "ChatGPT Business",
+        "monthlyPrice": 30,
+        "tokensPerDay": 8586860,
+        "confidence": "high",
+        "source": "https://github.com/desktop-commander/llm-value-comparison/blob/master/measurements/codex_measurement_20260415_110603.json",
+        "notes": "Measured 2026-04-15 via codex-cli. 5 runs, 2,404,321 tokens, 21% 5h / 4% weekly consumed."
       }
     },
     "_aa_synced": "2026-04-08"
@@ -922,6 +938,14 @@
         "confidence": "low",
         "notes": "Estimated as 5x Plus (measured Plus = 1900000/day). Pro $100 is officially 5x Plus. With current 2x boost (ending May 31, 2026) effective is 10x.",
         "source": "https://developers.openai.com/codex/pricing"
+      },
+      "chatgpt_business": {
+        "name": "ChatGPT Business",
+        "monthlyPrice": 30,
+        "tokensPerDay": 8586860,
+        "confidence": "high",
+        "source": "https://github.com/desktop-commander/llm-value-comparison/blob/master/measurements/codex_measurement_20260415_110603.json",
+        "notes": "Measured 2026-04-15 via codex-cli. 5 runs, 2,404,321 tokens, 21% 5h / 4% weekly consumed."
       }
     },
     "_aa_synced": "2026-04-08"
@@ -1017,6 +1041,14 @@
         "confidence": "low",
         "notes": "Estimated as 5x Plus (measured Plus = 1900000/day). Pro $100 is officially 5x Plus. With current 2x boost (ending May 31, 2026) effective is 10x.",
         "source": "https://developers.openai.com/codex/pricing"
+      },
+      "chatgpt_business": {
+        "name": "ChatGPT Business",
+        "monthlyPrice": 30,
+        "tokensPerDay": 8586860,
+        "confidence": "high",
+        "source": "https://github.com/desktop-commander/llm-value-comparison/blob/master/measurements/codex_measurement_20260415_110603.json",
+        "notes": "Measured 2026-04-15 via codex-cli. 5 runs, 2,404,321 tokens, 21% 5h / 4% weekly consumed."
       }
     },
     "_aa_synced": "2026-04-03"
