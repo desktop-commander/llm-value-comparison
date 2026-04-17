@@ -119,7 +119,7 @@ top20.forEach((r, i) => {
   rankedHtml += `<div class="rank-row">
     <span class="rank-num" style="color:${i<3 ? typeColor[r.type] : '#9b9ba4'}">#${i+1}</span>
     <span class="rank-type" style="color:${typeColor[r.type]}">${typeIcon[r.type]} ${r.type === 'Subscription' ? 'Sub' : r.type}</span>
-    <span class="rank-name">${name}</span>
+    <span class="rank-name" title="${name.replace(/"/g, '&quot;')}">${name}</span>
     <div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%;background:${typeColor[r.type]};opacity:0.9">${pct>18?fmt(r.val):''}</div></div>
     <span class="rank-val-out" style="color:${typeColor[r.type]}">${pct<=18?fmt(r.val):''}</span>
     <span class="rank-detail">${r.detail} (${r.score.toFixed(1)}%)</span>
