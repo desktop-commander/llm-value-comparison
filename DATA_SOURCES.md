@@ -27,7 +27,7 @@ This document explains where data comes from and how to update it.
 | Data | Reason | Workaround |
 |------|--------|-----------|
 | Subscription token limits | Empirically measured via CLI + /status | `scripts/measure-codex-quota.sh` |
-| Local tok/s benchmarks | Hardware-specific, no central DB | PRs from community + DC production data |
+| Local tok/s benchmarks | Hardware-specific, no central DB | PRs from community + DC telemetry data |
 | SWE-bench scores | No public API | Monthly manual scrape |
 
 ## Hardware Prices
@@ -45,7 +45,7 @@ No free API exists for GPU/hardware prices. PCPartPicker has an internal API but
 **Update frequency:** Quarterly manual check is sufficient — GPU prices change slowly.
 **Convention:** GPU-only entries use MSRP or current street price. Mac/laptop entries use full system price (marked with "(full system)" in name). Discontinued GPUs use used/eBay price.
 
-## DC Production Data
+## DC Telemetry Data
 
 [Desktop Commander](https://desktopcommander.app) is an AI automation platform that lets AI agents run local tasks on your computer, including running local LLMs via Ollama, LM Studio, and similar tools. When users opt in to usage data, the app records the local model + hardware combinations they run and the measured output tokens per second.
 
@@ -61,7 +61,7 @@ This gives us **real-world inference benchmarks** across a long tail of hardware
 - Exact GPU model, CPU, OS, RAM
 - Average tokens/second over multiple sessions (`avg_tps`)
 - Number of messages measured (`msgs`) for confidence assessment
-- Tagged with `source: "DC production data"` in models.json
+- Tagged with `source: "DC telemetry data"` in models.json
 
 **Privacy:** Only anonymous hardware specs and performance numbers are imported. No user identifiers, prompts, or model outputs.
 

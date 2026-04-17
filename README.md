@@ -62,7 +62,7 @@ All data is synced from multiple sources. See [DATA_SOURCES.md](DATA_SOURCES.md)
 | `node scripts/sync-from-aa.js` | [Artificial Analysis](https://artificialanalysis.ai/), [Arena AI](https://arena.ai/), [OpenRouter](https://openrouter.ai/) | API pricing, benchmark scores, Arena ELO, API throughput |
 | `node scripts/sync-from-arena.js` | [Arena AI](https://arena.ai/) full leaderboard (338 models) | Arena text + code ELO via Chrome scraping |
 | `node scripts/sync-hardware-prices.js` | [bestvaluegpu.com](https://bestvaluegpu.com/), [apple.com](https://apple.com/shop/buy-mac), [Swappa](https://swappa.com/) | GPU prices (HTTP), Mac prices (Playwright + Chrome) |
-| `node scripts/import-dc-local-data.js` | DC production database | Local model tok/s with real hardware info |
+| `node scripts/import-dc-local-data.js` | DC telemetry database | Local model tok/s with real hardware info |
 
 ### Manual (community PRs)
 

@@ -386,7 +386,7 @@ Quality is a z-score normalized blend of three public benchmarks: Arena text ELO
 - **API pricing**: Artificial Analysis + provider pricing pages, verified against OpenRouter
 - **Quality benchmarks**: Arena AI (text and coding ELO) + Artificial Analysis Intelligence Index
 - **Subscription token limits**: empirically measured by running a standardized coding task through the CLI (Codex CLI or Claude Code) and reading the /status quota delta
-- **Local inference speed (tokens/second)**: real-world measurements from [Desktop Commander](https://desktopcommander.app) production data — an AI automation platform that records local model × hardware performance from actual user sessions (Ollama, LM Studio, etc.), anonymized
+- **Local inference speed (tokens/second)**: real-world measurements from [Desktop Commander](https://desktopcommander.app) telemetry data — an AI automation platform that records local model × hardware performance from actual user sessions (Ollama, LM Studio, etc.), anonymized
 - **Hardware prices**: MSRP, Apple Refurbished store, street prices via bestvaluegpu.com and PCPartPicker
 
 ## Important caveats

@@ -1,6 +1,6 @@
-# DC Production Data — Models Not Yet In Our Tool
+# DC Telemetry Data — Models Not Yet In Our Tool
 
-These models have real DC production data but aren't in  yet. To include them in the value ranking, add them with quality benchmarks (Arena ELO, AA Intelligence Index, MMLU).
+These models have real DC telemetry data but aren't in  yet. To include them in the value ranking, add them with quality benchmarks (Arena ELO, AA Intelligence Index, MMLU).
 
 ## New target model IDs (referenced by MODEL_MAP but not in models.json)
 
