@@ -181,5 +181,122 @@
     "year": 2018,
     "notes": "Very old/cheap laptop with Core m3-8100Y. CPU-only inference. Used price estimate.",
     "source": "https://www.intel.com/content/www/us/en/products/platforms/details/amber-lake-y.html"
+  },
+  "rtx_5060_ti": {
+    "name": "RTX 5060 Ti",
+    "price": 430,
+    "vram": 16,
+    "year": 2025,
+    "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5060-family/"
+  },
+  "rtx_4070": {
+    "name": "RTX 4070",
+    "price": 550,
+    "vram": 12,
+    "year": 2023,
+    "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4070/"
+  },
+  "rtx_3080": {
+    "name": "RTX 3080",
+    "price": 400,
+    "vram": 10,
+    "year": 2020,
+    "notes": "Used market price",
+    "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/30-series/rtx-3080-3080ti/"
+  },
+  "rtx_3060": {
+    "name": "RTX 3060",
+    "price": 280,
+    "vram": 12,
+    "year": 2021,
+    "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/30-series/rtx-3060-3060ti/"
+  },
+  "gtx_1660_super": {
+    "name": "GTX 1660 SUPER (used)",
+    "price": 120,
+    "vram": 6,
+    "year": 2019,
+    "notes": "Used market price; very limited for modern LLMs",
+    "source": "https://www.nvidia.com/en-us/geforce/graphics-cards/16-series/gtx-1660-super/"
+  },
+  "rtx_2000_ada": {
+    "name": "RTX 2000 Ada Generation",
+    "price": 650,
+    "vram": 16,
+    "year": 2024,
+    "notes": "Professional workstation card",
+    "source": "https://www.nvidia.com/en-us/design-visualization/rtx-2000-ada/"
+  },
+  "rtx_4070_laptop": {
+    "name": "RTX 4070 Laptop (full system)",
+    "price": 1500,
+    "vram": 8,
+    "year": 2023,
+    "notes": "Laptop GPU, shared system RAM",
+    "source": "https://www.nvidia.com/en-us/geforce/laptops/"
+  },
+  "rtx_500_ada_laptop": {
+    "name": "RTX 500 Ada Laptop (full system)",
+    "price": 1800,
+    "vram": 4,
+    "year": 2024,
+    "notes": "Mobile workstation card",
+    "source": "https://www.nvidia.com/en-us/design-visualization/rtx-500-ada-laptop/"
+  },
+  "amd_780m_igpu": {
+    "name": "AMD Radeon 780M (iGPU, full system)",
+    "price": 900,
+    "vram": 8,
+    "year": 2023,
+    "notes": "Integrated GPU on Ryzen 7040/8000 series; uses shared system RAM",
+    "source": "https://www.amd.com/en/products/apu/amd-ryzen-7-7840u"
+  },
+  "mac_m4_pro": {
+    "name": "Mac M4 Pro 24GB (full system)",
+    "price": 1999,
+    "vram": 24,
+    "year": 2024,
+    "notes": "Unified memory",
+    "source": "https://www.apple.com/shop/buy-mac/mac-mini"
+  },
+  "mac_m2_ultra": {
+    "name": "Mac M2 Ultra 64GB (full system)",
+    "price": 3999,
+    "vram": 64,
+    "year": 2023,
+    "notes": "Mac Studio or Mac Pro, unified memory",
+    "source": "https://www.apple.com/shop/refurbished/mac/mac-studio"
+  },
+  "mac_m2_pro": {
+    "name": "Mac M2 Pro 16GB (full system)",
+    "price": 1499,
+    "vram": 16,
+    "year": 2023,
+    "notes": "MacBook Pro or Mac mini",
+    "source": "https://www.apple.com/shop/refurbished/mac"
+  },
+  "mac_m1_pro": {
+    "name": "Mac M1 Pro 16GB (full system)",
+    "price": 1399,
+    "vram": 16,
+    "year": 2021,
+    "notes": "14/16-inch MacBook Pro, unified memory",
+    "source": "https://www.apple.com/shop/refurbished/mac/macbook-pro"
+  },
+  "mac_m1_8gb": {
+    "name": "Mac M1 8GB (full system)",
+    "price": 699,
+    "vram": 8,
+    "year": 2020,
+    "notes": "MacBook Air, MacBook Pro 13\", Mac mini",
+    "source": "https://www.apple.com/shop/refurbished/mac"
+  },
+  "intel_uhd_laptop": {
+    "name": "Intel UHD Graphics Laptop (full system)",
+    "price": 450,
+    "vram": 16,
+    "year": 2019,
+    "notes": "Generic Intel UHD integrated GPU, shared system RAM",
+    "source": "https://www.intel.com/content/www/us/en/products/details/processors/core.html"
   }
 }
