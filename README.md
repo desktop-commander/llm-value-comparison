@@ -36,6 +36,33 @@ All data is open JSON — fetch directly, no API key needed:
 
 **Attribution:** If you use this data, please credit: *"Data from [Best Value AI](https://desktop-commander.github.io/best-value-ai/), supported by [Desktop Commander](https://desktopcommander.app)"*
 
+## Use from AI agents
+
+This repo ships with two **agent skills** usable from Claude Code, Cursor, Codex, Copilot, Windsurf, and 30+ other coding agents via the [skills](https://skills.sh) CLI.
+
+**Install both:**
+
+```bash
+npx skills add desktop-commander/best-value-ai
+```
+
+**Or pick one:**
+
+```bash
+# For: "which AI should I pay for?" recommendations
+npx skills add desktop-commander/best-value-ai --skill ai-value-advisor
+
+# For: measuring your own Claude/Codex quota and contributing data
+npx skills add desktop-commander/best-value-ai --skill submit-usage-measurement
+```
+
+| Skill | Triggers when user says… | What it does |
+|-------|--------------------------|--------------|
+| [`ai-value-advisor`](skills/ai-value-advisor/SKILL.md) | "which AI is best value", "ChatGPT Plus vs Claude Pro", "best local LLM for my GPU", "is ChatGPT Business worth it" | Fetches live data, asks about use case + usage + budget, recommends best plan/setup with caveats |
+| [`submit-usage-measurement`](skills/submit-usage-measurement/SKILL.md) | "measure my Claude Max quota", "benchmark ChatGPT Business", "contribute data to best-value-ai" | Runs the measurement script, validates output, opens a PR to `measurements/` |
+
+Both skills read live data from the site and degrade gracefully if offline (fallback to the checked-out `data/` files).
+
 ## Features
 
 * **🏆 Winner cards** — Best value in each category, auto-calculated, no config needed
