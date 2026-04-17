@@ -284,6 +284,33 @@
         .formula-card.fc-sub::after    { background: var(--purple); }
         .formula-card.fc-api::after    { background: var(--blue); }
 
+        /* ── USE CASE CARDS (SEO sections) ── */
+        .use-case-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 1rem; margin-top: 1.75rem;
+        }
+        @media (max-width: 750px) { .use-case-grid { grid-template-columns: 1fr; } }
+        .use-case-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.25rem 1.4rem;
+            opacity: 0; transform: translateY(16px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+        .use-case-card.visible { opacity: 1; transform: translateY(0); }
+        .use-case-card h3 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-size: 1.05rem; font-weight: 700;
+            letter-spacing: -0.01em; margin-bottom: 0.7rem;
+            color: var(--text); scroll-margin-top: 80px;
+        }
+        .use-case-card p {
+            font-size: 0.85rem; color: var(--muted); line-height: 1.55;
+            margin-bottom: 0.6rem;
+        }
+        .use-case-card p:last-child { margin-bottom: 0; font-size: 0.8rem; }
+        .use-case-card strong { color: var(--text); }
+        .use-case-card em { font-style: italic; color: var(--text); }
+
         .formula-card h4 {
             font-family: 'Bricolage Grotesque', sans-serif;
             font-size: 0.95rem; font-weight: 700;
@@ -887,6 +914,7 @@
     <a class="nav-brand" href="#" style="display:flex;align-items:center;gap:0.5rem"><img src="favicon-source.png" alt="" width="26" height="26" style="border-radius:6px"><span><em>LLM</em> Value</span></a>
     <div class="nav-links">
         <a href="#winners">🏆 Best value</a>
+        <a href="#use-cases">🎯 By use case</a>
         <a href="#explore">📊 Compare</a>
         <a href="#how">📐 Method</a>
         <a href="#benchmarks">📏 Benchmarks</a>
@@ -1032,6 +1060,56 @@
         Quality scores: <a href="#benchmarks">Arena ELO + AA Intelligence Index</a> — the two benchmarks that remain comparable across model generations. See the <a href="#benchmarks">Benchmarks section</a> for why other benchmarks can't fairly compare across eras.
     </p>
 </section>
+
+<!-- USE-CASE SEO SECTIONS -->
+<section class="section" id="use-cases" style="scroll-margin-top:60px">
+    <div class="section-header fade-up">
+        <div class="tag green">🎯 Which AI is best for…</div>
+        <h2 class="section-title">Pick the right AI for your use case</h2>
+        <p>Different tasks reward different models. Coding benchmarks don't match writing benchmarks, and a model that crushes academic reasoning might not be the best local option for a 24GB GPU. Here's a quick guide based on the data below — click any link to jump to the filtered view.</p>
+    </div>
+
+    <div class="use-case-grid">
+
+        <div class="use-case-card fade-up">
+            <h3 id="coding">💻 Best LLM for coding</h3>
+            <p>Coding tasks are typically input-heavy — you send a lot of context, the model writes a short diff. Use the 90/10 coding I/O ratio to see which models give you the most coding tokens per dollar. Claude Sonnet and Opus dominate Arena's code ELO leaderboard, but open models like Qwen3-Coder and GPT-OSS offer better local value if you have the VRAM. For subscriptions, ChatGPT Business at $30/seat/month crushes the value ranking — measured at ~60M tokens/week.</p>
+            <p><a href="#ranking-section" style="color:var(--blue)">See coding-ratio ranking →</a></p>
+        </div>
+
+        <div class="use-case-card fade-up">
+            <h3 id="writing">✍️ Best AI for writing and copywriting</h3>
+            <p>Writing tasks lean output-heavy — short prompts, long generations. For subscriptions, this tips toward plans with generous output allowances; for APIs, it favors models with low output-token pricing. GPT-5 Chat and Claude Opus rank highest on Arena's text leaderboard for general writing quality. If cost is the priority, Gemini Flash and GLM-4.7 Flash offer strong quality at API rates below $1 per million tokens.</p>
+            <p><a href="#explore" style="color:var(--blue)">Compare writing-heavy ratios →</a></p>
+        </div>
+
+        <div class="use-case-card fade-up">
+            <h3 id="local">🖥️ Best local LLM for your GPU</h3>
+            <p>If you're running models locally, the question isn't just which model is best — it's which combination of model, hardware, and quantization. Our data includes real tokens/second measurements from Desktop Commander users across 36 hardware configurations. An RTX 3090 at Q4_K_M runs Llama 3.1 70B around 25 tok/s; an M3 Max with 128GB unified memory handles Qwen3.5 35B A3B at 14+ tok/s. The best local value right now is <strong>Qwen3.5 35B A3B (Reasoning)</strong> — high quality, modest VRAM, strong throughput.</p>
+            <p><a href="#explore" style="color:var(--blue)">Browse hardware benchmarks →</a></p>
+        </div>
+
+        <div class="use-case-card fade-up">
+            <h3 id="chatgpt-vs-claude">🤔 ChatGPT vs Claude — which is better value in 2026?</h3>
+            <p>They're close on quality — Claude Opus 4.6 and GPT-5 trade the top spot depending on benchmark. Value differs more by <em>plan</em> than by model. ChatGPT Plus ($20/mo) gives you ~13M tokens/week. Claude Pro ($20/mo) is estimated at ~10M/week. Claude Max 20× ($200/mo) measures 203M/week — by far the highest quota we've seen on a personal plan, but you need to use it heavily to get the value. For light users, Plus wins; for heavy coders, Max 20× wins; for teams, ChatGPT Business at $30/seat is the sleeper pick.</p>
+            <p><a href="#explore" style="color:var(--blue)">See side-by-side →</a></p>
+        </div>
+
+        <div class="use-case-card fade-up">
+            <h3 id="plus-vs-pro-vs-business">💳 ChatGPT Plus vs Pro vs Business — tokens per dollar</h3>
+            <p>ChatGPT Business ($30/seat/month) delivers ~60M tokens/week in our measurements — that's <strong>4.5× the tokens/$ of Plus</strong> ($20/mo, ~13M/week) and roughly equal to what ChatGPT Pro promises at 10× the cost. If you're currently on Plus and using it heavily for coding or agents, Business is almost always the better deal. Pro ($200/mo) only makes sense if you specifically need unlimited o1/Pro model access — the raw tokens/$ ratio favors Business.</p>
+            <p><a href="#subscription-method" style="color:var(--blue)">See measurement methodology →</a></p>
+        </div>
+
+        <div class="use-case-card fade-up">
+            <h3 id="claude-max">⚡ Claude Max 5× vs 20× — is the upgrade worth it?</h3>
+            <p>We measured Claude Max 20× at 203M tokens/week — enough to saturate any single developer. The 5× plan is estimated at ~51M/week (5/20 ratio of measured 20×). At $100 vs $200/month, Max 5× has the better raw tokens/$ ratio <em>if</em> you won't hit the cap. Max 20× wins only if you're doing sustained heavy work — Claude Code all day, multi-agent workflows, or running Opus on large contexts. For most users, Max 5× is the sweet spot; for power users, 20× removes the rate-limit friction.</p>
+            <p><a href="#subscription-method" style="color:var(--blue)">See quota measurements →</a></p>
+        </div>
+
+    </div>
+</section>
+<!-- /USE-CASE SEO SECTIONS -->
 
 <!-- FULL DATA -->
 <section class="section" id="explore" style="scroll-margin-top:60px">
