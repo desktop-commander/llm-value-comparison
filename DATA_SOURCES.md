@@ -47,13 +47,23 @@ No free API exists for GPU/hardware prices. PCPartPicker has an internal API but
 
 ## DC Production Data
 
-Desktop Commander's production database provides real-world local inference benchmarks from actual user sessions. These are stored with hardware info (GPU, CPU, RAM, OS) and measured output tokens per second.
+[Desktop Commander](https://desktopcommander.app) is an AI automation platform that lets AI agents run local tasks on your computer, including running local LLMs via Ollama, LM Studio, and similar tools. When users opt in to usage data, the app records the local model + hardware combinations they run and the measured output tokens per second.
+
+This gives us **real-world inference benchmarks** across a long tail of hardware configurations that no single benchmark site covers — old MacBooks, workstation laptops, mid-range GPUs, mixed CPU+iGPU setups. A user running Qwen3.5 on an RTX 3080 Ti and another running it on a Mac M1 Max both contribute measurements.
 
 | Source | What it provides | Access |
 |--------|-----------------|--------|
-| DC App production DB | Local model tok/s + exact hardware combos | `node scripts/import-dc-local-data.js` (requires DB access) |
+| DC App production DB | Anonymous local model tok/s + exact hardware combos from real user sessions | `node scripts/import-dc-local-data.js` (requires DB access) |
 
-**Import script:** `scripts/import-dc-local-data.js` — maps DB model×hardware combos to models.json entries. Re-run periodically as more users run local models. All entries are tagged with `source: "DC production data"` and include message count for confidence assessment.
+**Why this is unique:** most local-LLM benchmarks are either synthetic (run by the repo maintainer on their own hardware) or crowdsourced on consumer forums where quantization and settings vary wildly. DC's data comes from actual daily usage across many users, so it reflects real steady-state performance rather than best-case single-run numbers.
+
+**Import script:** `scripts/import-dc-local-data.js` — maps DB model×hardware combos to `models.json` entries. Re-run periodically as more users run local models. All entries include:
+- Exact GPU model, CPU, OS, RAM
+- Average tokens/second over multiple sessions (`avg_tps`)
+- Number of messages measured (`msgs`) for confidence assessment
+- Tagged with `source: "DC production data"` in models.json
+
+**Privacy:** Only anonymous hardware specs and performance numbers are imported. No user identifiers, prompts, or model outputs.
 
 **Arena full leaderboard scraper:** `scripts/sync-from-arena.js` — scrapes the full 338-model Arena leaderboard from Chrome tabs (the free API only has ~60 models). Requires two Chrome tabs open: `arena.ai/leaderboard/text` and `arena.ai/leaderboard/code`.
 

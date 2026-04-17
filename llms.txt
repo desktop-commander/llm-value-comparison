@@ -1,6 +1,6 @@
 # LLM Value Calculator
 
-> Quality-adjusted tokens per dollar across local hardware, subscription plans, and API pricing for 34+ large language models. Unlike provider-published pricing, subscription token limits are empirically measured by running standardized tasks through Codex CLI and Claude Code and reading quota deltas before and after. All three access modes (local, subscription, API) are expressed on the same scale and directly comparable. Last updated: 2026-04-16.
+> Quality-adjusted tokens per dollar across local hardware, subscription plans, and API pricing for 34+ large language models. Unlike provider-published pricing, subscription token limits are empirically measured by running standardized tasks through Codex CLI and Claude Code and reading quota deltas before and after. All three access modes (local, subscription, API) are expressed on the same scale and directly comparable. Last updated: 2026-04-17.
 
 ## Current winners
 
@@ -38,6 +38,14 @@ All three formulas produce "quality-adjusted tokens per dollar" and are directly
 - **API**: `1,000,000 × quality_percent / blended_price_per_million`
 
 Quality is a z-score normalized composite of Arena ELO (text and coding) and Artificial Analysis Intelligence Index.
+
+## Data sources
+
+- **API pricing**: Artificial Analysis + provider pricing pages, verified against OpenRouter
+- **Quality benchmarks**: Arena AI (text and coding ELO) + Artificial Analysis Intelligence Index
+- **Subscription token limits**: empirically measured by running a standardized coding task through the CLI (Codex CLI or Claude Code) and reading the /status quota delta
+- **Local inference speed (tokens/second)**: real-world measurements from [Desktop Commander](https://desktopcommander.app) production data — an AI automation platform that records local model × hardware performance from actual user sessions (Ollama, LM Studio, etc.), anonymized
+- **Hardware prices**: MSRP, Apple Refurbished store, street prices via bestvaluegpu.com and PCPartPicker
 
 ## Important caveats
 
