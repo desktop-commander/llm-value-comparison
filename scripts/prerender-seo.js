@@ -242,6 +242,18 @@ html = html.replace(
   `Updated automatically · ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
 );
 
+// 4b. Inject current year into title, meta description, and H1 sub for SEO freshness
+//     (but NOT in URL slug — those stay stable)
+const currentYear = new Date().getFullYear();
+html = html.replace(
+  /<title>Best Value AI: Local vs API vs Subscription — Compare \d+\+ LLMs<\/title>/,
+  `<title>Best Value AI ${currentYear}: Local vs API vs Subscription — Compare ${Object.keys(models).length}+ LLMs</title>`
+);
+html = html.replace(
+  /<meta name="description" content="Should you run a local LLM[^"]+"/,
+  `<meta name="description" content="Should you run a local LLM, pay per token via API, or subscribe to ChatGPT Plus or Claude Max? Compare ${Object.keys(models).length}+ AI models by quality-adjusted tokens per dollar. Updated ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}."`
+);
+
 // Pre-render measurement results table
 const MEAS_DIR = path.join(REPO, 'measurements');
 const measFiles = fs.readdirSync(MEAS_DIR).filter(f => f.endsWith('.json'));
