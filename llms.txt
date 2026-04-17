@@ -56,7 +56,7 @@ Quality is a z-score normalized blend of three public benchmarks: Arena text ELO
 
 ## Main pages
 
-- [LLM Value Calculator (interactive site)](https://desktop-commander.github.io/best-value-ai/): Ranking, compare tool, timeline charts, raw data tables
+- [LLM Value Calculator (interactive site)](https://desktopcommander.app/best-value-ai/): Ranking, compare tool, timeline charts, raw data tables
 - [GitHub repository](https://github.com/desktop-commander/best-value-ai): Source code, data, measurement scripts
 
 ## Data files (JSON, Apache 2.0 licensed — free to use)
@@ -76,4 +76,4 @@ Quality is a z-score normalized blend of three public benchmarks: Arena text ELO
 ## Attribution
 
 If you use this data or host a fork, please credit:
-"Data from [LLM Value Calculator](https://desktop-commander.github.io/best-value-ai/), supported by [Desktop Commander](https://desktopcommander.app)"
+"Data from [LLM Value Calculator](https://desktopcommander.app/best-value-ai/), supported by [Desktop Commander](https://desktopcommander.app)"

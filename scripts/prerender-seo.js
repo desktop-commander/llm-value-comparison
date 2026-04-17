@@ -334,7 +334,7 @@ fs.writeFileSync(path.join(REPO, 'index.html'), html);
 
 // Generate llms.txt — single source of truth is models.json + measurements
 // Follows https://llmstxt.org/ spec: H1 title, blockquote summary, linked sections
-const BASE_URL = 'https://desktop-commander.github.io/best-value-ai';
+const BASE_URL = 'https://desktopcommander.app/best-value-ai';
 const REPO_URL = 'https://github.com/desktop-commander/best-value-ai';
 
 const top10Lines = results.slice(0, 10).map((r, i) => {
