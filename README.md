@@ -58,10 +58,12 @@ npx skills add desktop-commander/best-value-ai --skill submit-usage-measurement
 
 | Skill | Triggers when user says… | What it does |
 |-------|--------------------------|--------------|
-| [`ai-value-advisor`](skills/ai-value-advisor/SKILL.md) | "which AI is best value", "ChatGPT Plus vs Claude Pro", "best local LLM for my GPU", "is ChatGPT Business worth it" | Fetches live data, asks about use case + usage + budget, recommends best plan/setup with caveats |
+| [`ai-value-advisor`](skills/ai-value-advisor/SKILL.md) | "which AI is best value", "ChatGPT Plus vs Claude Pro", "best local LLM for my GPU", "is ChatGPT Business worth it" | Reads bundled data, detects user's hardware, asks about use case + usage + budget, recommends best plan/setup with caveats |
 | [`submit-usage-measurement`](skills/submit-usage-measurement/SKILL.md) | "measure my Claude Max quota", "benchmark ChatGPT Business", "contribute data to best-value-ai" | Runs the measurement script, validates output, opens a PR to `measurements/` |
 
-Both skills read live data from the site and degrade gracefully if offline (fallback to the checked-out `data/` files).
+`ai-value-advisor` ships with a snapshot of the full dataset (`models.json`, `hardware.json`, `benchmarks.json`) bundled alongside `SKILL.md`. Agents read from these local files — no network call needed, works offline, no failure mode when the site is down. The snapshot is regenerated on every site deploy via `scripts/prerender-seo.js`, so a fresh install gets recent data. The snapshot date is in `skills/ai-value-advisor/data/_meta.json`; if it's more than 30 days old, the skill will tell the user and point them at the live site.
+
+`submit-usage-measurement` doesn't need data at all — it runs the measurement scripts and opens a PR with the results.
 
 ## Features
 
@@ -90,6 +92,7 @@ All data is synced from multiple sources. See [DATA_SOURCES.md](DATA_SOURCES.md)
 | `node scripts/sync-from-arena.js` | [Arena AI](https://arena.ai/) full leaderboard (338 models) | Arena text + code ELO via Chrome scraping |
 | `node scripts/sync-hardware-prices.js` | [bestvaluegpu.com](https://bestvaluegpu.com/), [apple.com](https://apple.com/shop/buy-mac), [Swappa](https://swappa.com/) | GPU prices (HTTP), Mac prices (Playwright + Chrome) |
 | `node scripts/import-dc-local-data.js` | DC telemetry database | Local model tok/s with real hardware info |
+| `node scripts/prerender-seo.js` (or `npm run prerender`) | The three JSON files above | Pre-renders SEO content into `index.html`, regenerates `llms.txt`, and syncs the data snapshot into `skills/ai-value-advisor/data/` with today's date. Run this before every deploy. |
 
 ### Manual (community PRs)
 
@@ -133,6 +136,11 @@ node scripts/sync-hardware-prices.js
 
 # Sync full Arena leaderboard (requires Chrome tabs open at arena.ai)
 node scripts/sync-from-arena.js
+
+# After any data change, regenerate SEO content and sync the skill snapshot.
+# Always the last step before committing — keeps index.html, llms.txt, and
+# skills/ai-value-advisor/data/ all in sync with the latest JSON.
+npm run prerender
 ```
 
 ## Contributing
