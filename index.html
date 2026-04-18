@@ -26,6 +26,113 @@
     <meta name="twitter:description" content="Local GPU, pay-per-token API, or flat-fee subscription? See where your AI tokens are cheapest. 34+ models ranked.">
     <meta name="twitter:image" content="https://desktop-commander.github.io/best-value-ai/favicon-source.png">
     <meta name="twitter:site" content="@wonderwhy_er">
+
+    <!-- ============================================================ -->
+    <!-- Analytics — mirrors main-web (astro-src/layouts/Layout.astro) -->
+    <!-- Same keys, same consent model, same cross-subdomain cookies   -->
+    <!-- so apex + blog + /best-value-ai/ unify into one user journey. -->
+    <!-- ============================================================ -->
+
+    <!-- Cookiebot - MUST be first script in head -->
+    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="83cceb09-32d2-409b-ada6-17cc28478ba6" data-blockingmode="auto" type="text/javascript" async></script>
+
+    <!-- Google tag (gtag.js) - blocked until statistics consent -->
+    <script type="text/plain" data-cookieconsent="statistics" async src="https://www.googletagmanager.com/gtag/js?id=G-HXL4Y3Y62N"></script>
+    <script type="text/plain" data-cookieconsent="statistics">
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HXL4Y3Y62N');
+    </script>
+
+    <!-- Ahrefs Analytics - blocked until statistics consent -->
+    <script type="text/plain" data-cookieconsent="statistics" src="https://analytics.ahrefs.com/analytics.js" data-key="5Iumy4Rr7Do+R0CWUtQkHA" async></script>
+
+    <!-- PostHog - same project as main-web. Inlined here (no React/Astro on this page).
+         Mirrors the logic in src/components/PostHogInit.tsx on main-web:
+           - waits for Cookiebot statistics consent before init
+           - cross_subdomain_cookie:true so the distinct_id is shared with apex
+           - respect_dnt:true
+           - detects referrals from main-web/blog and fires `arrived_from_main_web` -->
+    <script>
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+
+      (function () {
+        var POSTHOG_KEY = 'phc_SmlF1mKK199Blt4hUNL6V19IWydNNJ9o7Qbym2Y4zQa';
+        var POSTHOG_HOST = 'https://eu.i.posthog.com';
+
+        function hasStatisticsConsent() {
+          var cb = window.Cookiebot;
+          return !!(cb && cb.consent && cb.consent.statistics === true);
+        }
+
+        function detectReferral() {
+          var referrer = document.referrer || '';
+          if (!referrer) return;
+          var fromMainWeb = /desktopcommander\.app/i.test(referrer) && !/\/best-value-ai/i.test(referrer);
+          var fromBlog = /\/blog/i.test(referrer) || /blog\.desktopcommander\.app/i.test(referrer) || /wpcomstaging\.com/i.test(referrer);
+          if (fromMainWeb || fromBlog) {
+            var payload = {
+              referrer_url: referrer,
+              landing_page: window.location.href,
+              landing_path: window.location.pathname,
+              from_blog: fromBlog,
+              from_main_web: fromMainWeb && !fromBlog
+            };
+            if (window.posthog && window.posthog.__loaded) {
+              window.posthog.capture('arrived_at_best_value_ai', payload);
+              window.posthog.setPersonProperties({
+                visited_best_value_ai: true,
+                last_best_value_ai_visit: new Date().toISOString()
+              });
+            }
+            if (window.gtag) window.gtag('event', 'arrived_at_best_value_ai', payload);
+          }
+        }
+
+        function initPostHog() {
+          if (window.posthog && window.posthog.__loaded) return;
+          var environment = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'development' : 'production';
+          window.posthog.init(POSTHOG_KEY, {
+            api_host: POSTHOG_HOST,
+            cross_subdomain_cookie: true,
+            respect_dnt: true,
+            session_recording: {
+              enabled: true,
+              record_console: environment === 'development',
+              record_network: environment === 'development'
+            },
+            autocapture: {
+              dom_event_allowlist: ['click', 'change', 'submit'],
+              mask_all_element_attributes: false,
+              mask_all_text: false
+            },
+            loaded: function (ph) {
+              if (environment === 'development') ph.debug(true);
+              detectReferral();
+            }
+          });
+          window.posthog.register({
+            environment: environment,
+            website_section: 'best_value_ai',
+            domain: 'desktopcommander.app'
+          });
+        }
+
+        if (hasStatisticsConsent()) {
+          initPostHog();
+        }
+        window.addEventListener('CookiebotOnAccept', function () {
+          if (hasStatisticsConsent() && !(window.posthog && window.posthog.__loaded)) {
+            initPostHog();
+          }
+        });
+      })();
+    </script>
+    <!-- ============================================================ -->
+    <!-- End analytics block                                            -->
+    <!-- ============================================================ -->
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
