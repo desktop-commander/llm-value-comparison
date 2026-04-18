@@ -331,7 +331,14 @@
                container + sidebar would overlap otherwise. */
         @media (max-width: 1439px) {
             .toc-float { right: 1rem; bottom: 1rem; }
-            .toc-float__label { display: none; }
+            .toc-float__label {
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: var(--muted);
+                margin: 0 0 0.75rem;
+            }
             .toc-float__fab {
                 display: flex; align-items: center; gap: 0.5rem;
                 background: var(--text); color: var(--bg);
@@ -389,11 +396,6 @@
                 font-weight: 600;
                 border-left-color: var(--blue);
                 background: var(--blue-bg);
-            }
-            .toc-float__panel h4 {
-                font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
-                letter-spacing: 0.1em; color: var(--muted);
-                margin: 0 0 0.25rem;
             }
         }
 
@@ -1254,12 +1256,11 @@
 <aside class="toc-float" id="tocFloat" aria-label="Page sections" data-open="false">
     <button type="button" class="toc-float__fab" id="tocFab" aria-expanded="false" aria-controls="tocPanel">
         <span aria-hidden="true">☰</span>
-        <span>On this page</span>
+        <span>Menu</span>
     </button>
-    <div class="toc-float__panel" id="tocPanel" role="dialog" aria-label="Page sections">
+    <div class="toc-float__panel" id="tocPanel" role="dialog" aria-label="Table of contents">
         <button type="button" class="toc-float__close" id="tocClose" aria-label="Close">&times;</button>
-        <h4>On this page</h4>
-        <div class="toc-float__label">On this page</div>
+        <div class="toc-float__label">Table of contents</div>
         <ul>
             <li><a href="#winners">🏆 Best value</a></li>
             <li><a href="#how">📐 Method</a></li>
