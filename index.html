@@ -248,59 +248,129 @@
         }
         .nav-cta:hover { background: var(--blue); color: #fff; }
 
-        /* ── FLOATING TOC (desktop ≥1280px only) ──
-           Complements the top sticky nav. Appears right-side below the hero,
-           auto-highlights the active section via IntersectionObserver.
-           Hidden on tablet/mobile — top nav serves those viewports. */
+        /* ── FLOATING TOC ──
+           Two presentations:
+           • Desktop (≥1280px): always-visible vertical list on the right edge
+           • Mobile/tablet (<1280px): collapsed floating pill bottom-right,
+             expands into a bottom sheet when tapped
+           Active section tracked via IntersectionObserver in both. */
         .toc-float {
-            display: none;
             position: fixed;
-            right: 1.5rem;
-            top: 50%;
-            transform: translateY(-50%);
             z-index: 150;
             font-size: 0.78rem;
             line-height: 1.5;
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 0.5rem 0;
         }
         .toc-float.visible {
             opacity: 1;
             pointer-events: auto;
         }
-        .toc-float__label {
-            font-size: 0.64rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--muted);
-            padding-left: 0.85rem;
-            margin-bottom: 0.6rem;
-        }
-        .toc-float ul { list-style: none; padding: 0; margin: 0; border-left: 1.5px solid var(--border); }
-        .toc-float li { margin: 0; }
-        .toc-float a {
-            display: block;
-            padding: 0.3rem 0 0.3rem 0.85rem;
-            color: var(--muted);
-            text-decoration: none;
-            border-left: 1.5px solid transparent;
-            margin-left: -1.5px; /* overlap the ul border */
-            transition: color 0.15s, border-color 0.15s;
-            white-space: nowrap;
-        }
-        .toc-float a:hover { color: var(--text); }
-        .toc-float a.active {
-            color: var(--text);
-            border-left-color: var(--blue);
-            font-weight: 600;
-        }
+
+        /* --- Desktop layout: vertical list on right edge --- */
         @media (min-width: 1280px) {
-            .toc-float { display: block; }
+            .toc-float {
+                right: 1.5rem;
+                top: 50%;
+                transform: translateY(-50%);
+                max-height: 80vh;
+                overflow-y: auto;
+                padding: 0.5rem 0;
+            }
+            .toc-float__fab { display: none; }
+            .toc-float__panel { display: block; }
+            .toc-float__label {
+                font-size: 0.64rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: var(--muted);
+                padding-left: 0.85rem;
+                margin-bottom: 0.6rem;
+            }
+            .toc-float ul { list-style: none; padding: 0; margin: 0; border-left: 1.5px solid var(--border); }
+            .toc-float li { margin: 0; }
+            .toc-float a {
+                display: block;
+                padding: 0.3rem 0 0.3rem 0.85rem;
+                color: var(--muted);
+                text-decoration: none;
+                border-left: 1.5px solid transparent;
+                margin-left: -1.5px;
+                transition: color 0.15s, border-color 0.15s;
+                white-space: nowrap;
+            }
+            .toc-float a:hover { color: var(--text); }
+            .toc-float a.active {
+                color: var(--text);
+                border-left-color: var(--blue);
+                font-weight: 600;
+            }
+            .toc-float__backdrop { display: none; }
+            .toc-float__close { display: none; }
+        }
+
+        /* --- Mobile/tablet layout: FAB + bottom sheet --- */
+        @media (max-width: 1279px) {
+            .toc-float { right: 1rem; bottom: 1rem; }
+            .toc-float__label { display: none; }
+            .toc-float__fab {
+                display: flex; align-items: center; gap: 0.4rem;
+                background: var(--text); color: var(--bg);
+                border: none; border-radius: 999px;
+                padding: 0.6rem 0.9rem; font-size: 0.8rem; font-weight: 600;
+                cursor: pointer;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+                font-family: inherit;
+            }
+            .toc-float__fab:hover { opacity: 0.9; }
+            .toc-float__panel {
+                display: none;
+                position: fixed;
+                left: 0; right: 0; bottom: 0;
+                background: var(--bg);
+                border-top: 1px solid var(--border);
+                border-radius: 16px 16px 0 0;
+                box-shadow: 0 -8px 32px rgba(0,0,0,0.15);
+                padding: 1.25rem 1.5rem 1.5rem;
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+            .toc-float[data-open="true"] .toc-float__panel { display: block; }
+            .toc-float[data-open="true"] .toc-float__fab { display: none; }
+            .toc-float__backdrop {
+                display: none;
+                position: fixed; inset: 0;
+                background: rgba(0,0,0,0.3);
+                z-index: 149;
+            }
+            .toc-float[data-open="true"] ~ .toc-float__backdrop,
+            .toc-float[data-open="true"] .toc-float__backdrop { display: block; }
+            .toc-float__close {
+                position: absolute; top: 0.75rem; right: 0.9rem;
+                background: none; border: none; cursor: pointer;
+                font-size: 1.4rem; color: var(--muted); line-height: 1;
+                padding: 0.25rem 0.5rem;
+            }
+            .toc-float__panel ul { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+            .toc-float__panel li { margin: 0; }
+            .toc-float__panel a {
+                display: block;
+                padding: 0.75rem 0.5rem;
+                color: var(--text); text-decoration: none;
+                font-size: 0.95rem; font-weight: 500;
+                border-bottom: 1px solid var(--border);
+            }
+            .toc-float__panel li:last-child a { border-bottom: none; }
+            .toc-float__panel a.active {
+                color: var(--blue); font-weight: 600;
+            }
+            .toc-float__panel h4 {
+                font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+                letter-spacing: 0.1em; color: var(--muted);
+                margin: 0 0 0.25rem;
+            }
         }
 
         .container { max-width: 1120px; margin: 0 auto; padding: 0 2rem; }
@@ -1148,10 +1218,10 @@
     <a class="nav-brand" href="#" style="display:flex;align-items:center;gap:0.5rem"><img src="favicon-source.png" alt="" width="26" height="26" style="border-radius:6px"><span><em>LLM</em> Value</span></a>
     <div class="nav-links">
         <a href="#winners">🏆 Best value</a>
+        <a href="#how">📐 Method</a>
         <a href="#use-cases">🎯 By use case</a>
         <a href="#use-with-agent">🤖 For agents</a>
         <a href="#explore">📊 Compare</a>
-        <a href="#how">📐 Method</a>
         <a href="#benchmarks">📏 Benchmarks</a>
         <a href="#subscription-method">💳 Measurements</a>
         <a href="#raw-data">📋 Data</a>
@@ -1164,20 +1234,29 @@
     </div>
 </nav>
 
-<!-- Floating right-side TOC — desktop ≥1280px only. Complements top nav. -->
-<aside class="toc-float" id="tocFloat" aria-label="Page sections">
-    <div class="toc-float__label">On this page</div>
-    <ul>
-        <li><a href="#winners">🏆 Best value</a></li>
-        <li><a href="#use-cases">🎯 Use cases</a></li>
-        <li><a href="#use-with-agent">🤖 For agents</a></li>
-        <li><a href="#explore">📊 Compare</a></li>
-        <li><a href="#how">📐 Method</a></li>
-        <li><a href="#benchmarks">📏 Benchmarks</a></li>
-        <li><a href="#subscription-method">💳 Measurements</a></li>
-        <li><a href="#raw-data">📋 Data</a></li>
-    </ul>
+<!-- Floating TOC — desktop: always-visible right-edge list; mobile/tablet: FAB + bottom sheet. -->
+<aside class="toc-float" id="tocFloat" aria-label="Page sections" data-open="false">
+    <button type="button" class="toc-float__fab" id="tocFab" aria-expanded="false" aria-controls="tocPanel">
+        <span aria-hidden="true">☰</span>
+        <span>Sections</span>
+    </button>
+    <div class="toc-float__panel" id="tocPanel" role="dialog" aria-label="Page sections">
+        <button type="button" class="toc-float__close" id="tocClose" aria-label="Close">&times;</button>
+        <h4>On this page</h4>
+        <div class="toc-float__label">On this page</div>
+        <ul>
+            <li><a href="#winners">🏆 Best value</a></li>
+            <li><a href="#how">📐 Method</a></li>
+            <li><a href="#use-cases">🎯 Use cases</a></li>
+            <li><a href="#use-with-agent">🤖 For agents</a></li>
+            <li><a href="#explore">📊 Compare</a></li>
+            <li><a href="#benchmarks">📏 Benchmarks</a></li>
+            <li><a href="#subscription-method">💳 Measurements</a></li>
+            <li><a href="#raw-data">📋 Data</a></li>
+        </ul>
+    </div>
 </aside>
+<div class="toc-float__backdrop" id="tocBackdrop"></div>
 
 <main>
 
@@ -2693,24 +2772,27 @@ function setCompareDefaults() {
 loadData();
 </script>
 
-<!-- Floating TOC: active-section highlighting + show/hide on scroll -->
+<!-- Floating TOC: active-section highlighting + show/hide on scroll + mobile open/close -->
 <script>
 (function(){
   const toc = document.getElementById('tocFloat');
   if (!toc) return;
+  const fab = document.getElementById('tocFab');
+  const closeBtn = document.getElementById('tocClose');
+  const backdrop = document.getElementById('tocBackdrop');
+  const panel = document.getElementById('tocPanel');
   const links = Array.from(toc.querySelectorAll('a'));
   const sectionIds = links.map(a => a.getAttribute('href').slice(1));
   const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
   if (sections.length === 0) return;
 
-  // --- Active-section tracking via IntersectionObserver
+  // --- Active-section tracking via IntersectionObserver.
   // rootMargin pulls the "hit zone" down so the active item flips when a
-  // section's top passes roughly 30% of the viewport height, not the very
-  // top edge — matches how users feel "I'm in that section".
+  // section's top passes roughly 30% of the viewport height — matches how
+  // users feel "I'm in that section".
   const byId = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
   let lastActive = null;
   const io = new IntersectionObserver((entries) => {
-    // Pick the topmost section currently intersecting
     const visible = entries
       .filter(e => e.isIntersecting)
       .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
@@ -2723,9 +2805,7 @@ loadData();
   }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
   sections.forEach(s => io.observe(s));
 
-  // --- Show/hide TOC based on scroll position
-  // Show after user scrolls past the hero (~500px). Hide near the very
-  // bottom so it doesn't overlap the footer / SEO block.
+  // --- Show/hide TOC on scroll (applies to both desktop list and mobile FAB)
   function updateVisibility() {
     const y = window.scrollY;
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -2736,6 +2816,31 @@ loadData();
   updateVisibility();
   window.addEventListener('scroll', updateVisibility, { passive: true });
   window.addEventListener('resize', updateVisibility, { passive: true });
+
+  // --- Mobile: open/close the bottom sheet
+  function openPanel() {
+    toc.setAttribute('data-open', 'true');
+    if (fab) fab.setAttribute('aria-expanded', 'true');
+    if (backdrop) backdrop.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // prevent background scroll when sheet open
+  }
+  function closePanel() {
+    toc.setAttribute('data-open', 'false');
+    if (fab) fab.setAttribute('aria-expanded', 'false');
+    if (backdrop) backdrop.style.display = '';
+    document.body.style.overflow = '';
+  }
+  if (fab) fab.addEventListener('click', openPanel);
+  if (closeBtn) closeBtn.addEventListener('click', closePanel);
+  if (backdrop) backdrop.addEventListener('click', closePanel);
+  // Close when user picks a section (mobile only — desktop has no sheet to close)
+  links.forEach(a => a.addEventListener('click', () => {
+    if (window.innerWidth < 1280) closePanel();
+  }));
+  // Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toc.getAttribute('data-open') === 'true') closePanel();
+  });
 })();
 </script>
 
