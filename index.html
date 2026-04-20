@@ -1236,6 +1236,54 @@
         .q-card.qc-compare:hover::after { color: var(--purple); }
         .q-card.qc-history:hover { border-color: var(--blue); }
         .q-card.qc-history:hover::after { color: var(--blue); }
+
+        /* ── Code block with copy button ──
+           Reusable. Wrap any <pre> in <div class="code-copy-wrap">, then add
+           a <button class="code-copy-btn" data-copy-text="...">. The JS
+           handler at the bottom of the page uses event delegation, so any
+           new copy buttons added later work without further JS changes. */
+        .code-copy-wrap {
+            position: relative;
+            margin: 0.75rem 0 0;
+        }
+        .code-copy-wrap pre {
+            background: rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem 3rem 0.75rem 1rem;  /* right pad for button */
+            margin: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            overflow-x: auto;
+        }
+        .code-copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 0.3rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            font-family: inherit;
+            transition: color 0.15s, border-color 0.15s, background 0.15s;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .code-copy-btn:hover {
+            color: var(--text);
+            border-color: var(--muted);
+        }
+        .code-copy-btn.copied {
+            color: var(--green);
+            border-color: var(--green);
+            background: var(--green-bg);
+        }
     </style>
 </head>
 <body>
@@ -1470,7 +1518,12 @@
         <div class="use-case-card fade-up">
             <h3>🧭 Get recommendations from your agent</h3>
             <p>Install the <code>ai-value-advisor</code> skill once. Then ask your agent things like "which AI should I pay for this month?" or "is Claude Max 20× worth it for me?" — it fetches live data from this site, considers your usage and budget, and recommends with caveats. Works with Claude Code, Cursor, Codex, Copilot, Windsurf, and <a href="https://skills.sh" target="_blank" rel="noopener" style="color:var(--blue)">30+ other agents</a> via the skills CLI.</p>
-            <pre style="background:rgba(0,0,0,0.04); border:1px solid var(--border); border-radius:6px; padding:0.75rem 1rem; margin:0.75rem 0 0; font-family:'JetBrains Mono',monospace; font-size:0.82rem; overflow-x:auto;"><code>npx skills add desktop-commander/best-value-ai</code></pre>
+            <div class="code-copy-wrap">
+                <pre><code>npx skills add desktop-commander/best-value-ai</code></pre>
+                <button type="button" class="code-copy-btn" data-copy-text="npx skills add desktop-commander/best-value-ai" aria-label="Copy install command">
+                    <span class="code-copy-btn__label">Copy</span>
+                </button>
+            </div>
         </div>
 
         <div class="use-case-card fade-up">
@@ -2787,6 +2840,53 @@ function setCompareDefaults() {
 }
 
 loadData();
+</script>
+
+<!-- Copy button for code blocks (event delegation — works for any .code-copy-btn now or added later) -->
+<script>
+(function(){
+  // Fallback for older browsers / non-secure contexts where navigator.clipboard
+  // is unavailable. Creates a hidden textarea, selects it, fires execCommand.
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  async function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try { await navigator.clipboard.writeText(text); return true; }
+      catch (e) { return fallbackCopy(text); }
+    }
+    return fallbackCopy(text);
+  }
+
+  // Single delegated listener — covers every .code-copy-btn on the page,
+  // including any added dynamically later.
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.code-copy-btn');
+    if (!btn) return;
+    const text = btn.getAttribute('data-copy-text') || '';
+    if (!text) return;
+    const ok = await copyText(text);
+    const label = btn.querySelector('.code-copy-btn__label') || btn;
+    const original = label.textContent;
+    label.textContent = ok ? 'Copied ✓' : 'Copy failed';
+    btn.classList.toggle('copied', ok);
+    setTimeout(() => {
+      label.textContent = original;
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+})();
 </script>
 
 <!-- Floating TOC: active-section highlighting + show/hide on scroll + mobile open/close -->
