@@ -273,8 +273,8 @@ for (const f of measFiles) {
   } catch(e) {}
 }
 
-// Build table HTML — show best measurement per plan
-let measHtml = '<table style="width:100%;border-collapse:collapse;font-size:0.72rem;color:var(--text)"><thead><tr style="border-bottom:1px solid var(--border);text-align:left"><th style="padding:0.35rem">Plan</th><th>Tool</th><th>Date</th><th>Runs</th><th>Quota used</th><th>5h window</th><th>Weekly est</th></tr></thead><tbody>';
+// Build table HTML — show best measurement per plan, plus model, plus count of runs available
+let measHtml = '<table style="width:100%;border-collapse:collapse;font-size:0.72rem;color:var(--text)"><thead><tr style="border-bottom:1px solid var(--border);text-align:left"><th style="padding:0.35rem">Plan</th><th>Model</th><th>Tool</th><th>Date</th><th>Files</th><th>Task runs</th><th>Quota used</th><th>5h window</th><th>Weekly est</th></tr></thead><tbody>';
 for (const [plan, ms] of Object.entries(measByPlan).sort()) {
   ms.sort((a, b) => b.delta - a.delta);
   const b = ms[0];
@@ -283,7 +283,11 @@ for (const [plan, ms] of Object.entries(measByPlan).sort()) {
   const weekly = b.estWeekly ? `${(b.estWeekly/1e6).toFixed(0)}M` : '—';
   const dt = b.ts ? b.ts.split('T')[0] : '?';
   const tool = b.tool === 'codex-cli' ? 'Codex' : b.tool === 'claude-code' ? 'Claude' : b.tool;
-  measHtml += `<tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">${plan}</td><td>${tool}</td><td>${dt}</td><td>${b.runs || '?'}</td><td>5h:${b.d5}% wk:${b.dw}%</td><td>${h5}</td><td>${weekly}</td></tr>`;
+  // Shorten model string for display
+  const model = (b.model || '?').replace(/ \(.*\)$/, '').trim();
+  const filesCount = ms.length;
+  const taskRuns = b.runs || '?';
+  measHtml += `<tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">${plan}</td><td>${model}</td><td>${tool}</td><td>${dt}</td><td>${filesCount}</td><td>${taskRuns}</td><td>5h:${b.d5}% wk:${b.dw}%</td><td>${h5}</td><td>${weekly}</td></tr>`;
 }
 measHtml += '</tbody></table>';
 
@@ -295,7 +299,7 @@ if (measStart !== -1 && measEnd !== -1) {
   const measReplacement = `<div id="measurementResults" class="fade-up" style="max-width:750px;margin:1.5rem auto 0">
         <h4 style="font-size:0.85rem;color:var(--text);margin-bottom:0.75rem;text-align:center">📊 Our measurements</h4>
         ${measHtml}
-        <p style="font-size:0.68rem;color:var(--muted);margin-top:0.5rem;text-align:center">Quota used = how much of the 5-hour and weekly limits our test consumed. Higher % = more reliable estimate. <a href="https://github.com/desktop-commander/best-value-ai/tree/master/measurements" target="_blank" style="color:var(--blue)">Raw data →</a></p>
+        <p style="font-size:0.68rem;color:var(--muted);margin-top:0.5rem;text-align:center"><strong>Files</strong> = separate measurement sessions we've run on this plan (variance expected). <strong>Task runs</strong> = how many times the benchmark task ran within the best session shown. <strong>Quota used</strong> = how much of the 5-hour and weekly limits our test consumed (higher = more reliable extrapolation). <a href="https://github.com/desktop-commander/best-value-ai/tree/master/measurements" target="_blank" style="color:var(--blue)">Raw data →</a></p>
     </div>
     <!-- /measurementResults -->`;
   html = html.substring(0, measStart) + measReplacement + html.substring(measEnd + '<!-- /measurementResults -->'.length);

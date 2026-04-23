@@ -1485,19 +1485,19 @@
 
         <div class="use-case-card fade-up">
             <h3 id="chatgpt-vs-claude">🤔 ChatGPT vs Claude — which is better value in 2026?</h3>
-            <p>They're close on quality — Claude Opus 4.6 and GPT-5 trade the top spot depending on benchmark. Value differs more by <em>plan</em> than by model. ChatGPT Plus ($20/mo) gives you ~13M tokens/week. Claude Pro ($20/mo) is estimated at ~10M/week. Claude Max 20× ($200/mo) measures 203M/week — by far the highest quota we've seen on a personal plan, but you need to use it heavily to get the value. For light users, Plus wins; for heavy coders, Max 20× wins; for teams, ChatGPT Business at $30/seat is the sleeper pick.</p>
+            <p>They're close on quality — Claude Opus 4.6 and GPT-5 trade the top spot depending on benchmark. Value differs more by <em>plan</em> than by model. ChatGPT Plus ($20/mo) measures ~13M tokens/week on GPT-5.4. Claude Pro ($20/mo) is estimated at ~4.5M tokens/week on Sonnet (not yet directly measured). Claude Max 20× ($200/mo) measures ~203M tokens/week on Sonnet 4.5 — the highest quota we've seen on a personal plan, but you need to use it heavily to get the value. For light users, Plus wins; for heavy coders, Max 20× wins; for teams, ChatGPT Business at $30/seat is the sleeper pick.</p>
             <p><a href="#explore" style="color:var(--blue)">See side-by-side →</a></p>
         </div>
 
         <div class="use-case-card fade-up">
             <h3 id="plus-vs-pro-vs-business">💳 ChatGPT Plus vs Pro vs Business — tokens per dollar</h3>
-            <p>ChatGPT Business ($30/seat/month) delivers ~60M tokens/week in our measurements — that's <strong>4.5× the tokens/$ of Plus</strong> ($20/mo, ~13M/week) and roughly equal to what ChatGPT Pro promises at 10× the cost. If you're currently on Plus and using it heavily for coding or agents, Business is almost always the better deal. Pro ($200/mo) only makes sense if you specifically need unlimited o1/Pro model access — the raw tokens/$ ratio favors Business.</p>
+            <p>ChatGPT Business ($30/seat/month) measures ~60M tokens/week in our runs on GPT-5.4 — that's <strong>4.5× the tokens/$ of Plus</strong> ($20/mo, measured ~13M/week on the same model) and roughly equal to what ChatGPT Pro is listed at (66.5M/week, from OpenAI's Codex pricing page — we haven't directly measured Pro) at 10× the cost. If you're currently on Plus and using it heavily for coding or agents, Business is almost always the better deal. Pro ($200/mo) only makes sense if you specifically need unlimited o1/Pro model access — the raw tokens/$ ratio favors Business.</p>
             <p><a href="#subscription-method" style="color:var(--blue)">See measurement methodology →</a></p>
         </div>
 
         <div class="use-case-card fade-up">
             <h3 id="claude-max">⚡ Claude Max 5× vs 20× — is the upgrade worth it?</h3>
-            <p>We measured Claude Max 20× at 203M tokens/week — enough to saturate any single developer. The 5× plan is estimated at ~51M/week (5/20 ratio of measured 20×). At $100 vs $200/month, Max 5× has the better raw tokens/$ ratio <em>if</em> you won't hit the cap. Max 20× wins only if you're doing sustained heavy work — Claude Code all day, multi-agent workflows, or running Opus on large contexts. For most users, Max 5× is the sweet spot; for power users, 20× removes the rate-limit friction.</p>
+            <p>We measured Claude Max 20× at ~203M tokens/week on Sonnet 4.5 via Claude Code — enough to saturate any single developer. Opus has tighter per-model sub-quotas on the same plan, so expect fewer Opus tokens/week than Sonnet (we're measuring Opus separately — number pending). The 5× plan is estimated at ~51M/week by ratio (5/20 × measured 20×). At $100 vs $200/month, Max 5× has the better raw tokens/$ ratio <em>if</em> you won't hit the cap. Max 20× wins only if you're doing sustained heavy work — Claude Code all day, multi-agent workflows, or running Opus on large contexts. For most users, Max 5× is the sweet spot; for power users, 20× removes the rate-limit friction.</p>
             <p><a href="#subscription-method" style="color:var(--blue)">See quota measurements →</a></p>
         </div>
 
@@ -1972,8 +1972,8 @@
     <!-- Measurement results table — populated by prerender -->
     <div id="measurementResults" class="fade-up" style="max-width:750px;margin:1.5rem auto 0">
         <h4 style="font-size:0.85rem;color:var(--text);margin-bottom:0.75rem;text-align:center">📊 Our measurements</h4>
-        <table style="width:100%;border-collapse:collapse;font-size:0.72rem;color:var(--text)"><thead><tr style="border-bottom:1px solid var(--border);text-align:left"><th style="padding:0.35rem">Plan</th><th>Tool</th><th>Date</th><th>Runs</th><th>Quota used</th><th>5h window</th><th>Weekly est</th></tr></thead><tbody><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Business</td><td>Codex</td><td>2026-04-15</td><td>5</td><td>5h:21% wk:4%</td><td>11.4M</td><td>60M</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Claude Max 20x</td><td>Claude</td><td>2026-04-16</td><td>30</td><td>5h:0% wk:1%</td><td>—</td><td>203M</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Plus</td><td>Codex</td><td>2026-04-13</td><td>?</td><td>5h:12% wk:6%</td><td>—</td><td>13M</td></tr></tbody></table>
-        <p style="font-size:0.68rem;color:var(--muted);margin-top:0.5rem;text-align:center">Quota used = how much of the 5-hour and weekly limits our test consumed. Higher % = more reliable estimate. <a href="https://github.com/desktop-commander/best-value-ai/tree/master/measurements" target="_blank" style="color:var(--blue)">Raw data →</a></p>
+        <table style="width:100%;border-collapse:collapse;font-size:0.72rem;color:var(--text)"><thead><tr style="border-bottom:1px solid var(--border);text-align:left"><th style="padding:0.35rem">Plan</th><th>Model</th><th>Tool</th><th>Date</th><th>Files</th><th>Task runs</th><th>Quota used</th><th>5h window</th><th>Weekly est</th></tr></thead><tbody><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Business</td><td>gpt-5.4</td><td>Codex</td><td>2026-04-15</td><td>2</td><td>5</td><td>5h:21% wk:4%</td><td>11.4M</td><td>60M</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Claude Max 20x</td><td>Sonnet 4.5</td><td>Claude</td><td>2026-04-16</td><td>5</td><td>30</td><td>5h:0% wk:1%</td><td>—</td><td>203M</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:0.35rem;font-weight:600">Plus</td><td>gpt-5.4</td><td>Codex</td><td>2026-04-13</td><td>6</td><td>?</td><td>5h:12% wk:6%</td><td>—</td><td>13M</td></tr></tbody></table>
+        <p style="font-size:0.68rem;color:var(--muted);margin-top:0.5rem;text-align:center"><strong>Files</strong> = separate measurement sessions we've run on this plan (variance expected). <strong>Task runs</strong> = how many times the benchmark task ran within the best session shown. <strong>Quota used</strong> = how much of the 5-hour and weekly limits our test consumed (higher = more reliable extrapolation). <a href="https://github.com/desktop-commander/best-value-ai/tree/master/measurements" target="_blank" style="color:var(--blue)">Raw data →</a></p>
     </div>
     <!-- /measurementResults -->
 
@@ -2368,9 +2368,30 @@ function renderRankedList(){
     if((typeFilter==='all'||typeFilter==='subscription')&&model.subscriptions) Object.values(model.subscriptions).forEach(sub=>{
       if(!sub.tokensPerWeek) return;
       const monthlyTok=sub.tokensPerWeek*4, val=(monthlyTok/sub.monthlyPrice)*(np/100);
+      // Measurement metadata
+      let tag = '';
+      if (sub.estimated) tag = ' · 📐 est.';
+      else if (sub.measuredOnModel) {
+        // Shorten measured model label for display
+        const mm = sub.measuredOnModel.replace(/ \(.*\)$/, '').trim();
+        tag = ` · 📏 measured on ${mm}`;
+      } else tag = ' · 📏 measured';
+      // Tooltip: base math + measurement provenance + mismatch warning if applicable
+      let tip = `${fmt(sub.tokensPerWeek)} tok/week × 4 = ${fmt(monthlyTok)} tok/month\n÷ $${sub.monthlyPrice}/mo × ${np.toFixed(1)}% quality = ${fmt(val)} tok/$`;
+      if (sub.measuredOnModel) {
+        tip += `\n\nMeasured on: ${sub.measuredOnModel}`;
+        const normMeasured = sub.measuredOnModel.toLowerCase().replace(/[\s().,]+/g, '');
+        const normRow = model.name.toLowerCase().replace(/[\s().,]+/g, '');
+        // Loose match: if neither contains the other's distinguishing tokens, it's a mismatch
+        const match = normMeasured.includes(normRow.slice(0,6)) || normRow.includes(normMeasured.slice(0,6));
+        if (!match) {
+          tip += `\n⚠️ Row is ${model.name} — quota may differ from measured model.`;
+        }
+      }
+      if (sub.estimated) tip += `\n\nNote: this is an estimate, not a direct measurement.`;
       results.push({model:model.name,type:'subscription',subName:sub.name,val,ds,confidence:sub.confidence,
-        details:`$${sub.monthlyPrice}/mo${sub.estimated ? ' · 📐 est.' : ''}`,
-        tip:`${fmt(sub.tokensPerWeek)} tok/week × 4 = ${fmt(monthlyTok)} tok/month\n÷ $${sub.monthlyPrice}/mo × ${np.toFixed(1)}% quality = ${fmt(val)} tok/$`});
+        details:`$${sub.monthlyPrice}/mo${tag}`,
+        tip});
     });
   });
   results.sort((a,b)=>b.val-a.val);
@@ -2963,9 +2984,9 @@ loadData();
 })();
 </script>
 
-<!-- SEO: Pre-rendered 2026-04-21 from 34 models -->
+<!-- SEO: Pre-rendered 2026-04-23 from 34 models -->
 <div id="seo-content" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
-<h2>Best Value AI Models — 2026-04-21</h2>
+<h2>Best Value AI Models — 2026-04-23</h2>
 <p>Comparing 34 AI models across API pricing, subscriptions, and local hardware.</p><p>Best API value: GLM-4.7 Flash at $0.15/M blended — 2.7M quality-adjusted tokens per dollar.</p><p>Best subscription value: ChatGPT Business — 5.5M quality-adjusted tokens per dollar.</p><p>Best local value: Qwen3.5 35B A3B (Reasoning) (110 tok/s · RTX 3090) — 3.3M quality-adjusted tokens per dollar.</p><h3>Top 10 AI Models by Value (Quality-Adjusted Tokens per Dollar)</h3><ol><li>ChatGPT Business → GPT-5.2 (Subscription) — 5.5M tok/$ — ChatGPT Business · $30/mo</li><li>ChatGPT Business → GPT-5.4 (xhigh) (Subscription) — 5.2M tok/$ — ChatGPT Business · $30/mo</li><li>ChatGPT Business → GPT-5.2 Codex (xhigh) (Subscription) — 4.6M tok/$ — ChatGPT Business · $30/mo</li><li>Qwen3.5 35B A3B (Reasoning) (Local) — 3.3M tok/$ — 110 tok/s · RTX 3090</li><li>GLM-4.7 Flash (API) — 2.7M tok/$ — $0.15/M blended</li><li>Gemma 4 31B (API) — 2.4M tok/$ — $0.21/M blended</li><li>Claude Max 20× → Claude Opus 4.5 (Subscription) — 2.3M tok/$ — Claude Max 20× · $200/mo</li><li>Claude Max 20× → Claude Opus 4.6 (Non-reasoning, High Effort) (Subscription) — 2.2M tok/$ — Claude Max 20× · $200/mo</li><li>Qwen3.5 35B A3B (Reasoning) (Local) — 2.2M tok/$ — 122 tok/s · RTX 4090</li><li>GPT-OSS 120B (API) — 2.2M tok/$ — $0.26/M blended</li></ol><h3>All Models Compared</h3><p>Claude Opus 4, Claude Sonnet 4, DeepSeek V3.1, Gemini 2.5 Pro, GLM-4.7 Flash, GPT-OSS 120B, GPT-4o, Llama 3.1 70B, Llama 3.1 8B, o3, Qwen QwQ-32B, Claude Opus 4.5, Gemini 3 Pro, Gemini 3 Flash, GPT-5.2, Claude Opus 4.6 (Non-reasoning, High Effort), Claude Sonnet 4.6 (Non-reasoning, High Effort), Claude 4.5 Haiku (Non-reasoning), Claude 4.5 Sonnet (Non-reasoning), GPT-5.4 (xhigh), GPT-5.3 Codex (xhigh), GPT-5.2 Codex (xhigh), Gemini 3.1 Pro Preview, GLM-5 (Reasoning), GLM-4.7 (Reasoning), MiniMax-M2.5, MiniMax-M2.7, Kimi K2.5 (Reasoning), DeepSeek V3.2 (Non-reasoning), Qwen3.5 35B A3B (Reasoning), Qwen3.5 27B (Reasoning), Qwen3.5 122B A10B (Reasoning), Gemma 4 31B, Gemma 4 26B A4B</p></div>
 <script>window.MEASUREMENT_TIMELINE=[{"plan":"Claude Max 20x","date":"2026-04-14","weekly":null,"session":20340900,"tool":"claude-code","delta":0},{"plan":"Claude Max 20x","date":"2026-04-14","weekly":null,"session":20253300,"tool":"claude-code","delta":0},{"plan":"Claude Max 20x","date":"2026-04-16","weekly":203127800,"session":25390975,"tool":"claude-code","delta":1},{"plan":"Plus","date":"2026-04-13","weekly":8353722,"session":null,"tool":"codex-cli","delta":9},{"plan":"Plus","date":"2026-04-13","weekly":131599150,"session":null,"tool":"codex-cli","delta":10},{"plan":"Plus","date":"2026-04-13","weekly":110494550,"session":null,"tool":"codex-cli","delta":10},{"plan":"Plus","date":"2026-04-14","weekly":null,"session":29365200,"tool":"codex-cli","delta":2},{"plan":"Business","date":"2026-04-15","weekly":60108025,"session":11449147,"tool":"codex-cli","delta":21},{"plan":"Business","date":"2026-04-15","weekly":68671233,"session":10300685,"tool":"codex-cli","delta":20},{"plan":"Plus","date":"2026-04-15","weekly":277356400,"session":34669550,"tool":"codex-cli","delta":8},{"plan":"Plus","date":"2026-04-13","weekly":13280883,"session":null,"tool":"codex-cli","delta":12}];</script>
 </body>
