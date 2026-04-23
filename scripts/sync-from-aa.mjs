@@ -65,6 +65,7 @@ To fix:
 // Add slugs here to pull new models automatically
 const PRIORITY_SLUGS = [
   // Anthropic
+  'claude-opus-4-7', 'claude-opus-4-7-non-reasoning',
   'claude-opus-4-6', 'claude-sonnet-4-6', 'claude-4-5-haiku',
   'claude-opus-4-5', 'claude-4-5-sonnet',
   // OpenAI
@@ -89,6 +90,8 @@ const PRIORITY_SLUGS = [
 // Mapping: AA slug → our model ID in models.json
 // If AA slug matches but our ID is different, map it here
 const SLUG_TO_OUR_ID = {
+  'claude-opus-4-7-non-reasoning': 'claude-opus-4-7',
+  'claude-opus-4-7':          'claude-opus-4-7-thinking',
   'claude-opus-4-6':          'claude-opus-4-6',
   'claude-sonnet-4-6':        'claude-sonnet-4-6',
   'claude-opus-4-5':          'claude-opus-4-5',

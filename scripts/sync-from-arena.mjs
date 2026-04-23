@@ -79,6 +79,8 @@ const SLUG_MAPPINGS = {
   'claude-4-5-sonnet':    ['claude-sonnet-4-5-20250929'],
   'claude-4-5-haiku':     ['claude-haiku-4-5-20251001'],
   'claude-opus-4-6':      ['claude-opus-4-6'],
+  'claude-opus-4-7':            ['claude-opus-4-7'],
+  'claude-opus-4-7-thinking':   ['claude-opus-4-7-thinking'],
   'claude-sonnet-4-6':    ['claude-sonnet-4-6'],
   'gpt-5-4':              ['gpt-5.4', 'gpt-5.4-high'],
   'gpt-5-3-codex':        ['gpt-5.3-codex (codex-harness)', 'gpt-5.3-chat-latest'],

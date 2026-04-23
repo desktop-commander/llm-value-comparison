@@ -1,6 +1,6 @@
 # LLM Value Calculator
 
-> Quality-adjusted tokens per dollar across local hardware, subscription plans, and API pricing for 34+ large language models. Unlike provider-published pricing, subscription token limits are empirically measured by running standardized tasks through Codex CLI and Claude Code and reading quota deltas before and after. All three access modes (local, subscription, API) are expressed on the same scale and directly comparable. Last updated: 2026-04-23.
+> Quality-adjusted tokens per dollar across local hardware, subscription plans, and API pricing for 36+ large language models. Unlike provider-published pricing, subscription token limits are empirically measured by running standardized tasks through Codex CLI and Claude Code and reading quota deltas before and after. All three access modes (local, subscription, API) are expressed on the same scale and directly comparable. Last updated: 2026-04-23.
 
 ## Current winners
 
@@ -11,15 +11,15 @@
 ## Top 10 models by quality-adjusted value per dollar
 
 1. **GPT-5.2** (Subscription) — 4.9M tok/$ · ChatGPT Business · $30/mo
-2. **GPT-5.4 (xhigh)** (Subscription) — 4.8M tok/$ · ChatGPT Business · $30/mo
-3. **GPT-5.2 Codex (xhigh)** (Subscription) — 3.8M tok/$ · ChatGPT Business · $30/mo
+2. **GPT-5.4 (xhigh)** (Subscription) — 4.7M tok/$ · ChatGPT Business · $30/mo
+3. **GPT-5.2 Codex (xhigh)** (Subscription) — 3.7M tok/$ · ChatGPT Business · $30/mo
 4. **GLM-4.7 Flash** (API) — 2.7M tok/$ · $0.15/M blended
-5. **Qwen3.5 35B A3B (Reasoning)** (Local) — 2.3M tok/$ · 110 tok/s · RTX 3090
-6. **Claude Opus 4.5** (Subscription) — 2.1M tok/$ · Claude Max 20× · $200/mo
-7. **Claude Opus 4.6 (Non-reasoning, High Effort)** (Subscription) — 2.0M tok/$ · Claude Max 20× · $200/mo
-8. **Claude Opus 4** (Subscription) — 1.8M tok/$ · Claude Max 20× · $200/mo
-9. **Gemma 4 31B** (API) — 1.7M tok/$ · $0.21/M blended
-10. **GPT-OSS 120B** (API) — 1.6M tok/$ · $0.26/M blended
+5. **Claude Opus 4.7 (Reasoning, Max Effort)** (Subscription) — 2.5M tok/$ · Claude Max 20× · $200/mo
+6. **Claude Opus 4.7 (Non-reasoning, High Effort)** (Subscription) — 2.3M tok/$ · Claude Max 20× · $200/mo
+7. **Qwen3.5 35B A3B (Reasoning)** (Local) — 2.3M tok/$ · 110 tok/s · RTX 3090
+8. **Claude Opus 4.5** (Subscription) — 2.1M tok/$ · Claude Max 20× · $200/mo
+9. **Claude Opus 4.6 (Non-reasoning, High Effort)** (Subscription) — 2.0M tok/$ · Claude Max 20× · $200/mo
+10. **Claude Opus 4** (Subscription) — 1.8M tok/$ · Claude Max 20× · $200/mo
 
 ## Empirical subscription measurements
 
@@ -61,7 +61,7 @@ Quality is a z-score normalized blend of three public benchmarks: Arena text ELO
 
 ## Data files (JSON, Apache 2.0 licensed — free to use)
 
-- [models.json](https://github.com/desktop-commander/best-value-ai/blob/master/data/models.json): All 34 models with benchmarks, API pricing, local performance, subscription data
+- [models.json](https://github.com/desktop-commander/best-value-ai/blob/master/data/models.json): All 36 models with benchmarks, API pricing, local performance, subscription data
 - [hardware.json](https://github.com/desktop-commander/best-value-ai/blob/master/data/hardware.json): Hardware configurations with prices and VRAM specs
 - [benchmarks.json](https://github.com/desktop-commander/best-value-ai/blob/master/data/benchmarks.json): Quality benchmark scores used for z-score normalization
 - [measurements/](https://github.com/desktop-commander/best-value-ai/tree/master/measurements): Raw JSON output from each Codex CLI or Claude Code measurement run

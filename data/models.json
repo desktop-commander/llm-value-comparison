@@ -3438,5 +3438,171 @@
     },
     "subscriptions": null,
     "_aa_synced": "2026-04-03"
+  },
+  "claude-opus-4-7": {
+    "id": "claude-opus-4-7",
+    "name": "Claude Opus 4.7 (Non-reasoning, High Effort)",
+    "provider": "Anthropic",
+    "releaseDate": "2026-04-16",
+    "modelCard": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning",
+    "benchmarks": {
+      "aa_intelligence": {
+        "score": 51.8,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+      },
+      "aa_coding_index": {
+        "score": 53.1,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+      },
+      "gpqa_diamond": {
+        "score": 88.5,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+      },
+      "hle": {
+        "score": 31.2,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+      },
+      "ifbench": {
+        "score": 43.6,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+      },
+      "aa_lcr": {
+        "score": 67.0,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+      },
+      "scicode": {
+        "score": 50.1,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+      },
+      "tau2_bench": {
+        "score": 74.0,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+      },
+      "terminalbench_hard": {
+        "score": 54.5,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+      },
+      "arena_text": {
+        "score": 1494,
+        "source": "https://lmarena.ai/leaderboard"
+      }
+    },
+    "api": {
+      "inputPer1M": 5,
+      "outputPer1M": 25,
+      "tokensPerSecAPI": 58.6,
+      "source": "https://artificialanalysis.ai/models/claude-opus-4-7-non-reasoning"
+    },
+    "local": null,
+    "subscriptions": {
+      "claude_max_5x": {
+        "name": "Claude Max 5\u00d7",
+        "monthlyPrice": 100,
+        "confidence": "low",
+        "notes": "Estimated as 5/20 of measured Claude Max 20x. Not directly measured.",
+        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/MEASUREMENT_METHODOLOGY.md",
+        "tokensPerWeek": 50781950,
+        "estimated": true
+      },
+      "claude_max_20x": {
+        "name": "Claude Max 20\u00d7",
+        "monthlyPrice": 200,
+        "confidence": "high",
+        "notes": "Measured 2026-04-16 via claude-code on Sonnet 4.5. Best of 5 sessions \u2014 30 runs, 2,031,278 tokens, 8% 5h / 1% weekly consumed.",
+        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/claude_measurement_20260416_075211.json",
+        "tokensPerWeek": 203127800,
+        "estimated": false,
+        "measuredOnModel": "Sonnet 4.5",
+        "measurementFiles": 5,
+        "measurementBestFile": "claude_measurement_20260416_075211.json",
+        "measurementTaskRuns": 30,
+        "measurementDelta5h": 8,
+        "measurementDeltaWeekly": 1
+      }
+    },
+    "_aa_synced": "2026-04-23"
+  },
+  "claude-opus-4-7-thinking": {
+    "id": "claude-opus-4-7-thinking",
+    "name": "Claude Opus 4.7 (Reasoning, Max Effort)",
+    "provider": "Anthropic",
+    "releaseDate": "2026-04-16",
+    "modelCard": "https://artificialanalysis.ai/models/claude-opus-4-7",
+    "benchmarks": {
+      "aa_intelligence": {
+        "score": 57.3,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+      },
+      "aa_coding_index": {
+        "score": 52.5,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+      },
+      "gpqa_diamond": {
+        "score": 91.4,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+      },
+      "hle": {
+        "score": 39.6,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+      },
+      "ifbench": {
+        "score": 58.6,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+      },
+      "aa_lcr": {
+        "score": 70.3,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+      },
+      "scicode": {
+        "score": 54.5,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+      },
+      "tau2_bench": {
+        "score": 88.6,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+      },
+      "terminalbench_hard": {
+        "score": 51.5,
+        "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+      },
+      "arena_text": {
+        "score": 1503,
+        "source": "https://lmarena.ai/leaderboard"
+      }
+    },
+    "api": {
+      "inputPer1M": 5,
+      "outputPer1M": 25,
+      "tokensPerSecAPI": 62.2,
+      "source": "https://artificialanalysis.ai/models/claude-opus-4-7"
+    },
+    "local": null,
+    "subscriptions": {
+      "claude_max_5x": {
+        "name": "Claude Max 5\u00d7",
+        "monthlyPrice": 100,
+        "confidence": "low",
+        "notes": "Estimated as 5/20 of measured Claude Max 20x. Not directly measured. Opus has tighter sub-quotas than Sonnet on the same plan; Opus-specific measurement pending.",
+        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/MEASUREMENT_METHODOLOGY.md",
+        "tokensPerWeek": 50781950,
+        "estimated": true
+      },
+      "claude_max_20x": {
+        "name": "Claude Max 20\u00d7",
+        "monthlyPrice": 200,
+        "confidence": "medium",
+        "notes": "Measured 2026-04-16 via claude-code on Sonnet 4.5; Opus sub-quota likely tighter so this row overstates Opus tokens/week. Opus-specific re-measurement pending.",
+        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/claude_measurement_20260416_075211.json",
+        "tokensPerWeek": 203127800,
+        "estimated": false,
+        "measuredOnModel": "Sonnet 4.5",
+        "measurementFiles": 5,
+        "measurementBestFile": "claude_measurement_20260416_075211.json",
+        "measurementTaskRuns": 30,
+        "measurementDelta5h": 8,
+        "measurementDeltaWeekly": 1
+      }
+    },
+    "_aa_synced": "2026-04-23"
   }
 }
