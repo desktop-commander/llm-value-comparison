@@ -728,17 +728,18 @@
       "chatgpt_business": {
         "name": "ChatGPT Business",
         "monthlyPrice": 30,
-        "confidence": "high",
-        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260415_110603.json",
-        "notes": "Measured 2026-04-15 via codex-cli on gpt-5.4 (reasoning xhigh, summaries auto). Best of 2 sessions \u2014 5 runs, 2,404,321 tokens, 21% 5h / 4% weekly consumed.",
-        "tokensPerWeek": 60108025,
+        "confidence": "medium",
+        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260424_222821.json",
+        "notes": "Business quota measured on GPT-5.4 (not directly on GPT-4o), but weekly quota is per-account shared across models. Measured 2026-04-24 22:28 via codex-cli on gpt-5.4 xhigh on Business. Multi-flip attempted but flip #2 fell in same batch as flip #1 (cumulative_tokens collision) \u2014 known script limitation. Using coarse 3% delta instead. This result (~27M tok/wk) is ~2\u00d7 lower than the Apr 15 measurement of 60M tok/wk \u2014 possible explanations: Business quota tightened between measurements, or the Apr 15 single-flip run was an outlier on the high end. Cache hit rate 86%.",
+        "tokensPerWeek": 26851266,
         "estimated": false,
         "measuredOnModel": "gpt-5.4 (reasoning xhigh, summaries auto)",
-        "measurementFiles": 2,
-        "measurementBestFile": "codex_measurement_20260415_110603.json",
-        "measurementTaskRuns": 5,
-        "measurementDelta5h": 21,
-        "measurementDeltaWeekly": 4
+        "measurementFiles": 1,
+        "measurementBestFile": "codex_measurement_20260424_222821.json",
+        "measurementTaskRuns": 2,
+        "measurementDelta5h": 14,
+        "measurementDeltaWeekly": 3,
+        "measurement_method": "coarse single-delta (multi-flip contaminated \u2014 flip #2 collapsed into batch 1 at 0-delta, so multi-flip math is unreliable)"
       }
     },
     "_aa_synced": "2026-04-21"
@@ -1537,17 +1538,18 @@
       "chatgpt_business": {
         "name": "ChatGPT Business",
         "monthlyPrice": 30,
-        "confidence": "high",
-        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260415_110603.json",
-        "notes": "Measured 2026-04-15 via codex-cli on gpt-5.4 (reasoning xhigh, summaries auto). Best of 2 sessions \u2014 5 runs, 2,404,321 tokens, 21% 5h / 4% weekly consumed.",
-        "tokensPerWeek": 60108025,
+        "confidence": "medium",
+        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260424_222821.json",
+        "notes": "Business quota measured on GPT-5.4 (not directly on GPT-5.2), but weekly quota is per-account shared across models. Measured 2026-04-24 22:28 via codex-cli on gpt-5.4 xhigh on Business. Multi-flip attempted but flip #2 fell in same batch as flip #1 (cumulative_tokens collision) \u2014 known script limitation. Using coarse 3% delta instead. This result (~27M tok/wk) is ~2\u00d7 lower than the Apr 15 measurement of 60M tok/wk \u2014 possible explanations: Business quota tightened between measurements, or the Apr 15 single-flip run was an outlier on the high end. Cache hit rate 86%.",
+        "tokensPerWeek": 26851266,
         "estimated": false,
         "measuredOnModel": "gpt-5.4 (reasoning xhigh, summaries auto)",
-        "measurementFiles": 2,
-        "measurementBestFile": "codex_measurement_20260415_110603.json",
-        "measurementTaskRuns": 5,
-        "measurementDelta5h": 21,
-        "measurementDeltaWeekly": 4
+        "measurementFiles": 1,
+        "measurementBestFile": "codex_measurement_20260424_222821.json",
+        "measurementTaskRuns": 2,
+        "measurementDelta5h": 14,
+        "measurementDeltaWeekly": 3,
+        "measurement_method": "coarse single-delta (multi-flip contaminated \u2014 flip #2 collapsed into batch 1 at 0-delta, so multi-flip math is unreliable)"
       }
     },
     "_aa_synced": "2026-04-21"
@@ -2098,17 +2100,18 @@
       "chatgpt_business": {
         "name": "ChatGPT Business",
         "monthlyPrice": 30,
-        "confidence": "high",
-        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260415_110603.json",
-        "notes": "Measured 2026-04-15 via codex-cli on gpt-5.4 (reasoning xhigh, summaries auto). Best of 2 sessions \u2014 5 runs, 2,404,321 tokens, 21% 5h / 4% weekly consumed.",
-        "tokensPerWeek": 60108025,
+        "confidence": "medium",
+        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260424_222821.json",
+        "notes": "Measured 2026-04-24 22:28 via codex-cli on gpt-5.4 xhigh on Business. Multi-flip attempted but flip #2 fell in same batch as flip #1 (cumulative_tokens collision) \u2014 known script limitation. Using coarse 3% delta instead. This result (~27M tok/wk) is ~2\u00d7 lower than the Apr 15 measurement of 60M tok/wk \u2014 possible explanations: Business quota tightened between measurements, or the Apr 15 single-flip run was an outlier on the high end. Cache hit rate 86%.",
+        "tokensPerWeek": 26851266,
         "estimated": false,
         "measuredOnModel": "gpt-5.4 (reasoning xhigh, summaries auto)",
-        "measurementFiles": 2,
-        "measurementBestFile": "codex_measurement_20260415_110603.json",
-        "measurementTaskRuns": 5,
-        "measurementDelta5h": 21,
-        "measurementDeltaWeekly": 4
+        "measurementFiles": 1,
+        "measurementBestFile": "codex_measurement_20260424_222821.json",
+        "measurementTaskRuns": 2,
+        "measurementDelta5h": 14,
+        "measurementDeltaWeekly": 3,
+        "measurement_method": "coarse single-delta (multi-flip contaminated \u2014 flip #2 collapsed into batch 1 at 0-delta, so multi-flip math is unreliable)"
       }
     },
     "_aa_synced": "2026-04-21"
@@ -2298,17 +2301,18 @@
       "chatgpt_business": {
         "name": "ChatGPT Business",
         "monthlyPrice": 30,
-        "confidence": "high",
-        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260415_110603.json",
-        "notes": "Measured 2026-04-15 via codex-cli on gpt-5.4 (reasoning xhigh, summaries auto). Best of 2 sessions \u2014 5 runs, 2,404,321 tokens, 21% 5h / 4% weekly consumed.",
-        "tokensPerWeek": 60108025,
+        "confidence": "medium",
+        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260424_222821.json",
+        "notes": "Business quota measured on GPT-5.4 (not directly on GPT-5.2 Codex (xhigh)), but weekly quota is per-account shared across models. Measured 2026-04-24 22:28 via codex-cli on gpt-5.4 xhigh on Business. Multi-flip attempted but flip #2 fell in same batch as flip #1 (cumulative_tokens collision) \u2014 known script limitation. Using coarse 3% delta instead. This result (~27M tok/wk) is ~2\u00d7 lower than the Apr 15 measurement of 60M tok/wk \u2014 possible explanations: Business quota tightened between measurements, or the Apr 15 single-flip run was an outlier on the high end. Cache hit rate 86%.",
+        "tokensPerWeek": 26851266,
         "estimated": false,
         "measuredOnModel": "gpt-5.4 (reasoning xhigh, summaries auto)",
-        "measurementFiles": 2,
-        "measurementBestFile": "codex_measurement_20260415_110603.json",
-        "measurementTaskRuns": 5,
-        "measurementDelta5h": 21,
-        "measurementDeltaWeekly": 4
+        "measurementFiles": 1,
+        "measurementBestFile": "codex_measurement_20260424_222821.json",
+        "measurementTaskRuns": 2,
+        "measurementDelta5h": 14,
+        "measurementDeltaWeekly": 3,
+        "measurement_method": "coarse single-delta (multi-flip contaminated \u2014 flip #2 collapsed into batch 1 at 0-delta, so multi-flip math is unreliable)"
       }
     },
     "_aa_synced": "2026-04-21"
@@ -3843,11 +3847,18 @@
       "chatgpt_business": {
         "name": "ChatGPT Business",
         "monthlyPrice": 30,
-        "confidence": "low",
-        "notes": "Business quota on GPT-5.5 not yet directly measured. Placeholder uses GPT-5.4 measurement (60M tok/wk). Given 5.5 doubled per-token price, actual 5.5 Business quota is likely ~30M tok/wk.",
-        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260415_110603.json",
-        "tokensPerWeek": 60108025,
-        "estimated": true
+        "confidence": "high",
+        "notes": "Measured 2026-04-24 22:38 via codex-cli on gpt-5.5 xhigh on Business. Clean multi-flip: 3 flips in 3 separate batches, per-1% deltas of 181,969 + 181,421 + 179,883 \u2014 <1% spread across flips. Cache hit rate 67%.",
+        "source": "https://github.com/desktop-commander/best-value-ai/blob/master/measurements/codex_measurement_20260424_223823.json",
+        "tokensPerWeek": 18109100,
+        "estimated": false,
+        "measuredOnModel": "gpt-5.5 (reasoning xhigh, summaries auto)",
+        "measurementFiles": 1,
+        "measurementBestFile": "codex_measurement_20260424_223823.json",
+        "measurementTaskRuns": 3,
+        "measurementDelta5h": 21,
+        "measurementDeltaWeekly": 3,
+        "measurement_method": "multi-flip (3 weekly-% crossings, first discarded)"
       }
     },
     "_aa_synced": "2026-04-24"

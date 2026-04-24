@@ -1,0 +1,82 @@
+{
+  "tool": "codex-cli",
+  "version": "codex-cli 0.124.0",
+  "plan": "Business",
+  "account": "er@desktopcommander.app (Business)",
+  "target_meter": "weekly_pct_left",
+  "target_flips_requested": 3,
+  "model": "gpt-5.4 (reasoning xhigh, summaries auto)",
+  "timestamp": "2026-04-24T19:35:36Z",
+  "task": "doubly-linked-list-with-tests",
+  "num_runs": 2,
+  "parallel": 1,
+  "duration_seconds": 335,
+  "tokens": {
+    "input": 785980,
+    "cached": 677248,
+    "output": 19558,
+    "total": 805538
+  },
+  "quota_before": {
+    "5h_pct_left": 97,
+    "weekly_pct_left": 100,
+    "account": "er@desktopcommander.app (Business)",
+    "plan": "Business",
+    "model": "gpt-5.4 (reasoning xhigh, summaries auto)"
+  },
+  "quota_after": {
+    "5h_pct_left": 83,
+    "weekly_pct_left": 97,
+    "account": "er@desktopcommander.app (Business)",
+    "plan": "Business",
+    "model": "gpt-5.4 (reasoning xhigh, summaries auto)"
+  },
+  "quota_consumed": {
+    "5h_pct": 14,
+    "weekly_pct": 3,
+    "target_meter_pct": 3
+  },
+  "meter_flips": [
+    {
+      "flip_index": 1,
+      "meter_value": 99,
+      "cumulative_tokens": 367061,
+      "runs": 1,
+      "batch": 1
+    },
+    {
+      "flip_index": 2,
+      "meter_value": 98,
+      "cumulative_tokens": 367061,
+      "runs": 1,
+      "batch": 1
+    },
+    {
+      "flip_index": 3,
+      "meter_value": 97,
+      "cumulative_tokens": 805538,
+      "runs": 2,
+      "batch": 2
+    }
+  ],
+  "estimates": {
+    "5h_tokens": 5753842,
+    "weekly_tokens": 26851266,
+    "daily_tokens": 3835895,
+    "target_meter_mean_tokens_per_1pct": 219238,
+    "target_meter_median_tokens_per_1pct": 219238,
+    "target_meter_estimate_mean": 21923850,
+    "target_meter_estimate_median": 21923850,
+    "target_meter_flip_count": 2,
+    "target_meter_flip_deltas": [
+      0,
+      438477
+    ],
+    "target_meter_all_flip_deltas": [
+      367061,
+      0,
+      438477
+    ],
+    "target_meter_ignored_first_flip": true
+  }
+}
