@@ -17,13 +17,13 @@
 5. **GPT-5.5 (xhigh)** (Subscription) — 14.3M tok/$ · ChatGPT Plus · $20/mo
 6. **Claude Sonnet 4.6 (Non-reasoning, High Effort)** (Subscription) — 4.9M tok/$ · Claude Max 20× · $200/mo
 7. **Claude 4.5 Sonnet (Non-reasoning)** (Subscription) — 4.0M tok/$ · Claude Max 20× · $200/mo
-8. **Claude Sonnet 4** (Subscription) — 3.5M tok/$ · Claude Max 20× · $200/mo
-9. **Claude Opus 4.7 (Reasoning, Max Effort)** (Subscription) — 3.5M tok/$ · Claude Max 20× · $200/mo
-10. **Claude Opus 4.6 (Non-reasoning, High Effort)** (Subscription) — 3.3M tok/$ · Claude Max 20× · $200/mo
+8. **GPT-5.4 (xhigh)** (Subscription) — 4.0M tok/$ · ChatGPT Business · $30/mo
+9. **GPT-5.2** (Subscription) — 3.6M tok/$ · ChatGPT Business · $30/mo
+10. **Claude Sonnet 4** (Subscription) — 3.5M tok/$ · Claude Max 20× · $200/mo
 
 ## Empirical subscription measurements
 
-- **Business**: 60.1M tokens/week · tight extrapolation · measured 2026-04-15 via codex-cli (5 runs, 21%/5h 4%/week consumed)
+- **Business**: 36.8M tokens/week · tight extrapolation · measured 2026-04-24 via codex-cli (4 runs, 22%/5h 3%/week consumed)
 - **Claude Max 20x**: 184.2M tokens/week · wide extrapolation · measured 2026-04-24 via claude-code (200 runs, 0%/5h 3%/week consumed)
 - **Claude Pro**: 15.6M tokens/week · wide extrapolation · measured 2026-04-24 via claude-code (20 runs, 0%/5h 8%/week consumed)
 - **Plus**: 197.6M tokens/week · tight extrapolation · measured 2026-04-24 via codex-cli (9 runs, 21%/5h 3%/week consumed)
