@@ -1348,6 +1348,7 @@
             <li><a href="#benchmarks">📏 Benchmarks</a></li>
             <li><a href="#by-benchmark">🧭 Matrix</a></li>
             <li><a href="#subscription-method">💳 Measurements</a></li>
+            <li><a href="#api-equivalent-value">💰 API value</a></li>
             <li><a href="#raw-data">📋 Data</a></li>
         </ul>
     </div>
@@ -2028,6 +2029,135 @@
         </p>
     </div>
 </section>
+
+<!-- API-EQUIVALENT VALUE SECTION -->
+<section class="section" id="api-equivalent-value" style="scroll-margin-top:60px">
+    <div class="section-header fade-up">
+        <div class="tag green">💰 API-equivalent value</div>
+        <h2 class="section-title">Your subscription, priced at API rates</h2>
+        <p style="font-size:0.95rem;color:var(--muted);max-width:720px;margin-top:0.25rem">If you bought the same tokens directly through the provider's API, how much would your subscription's weekly quota cost? We can work this out because the measurement captures exact input / cached / output tokens alongside the quota consumed.</p>
+    </div>
+
+    <div class="fade-up" style="max-width:820px;margin:1rem auto 0">
+        <!-- apiEquivValue -->
+<table style="width:100%;border-collapse:collapse;font-size:0.78rem;color:var(--text)">
+       <thead><tr style="border-bottom:1px solid var(--border);text-align:left">
+         <th style="padding:0.4rem">Plan</th>
+         <th style="padding:0.4rem">Model measured</th>
+         <th style="padding:0.4rem;text-align:right">You pay</th>
+         <th style="padding:0.4rem;text-align:right">API-equivalent</th>
+         <th style="padding:0.4rem;text-align:right">Multiplier</th>
+         <th style="padding:0.4rem;text-align:right" title="Cache hit rate on our standardized task">Cache%</th>
+       </tr></thead>
+       <tbody><tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:0.4rem;font-weight:600">ChatGPT Plus</td>
+    <td style="padding:0.4rem">gpt-5.5</td>
+    <td style="padding:0.4rem;text-align:right">$20/mo</td>
+    <td style="padding:0.4rem;text-align:right">$561/mo</td>
+    <td style="padding:0.4rem;text-align:right;font-weight:600;color:var(--green)">28.1×</td>
+    <td style="padding:0.4rem;text-align:right;color:var(--muted);font-size:0.68rem">83%</td>
+  </tr>
+<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:0.4rem;font-weight:600">ChatGPT Plus</td>
+    <td style="padding:0.4rem">gpt-5.4</td>
+    <td style="padding:0.4rem;text-align:right">$20/mo</td>
+    <td style="padding:0.4rem;text-align:right">$547/mo</td>
+    <td style="padding:0.4rem;text-align:right;font-weight:600;color:var(--green)">27.3×</td>
+    <td style="padding:0.4rem;text-align:right;color:var(--muted);font-size:0.68rem">86%</td>
+  </tr>
+<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:0.4rem;font-weight:600">Claude Max 20×</td>
+    <td style="padding:0.4rem">Opus 4.7</td>
+    <td style="padding:0.4rem;text-align:right">$200/mo</td>
+    <td style="padding:0.4rem;text-align:right">$1.80K/mo</td>
+    <td style="padding:0.4rem;text-align:right;font-weight:600;color:var(--green)">9.0×</td>
+    <td style="padding:0.4rem;text-align:right;color:var(--muted);font-size:0.68rem">100%</td>
+  </tr>
+<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:0.4rem;font-weight:600">Claude Pro</td>
+    <td style="padding:0.4rem">Sonnet 4.6</td>
+    <td style="padding:0.4rem;text-align:right">$20/mo</td>
+    <td style="padding:0.4rem;text-align:right">$137/mo</td>
+    <td style="padding:0.4rem;text-align:right;font-weight:600;color:var(--green)">6.9×</td>
+    <td style="padding:0.4rem;text-align:right;color:var(--muted);font-size:0.68rem">100%</td>
+  </tr>
+<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:0.4rem;font-weight:600">Claude Max 20×</td>
+    <td style="padding:0.4rem">Sonnet 4.6</td>
+    <td style="padding:0.4rem;text-align:right">$200/mo</td>
+    <td style="padding:0.4rem;text-align:right">$1.33K/mo</td>
+    <td style="padding:0.4rem;text-align:right;font-weight:600;color:var(--green)">6.7×</td>
+    <td style="padding:0.4rem;text-align:right;color:var(--muted);font-size:0.68rem">100%</td>
+  </tr>
+<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:0.4rem;font-weight:600">Claude Pro</td>
+    <td style="padding:0.4rem">Opus 4.7</td>
+    <td style="padding:0.4rem;text-align:right">$20/mo</td>
+    <td style="padding:0.4rem;text-align:right">$126/mo</td>
+    <td style="padding:0.4rem;text-align:right;font-weight:600;color:var(--green)">6.3×</td>
+    <td style="padding:0.4rem;text-align:right;color:var(--muted);font-size:0.68rem">100%</td>
+  </tr>
+<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:0.4rem;font-weight:600">ChatGPT Business</td>
+    <td style="padding:0.4rem">gpt-5.4</td>
+    <td style="padding:0.4rem;text-align:right">$30/mo</td>
+    <td style="padding:0.4rem;text-align:right">$178/mo</td>
+    <td style="padding:0.4rem;text-align:right;font-weight:600;color:var(--green)">5.9×</td>
+    <td style="padding:0.4rem;text-align:right;color:var(--muted);font-size:0.68rem">88%</td>
+  </tr>
+<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:0.4rem;font-weight:600">Claude Max 20×</td>
+    <td style="padding:0.4rem">Sonnet 4.5</td>
+    <td style="padding:0.4rem;text-align:right">$200/mo</td>
+    <td style="padding:0.4rem;text-align:right">$936/mo</td>
+    <td style="padding:0.4rem;text-align:right;font-weight:600;color:var(--green)">4.7×</td>
+    <td style="padding:0.4rem;text-align:right;color:var(--muted);font-size:0.68rem">100%</td>
+  </tr></tbody>
+     </table>
+<!-- /apiEquivValue -->
+    </div>
+
+    <div class="fade-up" style="max-width:820px;margin:1.5rem auto 0">
+        <details style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem">
+            <summary style="cursor:pointer;font-weight:600;font-size:0.85rem">How we calculated this</summary>
+            <div style="font-size:0.78rem;color:var(--text);line-height:1.65;margin-top:0.75rem">
+                <p>For each plan + model measurement, we extract from the CLI's <code>--json</code> output:</p>
+                <ul style="margin:0.4rem 0 0.6rem 1.2rem;padding:0">
+                    <li><strong>Non-cached input tokens</strong> — billed at full API input price</li>
+                    <li><strong>Cached input tokens</strong> — billed at 10% of input price (OpenAI &amp; Anthropic standard)</li>
+                    <li><strong>Output tokens</strong> — billed at full API output price</li>
+                    <li><strong>Percent of weekly quota consumed</strong> during the run</li>
+                </ul>
+                <p>Extrapolate each token category to 100% weekly, multiply by 4.33 weeks/month, then apply the model's public <a href="https://artificialanalysis.ai/" target="_blank" style="color:var(--blue)">API pricing</a>:</p>
+                <pre style="background:var(--bg);border-radius:6px;padding:0.6rem 0.8rem;font-size:0.72rem;overflow-x:auto;margin:0.5rem 0">monthly_api_cost = (
+    non_cached_input_per_month × $input_rate
+  + cached_input_per_month     × $input_rate × 0.10
+  + output_per_month           × $output_rate
+)
+multiplier = monthly_api_cost ÷ subscription_price</pre>
+                <p style="margin-top:0.6rem"><strong>Worked example — ChatGPT Plus on GPT-5.4:</strong></p>
+                <p style="margin-top:0.4rem">One measurement session consumed 3% of the weekly quota with 5.90M input tokens (5.07M of them cached) and 30.5K output tokens. Scaling to 100% weekly and ×4.33 for monthly gives 119M non-cached input, 732M cached input, 4.4M output. At GPT-5.4's $2.50 input / $15 output rate:</p>
+                <pre style="background:var(--bg);border-radius:6px;padding:0.6rem 0.8rem;font-size:0.72rem;overflow-x:auto;margin:0.5rem 0">119M × $2.50/M  = $298    (non-cached input)
+732M × $0.25/M  = $183    (cached input)
+4.4M × $15/M    = $66     (output)
+─────────────────────────
+                  $547/mo  at API pricing
+÷ $20/mo subscription     = 27× multiplier</pre>
+            </div>
+        </details>
+
+        <details style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;margin-top:0.6rem">
+            <summary style="cursor:pointer;font-weight:600;font-size:0.85rem">Important caveats</summary>
+            <div style="font-size:0.78rem;color:var(--text);line-height:1.65;margin-top:0.75rem">
+                <p><strong>1. Cache hit rate matters a lot.</strong> Our standardized task runs the same prompt 30+ times, so cache hit rates land in the 80–100% range. Real-world usage with varied prompts has much lower cache rates — which would <em>increase</em> the API-equivalent cost (cached tokens are 10× cheaper than non-cached). So these multipliers are probably <strong>lower bounds</strong> in most scenarios.</p>
+                <p><strong>2. Only the API comparison is real.</strong> These numbers show <em>"what would it cost at API"</em>, not what the subscription provider's own unit economics are. Providers likely price quotas to match expected real usage patterns, not artificially-cached benchmark patterns.</p>
+                <p><strong>3. The multiplier assumes you fully utilize the quota.</strong> If you only use 10% of your Plus quota per month, you're getting 10% of the multiplier — possibly <em>worse</em> value than API metered billing. The subscription wins if you're a heavy user.</p>
+                <p><strong>4. Cache pricing varies.</strong> We use OpenAI/Anthropic's 10% cached-input discount as a standard. Some providers don't discount cached reads; others discount differently. This is reasonable for the two providers we measure but not universally applicable.</p>
+            </div>
+        </details>
+    </div>
+</section>
+<!-- /API-EQUIVALENT VALUE SECTION -->
 
 <!-- RAW DATA (moved to end) -->
 <section class="section" id="raw-data" style="scroll-margin-top:60px">

@@ -334,6 +334,146 @@ for (const f of measFiles) {
     });
   } catch(e) {}
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// API-equivalent value for subscriptions
+// "How much would the quota your subscription gives you cost at API prices?"
+// Inputs per measurement: input tokens, cached input tokens, output tokens,
+//   pct of weekly quota consumed. Scaled to 100% weekly, then × 4.33 weeks/mo,
+//   priced at model's public API rate (cached at 10% of input — standard
+//   OpenAI/Anthropic convention).
+// ─────────────────────────────────────────────────────────────────────────
+const CACHED_DISCOUNT = 0.10;
+const WEEKS_PER_MONTH = 4.33;
+// Map measurement-model-string substring → model id in models.json
+const SUB_MODEL_MAP = [
+  ['gpt-5.5',    'gpt-5-5'],
+  ['gpt-5.4',    'gpt-5-4'],
+  ['Opus 4.7',   'claude-opus-4-7'],
+  ['Opus 4.6',   'claude-opus-4-6'],
+  ['Sonnet 4.6', 'claude-sonnet-4-6'],
+  ['Sonnet 4.5', 'claude-4-5-sonnet'],
+];
+const PLAN_PRICES = {
+  'Plus': 20, 'ChatGPT Plus': 20,
+  'Business': 30, 'ChatGPT Business': 30,
+  'ChatGPT Pro': 200,
+  'Claude Pro': 20,
+  'Claude Max 20x': 200, 'Claude Max': 200,
+};
+const PLAN_DISPLAY_NAMES = {
+  'Plus': 'ChatGPT Plus',
+  'Business': 'ChatGPT Business',
+  'Claude Max': 'Claude Max 20×',
+  'Claude Max 20x': 'Claude Max 20×',
+};
+
+const apiValueRows = [];
+for (const f of measFiles) {
+  try {
+    const d = JSON.parse(fs.readFileSync(path.join(MEAS_DIR, f)));
+    const tokens = d.tokens || {};
+    if (!tokens.total) continue;
+    const qc = d.quota_consumed || {};
+    const wkPct = qc.weekly_pct ?? qc.weekly_all_pct;
+    if (!wkPct || wkPct <= 0) continue;
+
+    // Normalize plan
+    let plan = d.plan || 'unknown';
+    const pm = plan.match(/\((\w+)\)$/); if (pm) plan = pm[1];
+    const pm2 = plan.match(/^(\w[\w\s]*?)\s*\(/); if (pm2) plan = pm2[1];
+    if (plan === 'Claude Max') plan = 'Claude Max 20x';
+    const subPrice = PLAN_PRICES[plan];
+    if (!subPrice) continue;
+
+    // Identify model in models.json
+    const modelStr = (d.captured_model || d.model || '');
+    const mapEntry = SUB_MODEL_MAP.find(([needle]) => modelStr.toLowerCase().includes(needle.toLowerCase()));
+    if (!mapEntry) continue;
+    const modelObj = models[mapEntry[1]];
+    if (!modelObj?.api?.inputPer1M) continue;
+    const apiIn = modelObj.api.inputPer1M;
+    const apiOut = modelObj.api.outputPer1M;
+
+    const inputRaw = tokens.input || 0;
+    const cached = tokens.cached || 0;
+    const output = tokens.output || 0;
+    const nonCached = Math.max(0, inputRaw - cached);
+    const cacheHitRate = inputRaw > 0 ? cached / inputRaw : 0;
+
+    const scale = 100 / wkPct;
+    const wkNonCached = nonCached * scale;
+    const wkCached = cached * scale;
+    const wkOutput = output * scale;
+
+    const wkApiCost = (wkNonCached / 1e6) * apiIn
+                    + (wkCached / 1e6) * apiIn * CACHED_DISCOUNT
+                    + (wkOutput / 1e6) * apiOut;
+    const monthlyApiCost = wkApiCost * WEEKS_PER_MONTH;
+    const multiplier = monthlyApiCost / subPrice;
+
+    apiValueRows.push({
+      file: f,
+      plan,
+      planDisplay: PLAN_DISPLAY_NAMES[plan] || plan,
+      modelLabel: mapEntry[0],
+      modelId: mapEntry[1],
+      subPrice,
+      wkPct,
+      inputRaw, cached, output,
+      cacheHitRate,
+      apiIn, apiOut,
+      wkApiCost,
+      monthlyApiCost,
+      multiplier,
+      date: (d.timestamp || '').split('T')[0],
+    });
+  } catch(e) {}
+}
+
+// Keep only the latest measurement per (plan, model)
+const bestApiValue = {};
+for (const r of apiValueRows) {
+  const key = `${r.plan}|${r.modelId}`;
+  if (!bestApiValue[key] || r.file > bestApiValue[key].file) bestApiValue[key] = r;
+}
+const apiValueSorted = Object.values(bestApiValue).sort((a, b) => b.multiplier - a.multiplier);
+
+// Build the HTML table rows
+const fmtDollar = n => n >= 1000 ? `$${(n/1000).toFixed(2)}K` : `$${Math.round(n)}`;
+const apiValueTableRows = apiValueSorted.map(r => {
+  return `<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:0.4rem;font-weight:600">${r.planDisplay}</td>
+    <td style="padding:0.4rem">${r.modelLabel}</td>
+    <td style="padding:0.4rem;text-align:right">$${r.subPrice}/mo</td>
+    <td style="padding:0.4rem;text-align:right">${fmtDollar(r.monthlyApiCost)}/mo</td>
+    <td style="padding:0.4rem;text-align:right;font-weight:600;color:var(--green)">${r.multiplier.toFixed(1)}×</td>
+    <td style="padding:0.4rem;text-align:right;color:var(--muted);font-size:0.68rem">${(r.cacheHitRate*100).toFixed(0)}%</td>
+  </tr>`;
+}).join('\n');
+
+const apiValueHtml = apiValueTableRows
+  ? `<table style="width:100%;border-collapse:collapse;font-size:0.78rem;color:var(--text)">
+       <thead><tr style="border-bottom:1px solid var(--border);text-align:left">
+         <th style="padding:0.4rem">Plan</th>
+         <th style="padding:0.4rem">Model measured</th>
+         <th style="padding:0.4rem;text-align:right">You pay</th>
+         <th style="padding:0.4rem;text-align:right">API-equivalent</th>
+         <th style="padding:0.4rem;text-align:right">Multiplier</th>
+         <th style="padding:0.4rem;text-align:right" title="Cache hit rate on our standardized task">Cache%</th>
+       </tr></thead>
+       <tbody>${apiValueTableRows}</tbody>
+     </table>`
+  : '<p style="font-size:0.8rem;color:var(--muted)">No measurements available yet.</p>';
+
+const apiValueStart = html.indexOf('<!-- apiEquivValue -->');
+const apiValueEnd   = html.indexOf('<!-- /apiEquivValue -->');
+if (apiValueStart !== -1 && apiValueEnd !== -1) {
+  const replacement = `<!-- apiEquivValue -->\n${apiValueHtml}\n`;
+  html = html.substring(0, apiValueStart) + replacement + html.substring(apiValueEnd);
+}
+console.log(`  ✓ API-equivalent value: ${apiValueSorted.length} plan×model combos`);
+
 // Inject into HTML before closing </body>
 // First strip any existing MEASUREMENT_TIMELINE scripts (prevent duplicates on re-run)
 html = html.replace(/<script>window\.MEASUREMENT_TIMELINE=[^<]*<\/script>\n?/g, '');
