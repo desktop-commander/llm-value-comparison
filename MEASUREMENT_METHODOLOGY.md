@@ -109,34 +109,65 @@ This means reasoning effort directly affects how many tasks fit in your quota.
 |--------|-------|
 | 5h window consumed | 12% (88% remaining) |
 | Weekly consumed | 6% (94% remaining) |
-| **Estimated 5h window** | **~6.6M tokens** |
-| **Estimated weekly quota** | **~13.3M tokens** |
-| **Effective daily (weekly/7)** | **~1.9M tokens/day** |
-| Binding constraint | Weekly (not 5h) |
+| **Estimated 5h window** | **\~6.6M tokens** | | **Estimated weekly quota** | **\~13.3M tokens** | | **Effective daily (weekly/7)** | **\~1.9M tokens/day** | | Binding constraint | Weekly (not 5h) |
 
 ### For the Value Calculator
 
-We use `tokensPerWeek = 13,280,883` for ChatGPT Plus in our formula.
-Value = `tokensPerWeek × 4 × quality% / monthlyPrice`.
+We use `tokensPerWeek = 13,280,883` for ChatGPT Plus in our formula. Value = `tokensPerWeek × 4 × quality% / monthlyPrice`.
 
-Pro ($100/mo) is officially 5x Plus → `tokensPerWeek = 66,500,000`.
-(Currently has 2x boost ending May 31, 2026, making it effectively 10x.)
+Pro ($100/mo) is officially 5x Plus → `tokensPerWeek = 66,500,000`. (Currently has 2x boost ending May 31, 2026, making it effectively 10x.)
 
 ## How to Contribute Your Own Measurements
 
 1. Clone the repo
-2. Run: `bash scripts/measure-codex-quota.sh` (or `measure-claude-quota.sh`)
-3. Edit the JSON in `measurements/` to add your plan name
-4. Submit a PR or open an issue with the results
+
+2. Pick the right script for your CLI:
+
+   - **Claude Code**: `scripts/measure-claude-quota.sh`
+   - **Codex CLI**: `scripts/measure-codex-quota.sh`
+
+3. **Always pass the model name** as the second argument so the script can force the model:
+
+   ```bash
+   bash scripts/measure-claude-quota.sh /tmp/claude-scratch sonnet
+   bash scripts/measure-codex-quota.sh  /tmp/codex-scratch  gpt-5.4
+   ```
+
+4. **Size** `PARALLEL` **for your plan**. Each batch should move the weekly meter by \~1%; larger batches collapse multiple flips into one measurement point and corrupt the estimate. Rough defaults:
+
+   - Claude Pro: `PARALLEL=2–3`
+   - Claude Max 20×: `PARALLEL=20–30`
+   - ChatGPT Plus: `PARALLEL=3–5`
+   - ChatGPT Business: `PARALLEL=2–3`
+   - ChatGPT Pro: `PARALLEL=15–25` (not yet confirmed)
+
+5. The script writes `measurements/<tool>_measurement_<timestamp>.json`. Open a PR with that file + any notes about your plan state (5h quota consumed at start, etc.)
+
+### Multi-flip method (current ground truth)
+
+Since April 2026 both scripts measure quota the same way:
+
+1. Record the weekly meter value before the run
+2. Run the standardized coding task in batches of `PARALLEL` concurrent calls
+3. After each batch, re-read `/status`. If the meter crossed a whole-percent boundary, record the cumulative token total at that crossing.
+4. Stop after `TARGET_FLIPS` (default 3) crossings.
+5. Discard the first crossing — we don't know where inside the starting 1% bucket the measurement began, so it's a biased estimate.
+6. Average the remaining inter-flip token deltas → tokens per 1% → multiply by 100 for the weekly estimate.
+
+A clean run produces 1 flip per batch. If a batch crosses 2+ boundaries at once, flip resolution degrades and the estimate is unreliable — lower `PARALLEL` and re-run.
+
+### What we still need
 
 More measurements = more accurate data. We especially need:
-- **ChatGPT Pro** ($100/mo) measurements
-- **Claude Pro** ($20/mo), **Max5** ($100/mo), **Max20** ($200/mo)
-- Different reasoning effort levels (low, medium, high, xhigh)
-- Different models (GPT-5.3-Codex, GPT-5.4-mini, Claude Sonnet vs Opus)
+
+- **ChatGPT Pro** ($200/mo) — never measured
+- **Claude Max 5×** ($100/mo) — estimated as 5/20 × Max 20×, never measured
+- **Claude Pro + Sonnet** — we have Pro + Opus, not Sonnet yet
+- **ChatGPT Business + GPT-5.5** — Business on 5.4 is from an older single-flip run; GPT-5.5 Business entirely unmeasured
+- **Different reasoning effort levels** on Codex (low, medium, high, xhigh) — currently all our Codex runs use xhigh
+- **Gemini Advanced** subscriptions once Google exposes a quota meter
 
 ## Data Files
 
-- `measurements/*.json` — Raw measurement data (gitignored for privacy, submit via PR)
-- `measurements/codex_plus_20260413.json` — First reference measurement (committed)
-- `data/models.json` — The subscription data used by the calculator
+- `measurements/*.json` — Raw measurement data, one file per run. PRs welcome.
+- `data/models.json` — Subscription data used by the calculator (aggregated from measurements)
