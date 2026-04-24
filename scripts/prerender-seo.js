@@ -323,6 +323,7 @@ for (const f of measFiles) {
     if (!weekly && !session) continue;
     measTimeline.push({
       plan,
+      model: (d.model || d.captured_model || '').replace(/\s*\(.*\)\s*$/, '').trim() || null,
       date: d.timestamp ? d.timestamp.split('T')[0] : null,
       weekly: weekly || null,
       session: session || null,
