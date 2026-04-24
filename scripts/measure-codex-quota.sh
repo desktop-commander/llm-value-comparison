@@ -13,7 +13,19 @@ RESULT_FILE="$RESULTS_DIR/codex_measurement_${TS}.json"
 WORK_DIR="${1:-$(mktemp -d)}"
 MODEL_NAME="${2:-${MODEL_NAME:-}}"
 SN="codex_m_$$"
-CODEX="npx codex"
+# Resolve codex binary ONCE at startup. Running "npx codex" concurrently
+# inside backgrounded subshells (when PARALLEL>1) causes races on npm's
+# package cache — some subshells get an unbuilt cache entry and fail
+# silently, producing 0-byte JSONL files and a "0 tokens consumed" run.
+# Prefer a globally-installed codex-cli; fall back to npx if needed.
+if command -v codex &>/dev/null; then
+    CODEX="$(command -v codex)"
+elif command -v codex-cli &>/dev/null; then
+    CODEX="$(command -v codex-cli)"
+else
+    # Last resort — npx, works for PARALLEL=1 only, warn on higher
+    CODEX="npx codex"
+fi
 # Build model flag args once. Codex supports `-m <MODEL>` / `--model <MODEL>`.
 # If no model requested, leave empty so Codex uses its saved default.
 if [ -n "$MODEL_NAME" ]; then
@@ -166,18 +178,46 @@ for batch in $(seq 1 $MAX_BATCHES); do
         RUN_NUM=$(( (batch - 1) * PARALLEL + j ))
         if [ "$RUN_NUM" -gt "$NUM_RUNS" ]; then break; fi
         JF="/tmp/codex_run_${TS}_${RUN_NUM}.jsonl"
+        EF="/tmp/codex_run_${TS}_${RUN_NUM}.err"
         BATCH_JFS+=("$JF")
         # Unique temp dir per concurrent run so they don't clobber each other's
         # edits to linked_list.py (codex writes files to cwd)
         RUN_DIR="/tmp/codex_run_${TS}_${RUN_NUM}_dir"
         mkdir -p "$RUN_DIR"
-        (cd "$RUN_DIR" && echo "$PROMPT" | $CODEX exec $MODEL_ARGS --json - > "$JF" 2>/dev/null || true) &
+        (cd "$RUN_DIR" && echo "$PROMPT" | $CODEX exec $MODEL_ARGS --json - > "$JF" 2> "$EF" || true) &
     done
     wait
 
     T1=$(date +%s)
     DUR=$((T1 - T0))
     TOTAL_DUR=$((TOTAL_DUR + DUR))
+
+    # Detect silent failures: 0-byte JSONL means codex exec failed before
+    # writing any output. Print the stderr from at least one failed run so
+    # the user can see what went wrong (auth, network, model not allowed, etc).
+    EMPTY_COUNT=0
+    for JF in "${BATCH_JFS[@]}"; do
+        if [ ! -s "$JF" ]; then
+            EMPTY_COUNT=$((EMPTY_COUNT + 1))
+        fi
+    done
+    if [ "$EMPTY_COUNT" -gt 0 ]; then
+        echo "    ⚠ $EMPTY_COUNT of ${#BATCH_JFS[@]} runs produced empty output. Likely error:"
+        # Find first non-empty .err file and show first 5 lines
+        for JF in "${BATCH_JFS[@]}"; do
+            EF="${JF%.jsonl}.err"
+            if [ -s "$EF" ]; then
+                echo "    ---- stderr from $(basename "$JF") ----"
+                head -5 "$EF" | sed 's/^/    /'
+                echo "    ---- end ----"
+                break
+            fi
+        done
+        if [ "$EMPTY_COUNT" -eq "${#BATCH_JFS[@]}" ]; then
+            echo "    ALL runs in this batch failed — aborting. Fix the error above, then retry."
+            exit 1
+        fi
+    fi
 
     # Aggregate tokens across this batch's JSON-lines files
     BATCH_IN=0; BATCH_CACHED=0; BATCH_OUT=0
