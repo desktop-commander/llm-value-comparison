@@ -151,6 +151,12 @@ TARGET_FLIPS=${TARGET_FLIPS:-3}
 # If a single batch consumes more than ~2% of weekly meter, flip-recording loses
 # resolution (multiple crossings collapse into one batch). Lower PARALLEL in that case.
 PARALLEL=${PARALLEL:-1}
+# CACHE_BUST=1 prepends a unique timestamp+nonce to each prompt so providers
+# can't match the cached prefix. Off by default — caching reflects best-case
+# realistic agent loops where the system prompt is fixed. Turn on for "worst
+# case" measurements that simulate fully varied prompts. Cost: each run burns
+# 5-10× more quota because every input token is full-price.
+CACHE_BUST=${CACHE_BUST:-0}
 FLIPS_RECORDED=0
 FLIP_JSON_LINES=""
 LAST_METER_VALUE=$(echo "$BEFORE_JSON" | python3 -c "import json,sys; print(json.loads(sys.stdin.read()).get('$TARGET_METER', -1))")
@@ -163,6 +169,7 @@ fi
 echo "Target meter: $TARGET_METER"
 echo "Target flips: $TARGET_FLIPS"
 echo "Parallel: $PARALLEL concurrent tasks per batch, max $NUM_RUNS total runs"
+echo "Cache bust: $([ "$CACHE_BUST" = "1" ] && echo "ON (unique prefix per run, kills cache)" || echo "off (default — cached repetition)")"
 echo "Starting meter value: ${LAST_METER_VALUE}%"
 
 cd "$WORK_DIR"
@@ -184,7 +191,17 @@ for batch in $(seq 1 $MAX_BATCHES); do
         # edits to linked_list.py (codex writes files to cwd)
         RUN_DIR="/tmp/codex_run_${TS}_${RUN_NUM}_dir"
         mkdir -p "$RUN_DIR"
-        (cd "$RUN_DIR" && echo "$PROMPT" | $CODEX exec $MODEL_ARGS --skip-git-repo-check --json - > "$JF" 2> "$EF" || true) &
+        # Build per-run prompt. With CACHE_BUST=1, prepend a unique
+        # timestamp+nonce to the start of the prompt so the provider's
+        # prefix-match cache misses (both OpenAI & Anthropic cache on prefix).
+        # Without CACHE_BUST, all runs share the identical prompt → high cache.
+        if [ "$CACHE_BUST" = "1" ]; then
+            NONCE="run_${RUN_NUM}_$(date +%s)_$RANDOM"
+            RUN_PROMPT="[Session $NONCE] $PROMPT"
+        else
+            RUN_PROMPT="$PROMPT"
+        fi
+        (cd "$RUN_DIR" && echo "$RUN_PROMPT" | $CODEX exec $MODEL_ARGS --skip-git-repo-check --json - > "$JF" 2> "$EF" || true) &
     done
     wait
 
@@ -392,6 +409,7 @@ result = {
     'task': 'doubly-linked-list-with-tests',
     'num_runs': $RUNS,
     'parallel': $PARALLEL,
+    'cache_bust': $CACHE_BUST,
     'duration_seconds': $TOTAL_DUR,
     'tokens': {'input': $TOTAL_IN, 'cached': $TOTAL_CACHED, 'output': $TOTAL_OUT, 'total': $TOTAL},
     'quota_before': before,

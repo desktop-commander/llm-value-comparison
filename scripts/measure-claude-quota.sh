@@ -162,6 +162,9 @@ MAX_BATCHES=${MAX_BATCHES:-40}
 PARALLEL=${PARALLEL:-10}
 TARGET_METER=${TARGET_METER:-weekly_all_pct_used}
 TARGET_FLIPS=${TARGET_FLIPS:-3}
+# CACHE_BUST=1 prepends a unique nonce per run so prompt caching can't match
+# (Anthropic caches prompt prefix). Off by default — see notes in codex script.
+CACHE_BUST=${CACHE_BUST:-0}
 FLIPS_RECORDED=0
 FLIP_JSON_LINES=""
 LAST_METER_VALUE=$(echo "$BEFORE_JSON" | python3 -c "import json,sys; print(json.loads(sys.stdin.read()).get('$TARGET_METER', -1))")
@@ -175,6 +178,7 @@ echo "Target meter: $TARGET_METER"
 echo "Target flips: $TARGET_FLIPS"
 echo "Starting meter value: ${LAST_METER_VALUE}%"
 echo "Parallel: $PARALLEL tasks per batch, max $MAX_BATCHES batches"
+echo "Cache bust: $([ "$CACHE_BUST" = "1" ] && echo "ON (unique prefix per run, kills cache)" || echo "off (default — cached repetition)")"
 echo ""
 
 cd "$WORK_DIR"
@@ -187,10 +191,18 @@ for batch in $(seq 1 $MAX_BATCHES); do
     for j in $(seq 1 $PARALLEL); do
         RUN_NUM=$(( (batch-1)*PARALLEL + j ))
         JF="/tmp/claude_run_${TS}_${RUN_NUM}.json"
-        if [ "$MODEL_ALIAS" = "default" ]; then
-            (echo "" | claude -p "$PROMPT" --output-format json > "$JF" 2>/dev/null) &
+        # Build per-run prompt. With CACHE_BUST=1, prepend unique nonce so
+        # Anthropic's prompt-prefix cache misses on every run.
+        if [ "$CACHE_BUST" = "1" ]; then
+            NONCE="run_${RUN_NUM}_$(date +%s)_$RANDOM"
+            RUN_PROMPT="[Session $NONCE] $PROMPT"
         else
-            (echo "" | claude --model "$MODEL_ALIAS" -p "$PROMPT" --output-format json > "$JF" 2>/dev/null) &
+            RUN_PROMPT="$PROMPT"
+        fi
+        if [ "$MODEL_ALIAS" = "default" ]; then
+            (echo "" | claude -p "$RUN_PROMPT" --output-format json > "$JF" 2>/dev/null) &
+        else
+            (echo "" | claude --model "$MODEL_ALIAS" -p "$RUN_PROMPT" --output-format json > "$JF" 2>/dev/null) &
         fi
         PIDS="$PIDS $!"
     done
@@ -374,6 +386,8 @@ result = {
     'timestamp': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
     'task': 'doubly-linked-list-with-tests',
     'num_runs': $RUNS,
+    'parallel': $PARALLEL,
+    'cache_bust': $CACHE_BUST,
     'duration_seconds': $TOTAL_DUR,
     'tokens': {'input': $TOTAL_IN, 'cached': $TOTAL_CACHED, 'output': $TOTAL_OUT, 'total': $TOTAL},
     'quota_before': before,
