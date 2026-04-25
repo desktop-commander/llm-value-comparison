@@ -14,6 +14,10 @@ RESULT_FILE="$RESULTS_DIR/claude_measurement_${TS}.json"
 WORK_DIR="${1:-$REPO_DIR}"
 MODEL_ALIAS="${2:-${MODEL_ALIAS:-default}}"
 SN="claude_m_$$"
+# Ensure work dir exists — otherwise the inner `cd` in the tmux launch command
+# fails silently and tmux exits before we can capture anything, producing the
+# very unhelpful "can't find pane: claude_m_<pid>" error.
+mkdir -p "$WORK_DIR"
 
 echo "=== Claude Code Quota Measurement · $TS ==="
 echo "Work dir: $WORK_DIR"
