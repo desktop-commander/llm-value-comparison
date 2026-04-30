@@ -171,18 +171,38 @@ PROMPT="Write a Python doubly-linked list with insert_head, insert_tail, delete_
 # separately now so downstream API-equivalent calculations get the pricing
 # right.
 TOTAL_IN=0; TOTAL_CACHE_CREATION=0; TOTAL_CACHE_READ=0; TOTAL_OUT=0; TOTAL_DUR=0; RUNS=0
-MAX_BATCHES=${MAX_BATCHES:-40}
-PARALLEL=${PARALLEL:-10}
 TARGET_METER=${TARGET_METER:-weekly_all_pct_used}
-TARGET_FLIPS=${TARGET_FLIPS:-3}
+
+# Plan-aware defaults. We detect the plan from /status (where parse_status
+# already extracts strings like "Claude Pro", "Claude Max 5x", "Claude Max 20x")
+# and pick PARALLEL/NUM_RUNS values sized for that quota. Override with
+# PLAN=pro|max_5x|max_20x if detection is wrong, or set PARALLEL=N / MAX_BATCHES=N
+# explicitly to bypass per-knob.
+DETECTED_PLAN=$(echo "$BEFORE_JSON" | python3 -c "import json,sys; print(json.loads(sys.stdin.read()).get('plan','unknown'))" 2>/dev/null || echo "unknown")
+PLAN_KEY="${PLAN:-${DETECTED_PLAN}}"
+# Normalize: lowercase, strip "claude " prefix, "max 5x" → "max_5x", "max 20x" → "max_20x", "max" alone → "max_20x" (most common Max variant)
+PLAN_KEY_NORM=$(echo "$PLAN_KEY" | tr '[:upper:]' '[:lower:]' | sed -E 's/^claude *//; s/ *([0-9]+)x/_\1x/; s/ +/_/g')
+case "$PLAN_KEY_NORM" in
+    pro)              DEF_PARALLEL=6;  DEF_NUM_RUNS=20;  DEF_FLIPS=3 ;;
+    max_5x)           DEF_PARALLEL=12; DEF_NUM_RUNS=100; DEF_FLIPS=3 ;;
+    max_20x|max)      DEF_PARALLEL=20; DEF_NUM_RUNS=200; DEF_FLIPS=3 ;;
+    *)                DEF_PARALLEL=10; DEF_NUM_RUNS=200; DEF_FLIPS=3 ;;
+esac
+TARGET_FLIPS=${TARGET_FLIPS:-$DEF_FLIPS}
+# NUM_RUNS is total budget. Claude script historically used MAX_BATCHES; we
+# accept either, with NUM_RUNS taking priority. MAX_BATCHES is derived.
+NUM_RUNS=${NUM_RUNS:-$DEF_NUM_RUNS}
+PARALLEL=${PARALLEL:-$DEF_PARALLEL}
+MAX_BATCHES=${MAX_BATCHES:-$(( (NUM_RUNS + PARALLEL - 1) / PARALLEL ))}
+
 # CACHE_BUST=1 prepends a unique nonce per run. CORRECTED finding (Apr 26
 # 2026) after fixing the cache_read/cache_creation bookkeeping: cache_bust
-# DOES affect Claude Code measurably. With the bug in place we saw
-# 99.99% → 99.99% which looked like no effect. With correct accounting,
-# Claude Code drops from ~92% cache_read to ~77% cache_read when nonces
-# are added. Codex side remains ~88% → ~88% (cache_bust appears not to
-# affect Codex meaningfully). Logged as cache_bust in output JSON.
-CACHE_BUST=${CACHE_BUST:-0}
+# DOES affect Claude Code measurably. With correct accounting, Claude Code
+# drops from ~92% cache_read to ~77% cache_read when nonces are added.
+# Default is now ON (cache_bust=1) to give conservative apples-to-apples
+# numbers across runs and remove cache rate variance. Set CACHE_BUST=0
+# explicitly only when intentionally measuring "lucky cached" throughput.
+CACHE_BUST=${CACHE_BUST:-1}
 FLIPS_RECORDED=0
 FLIP_JSON_LINES=""
 LAST_METER_VALUE=$(echo "$BEFORE_JSON" | python3 -c "import json,sys; print(json.loads(sys.stdin.read()).get('$TARGET_METER', -1))")
@@ -194,9 +214,11 @@ fi
 
 echo "Target meter: $TARGET_METER"
 echo "Target flips: $TARGET_FLIPS"
+echo "Detected plan: $DETECTED_PLAN${PLAN:+ (overridden by PLAN=$PLAN)}"
+echo "Plan-aware defaults: PARALLEL=$DEF_PARALLEL NUM_RUNS=$DEF_NUM_RUNS TARGET_FLIPS=$DEF_FLIPS  (selected for plan key '$PLAN_KEY_NORM')"
 echo "Starting meter value: ${LAST_METER_VALUE}%"
-echo "Parallel: $PARALLEL tasks per batch, max $MAX_BATCHES batches"
-echo "Cache bust: $([ "$CACHE_BUST" = "1" ] && echo "ON (unique prefix per run, kills cache)" || echo "off (default — cached repetition)")"
+echo "Parallel: $PARALLEL tasks per batch, max $MAX_BATCHES batches (~$NUM_RUNS runs)"
+echo "Cache bust: $([ "$CACHE_BUST" = "1" ] && echo "ON (unique prefix per run, kills cache) — DEFAULT" || echo "off (cached repetition)")"
 echo ""
 
 cd "$WORK_DIR"

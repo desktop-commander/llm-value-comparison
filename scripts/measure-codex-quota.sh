@@ -139,18 +139,34 @@ echo ""
 echo "--- TASK: running iterations ---"
 PROMPT="Write a Python doubly-linked list with insert_head, insert_tail, delete_node, find, reverse, to_list. Include Node class, type hints, docstrings. Write exactly 10 pytest tests. Save to linked_list.py"
 TOTAL_IN=0; TOTAL_CACHED=0; TOTAL_OUT=0; TOTAL_DUR=0; RUNS=0
-NUM_RUNS=${NUM_RUNS:-30}
+# Plan-aware defaults. We detect the plan from /status and pick reasonable
+# PARALLEL / NUM_RUNS / TARGET_FLIPS so that one batch consumes ~0.5–1% of the
+# weekly meter (good flip resolution) and total runs cross enough 1% boundaries
+# to capture 2+ usable deltas after discarding the first.
+#
+# Detection comes from parse_status's `plan` field (Plus / Business / Pro).
+# Override with PLAN=plus|business|pro_100|pro_200 if detection is wrong, or
+# explicitly set NUM_RUNS / PARALLEL / TARGET_FLIPS to take full manual control.
+DETECTED_PLAN=$(echo "$BEFORE_JSON" | python3 -c "import json,sys; print(json.loads(sys.stdin.read()).get('plan','unknown'))" 2>/dev/null || echo "unknown")
+PLAN_KEY="${PLAN:-${DETECTED_PLAN}}"
+# Normalize (lowercase, strip spaces)
+PLAN_KEY_NORM=$(echo "$PLAN_KEY" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
+case "$PLAN_KEY_NORM" in
+    plus)            DEF_PARALLEL=4;  DEF_NUM_RUNS=20;  DEF_FLIPS=3 ;;
+    business)        DEF_PARALLEL=5;  DEF_NUM_RUNS=30;  DEF_FLIPS=3 ;;
+    pro|pro_100)     DEF_PARALLEL=15; DEF_NUM_RUNS=80;  DEF_FLIPS=3 ;;
+    pro_200)         DEF_PARALLEL=20; DEF_NUM_RUNS=120; DEF_FLIPS=3 ;;
+    *)               DEF_PARALLEL=1;  DEF_NUM_RUNS=30;  DEF_FLIPS=3 ;;
+esac
+NUM_RUNS=${NUM_RUNS:-$DEF_NUM_RUNS}
 TARGET_METER=${TARGET_METER:-weekly_pct_left}
-TARGET_FLIPS=${TARGET_FLIPS:-3}
+TARGET_FLIPS=${TARGET_FLIPS:-$DEF_FLIPS}
 # PARALLEL controls how many `codex exec` calls run concurrently per batch.
-# Sequential (PARALLEL=1) is the safe default — matches old script behavior.
-# Suggested sizing based on plan quota (Codex uses % left, so flips are decrements):
-#   - Plus        ($20/mo, small weekly quota):  PARALLEL=3–5   (1 batch ≈ 0.5% of weekly)
-#   - Business    ($30/seat, medium):            PARALLEL=5–10
-#   - ChatGPT Pro ($200/mo, large):              PARALLEL=15–25
-# If a single batch consumes more than ~2% of weekly meter, flip-recording loses
-# resolution (multiple crossings collapse into one batch). Lower PARALLEL in that case.
-PARALLEL=${PARALLEL:-1}
+# Plan-aware default sized so 1 batch consumes ~0.5–1% of weekly quota (preserves
+# flip resolution). Override by setting PARALLEL=N explicitly. If a single batch
+# consumes more than ~2% of weekly meter, flip-recording loses resolution
+# (multiple crossings collapse into one batch). Lower PARALLEL in that case.
+PARALLEL=${PARALLEL:-$DEF_PARALLEL}
 # CACHE_BUST=1 prepends a unique nonce per run to attempt to invalidate the
 # provider's prompt cache. CORRECTED finding (Apr 26 2026, after fixing a
 # bookkeeping bug in the Claude side): on Codex, cache_bust has minimal
@@ -158,10 +174,14 @@ PARALLEL=${PARALLEL:-1}
 # Claude Code, cache_bust drops cache_read from ~92% to ~77% — meaningful
 # but doesn't take cache to zero. The portion that stays cached even with
 # nonces is the CLI's own system prompt, tool definitions, and prior turns
-# in the same session — content the user prompt can't reach. Kept for
-# completeness and in case providers expose more cache control later.
-# The 'cache_bust' field is recorded in output JSON.
-CACHE_BUST=${CACHE_BUST:-0}
+# in the same session — content the user prompt can't reach.
+#
+# DEFAULT IS NOW 1 (Apr 30 2026). Cache-bust ON is the conservative honest
+# baseline — it measures worst-case "no cache" throughput, removing cache
+# rate as a source of run-to-run variance. Set CACHE_BUST=0 explicitly only
+# when you want to compare against pre-Apr-30 historical measurements that
+# used cb=0 / cb=?. The 'cache_bust' field is recorded in output JSON.
+CACHE_BUST=${CACHE_BUST:-1}
 FLIPS_RECORDED=0
 FLIP_JSON_LINES=""
 LAST_METER_VALUE=$(echo "$BEFORE_JSON" | python3 -c "import json,sys; print(json.loads(sys.stdin.read()).get('$TARGET_METER', -1))")
@@ -173,6 +193,8 @@ fi
 
 echo "Target meter: $TARGET_METER"
 echo "Target flips: $TARGET_FLIPS"
+echo "Detected plan: $DETECTED_PLAN${PLAN:+ (overridden by PLAN=$PLAN)}"
+echo "Plan-aware defaults: PARALLEL=$DEF_PARALLEL NUM_RUNS=$DEF_NUM_RUNS TARGET_FLIPS=$DEF_FLIPS  (selected for plan key '$PLAN_KEY_NORM')"
 echo "Parallel: $PARALLEL concurrent tasks per batch, max $NUM_RUNS total runs"
 echo "Cache bust: $([ "$CACHE_BUST" = "1" ] && echo "ON (unique prefix per run, kills cache)" || echo "off (default — cached repetition)")"
 echo "Starting meter value: ${LAST_METER_VALUE}%"

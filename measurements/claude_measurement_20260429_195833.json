@@ -1,0 +1,90 @@
+{
+  "tool": "claude-code",
+  "version": "2.1.123 (Claude Code)",
+  "plan": "Claude Max",
+  "requested_model_alias": "opus",
+  "captured_model": "Opus 4.7",
+  "target_meter": "weekly_all_pct_used",
+  "target_flips_requested": 3,
+  "model": "Opus 4.7",
+  "timestamp": "2026-04-29T17:07:15Z",
+  "task": "doubly-linked-list-with-tests",
+  "num_runs": 140,
+  "parallel": 20,
+  "cache_bust": 1,
+  "duration_seconds": 369,
+  "schema_version": 2,
+  "tokens": {
+    "fresh_input": 754,
+    "cache_creation": 1558803,
+    "cache_read": 3707354,
+    "output": 406053,
+    "total": 5672964,
+    "input": 5266911,
+    "cached": 3707354
+  },
+  "quota_before": {
+    "session_pct_used": 31,
+    "weekly_all_pct_used": 14,
+    "weekly_sonnet_pct_used": 1,
+    "requested_model_alias": "opus",
+    "model": "Opus 4.7",
+    "plan": "Claude Max"
+  },
+  "quota_after": {
+    "session_pct_used": 64,
+    "weekly_all_pct_used": 17,
+    "weekly_sonnet_pct_used": 1,
+    "requested_model_alias": "opus",
+    "model": "Opus 4.7",
+    "plan": "Claude Max"
+  },
+  "quota_consumed": {
+    "session_pct": 33,
+    "weekly_all_pct": 3,
+    "target_meter_pct": 3
+  },
+  "meter_flips": [
+    {
+      "flip_index": 1,
+      "meter_value": 15,
+      "cumulative_tokens": 2430174,
+      "runs": 60,
+      "batch": 3
+    },
+    {
+      "flip_index": 2,
+      "meter_value": 16,
+      "cumulative_tokens": 4066304,
+      "runs": 100,
+      "batch": 5
+    },
+    {
+      "flip_index": 3,
+      "meter_value": 17,
+      "cumulative_tokens": 5672964,
+      "runs": 140,
+      "batch": 7
+    }
+  ],
+  "estimates": {
+    "session_tokens": 17190800,
+    "weekly_tokens": 189098800,
+    "daily_tokens": 27014114,
+    "target_meter_mean_tokens_per_1pct": 1621395,
+    "target_meter_median_tokens_per_1pct": 1621395,
+    "target_meter_estimate_mean": 162139500,
+    "target_meter_estimate_median": 162139500,
+    "target_meter_flip_count": 2,
+    "target_meter_flip_deltas": [
+      1636130,
+      1606660
+    ],
+    "target_meter_all_flip_deltas": [
+      2430174,
+      1636130,
+      1606660
+    ],
+    "target_meter_ignored_first_flip": true
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "tool": "claude-code",
+  "version": "2.1.123 (Claude Code)",
+  "plan": "Claude Max",
+  "requested_model_alias": "opus",
+  "captured_model": "Opus 4.7",
+  "target_meter": "weekly_all_pct_used",
+  "target_flips_requested": 3,
+  "model": "Opus 4.7",
+  "timestamp": "2026-04-29T16:26:01Z",
+  "task": "doubly-linked-list-with-tests",
+  "num_runs": 40,
+  "parallel": 2,
+  "cache_bust": 1,
+  "duration_seconds": 651,
+  "schema_version": 2,
+  "tokens": {
+    "fresh_input": 210,
+    "cache_creation": 438822,
+    "cache_read": 912361,
+    "output": 108208,
+    "total": 1459601,
+    "input": 1351393,
+    "cached": 912361
+  },
+  "quota_before": {
+    "session_pct_used": 14,
+    "weekly_all_pct_used": 12,
+    "weekly_sonnet_pct_used": 0,
+    "requested_model_alias": "opus",
+    "model": "Opus 4.7",
+    "plan": "Claude Max"
+  },
+  "quota_after": {
+    "session_pct_used": 23,
+    "weekly_all_pct_used": 13,
+    "weekly_sonnet_pct_used": 0,
+    "requested_model_alias": "opus",
+    "model": "Opus 4.7",
+    "plan": "Claude Max"
+  },
+  "quota_consumed": {
+    "session_pct": 9,
+    "weekly_all_pct": 1,
+    "target_meter_pct": 1
+  },
+  "meter_flips": [
+    {
+      "flip_index": 1,
+      "meter_value": 13,
+      "cumulative_tokens": 842578,
+      "runs": 24,
+      "batch": 12
+    }
+  ],
+  "estimates": {
+    "session_tokens": 16217788,
+    "weekly_tokens": 145960100,
+    "daily_tokens": 20851442,
+    "target_meter_all_flip_deltas": [
+      842578
+    ],
+    "target_meter_ignored_first_flip": true
+  }
+}

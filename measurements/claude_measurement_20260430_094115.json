@@ -1,0 +1,51 @@
+{
+  "tool": "claude-code",
+  "version": "2.1.123 (Claude Code)",
+  "plan": "Claude Max",
+  "requested_model_alias": "sonnet",
+  "captured_model": "Sonnet 4.6",
+  "target_meter": "weekly_all_pct_used",
+  "target_flips_requested": 3,
+  "model": "Sonnet 4.6",
+  "timestamp": "2026-04-30T06:54:59Z",
+  "task": "doubly-linked-list-with-tests",
+  "num_runs": 40,
+  "parallel": 2,
+  "cache_bust": 1,
+  "duration_seconds": 412,
+  "schema_version": 2,
+  "tokens": {
+    "fresh_input": 82,
+    "cache_creation": 306263,
+    "cache_read": 505357,
+    "output": 65805,
+    "total": 877507,
+    "input": 811702,
+    "cached": 505357
+  },
+  "quota_before": {
+    "session_pct_used": 3,
+    "weekly_all_pct_used": 20,
+    "weekly_sonnet_pct_used": 6,
+    "requested_model_alias": "sonnet",
+    "model": "Sonnet 4.6",
+    "plan": "Claude Max"
+  },
+  "quota_after": {
+    "session_pct_used": 7,
+    "weekly_all_pct_used": 20,
+    "weekly_sonnet_pct_used": 7,
+    "requested_model_alias": "sonnet",
+    "model": "Sonnet 4.6",
+    "plan": "Claude Max"
+  },
+  "quota_consumed": {
+    "session_pct": 4,
+    "weekly_all_pct": 0,
+    "target_meter_pct": 0
+  },
+  "meter_flips": [],
+  "estimates": {
+    "session_tokens": 21937675
+  }
+}

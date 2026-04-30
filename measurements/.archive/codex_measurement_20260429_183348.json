@@ -1,0 +1,83 @@
+{
+  "tool": "codex-cli",
+  "version": "codex-cli 0.124.0",
+  "plan": "Business",
+  "account": "er@desktopcommander.app (Business)",
+  "target_meter": "weekly_pct_left",
+  "target_flips_requested": 3,
+  "model": "gpt-5.5 (reasoning xhigh, summaries auto)",
+  "timestamp": "2026-04-29T15:37:45Z",
+  "task": "doubly-linked-list-with-tests",
+  "num_runs": 2,
+  "parallel": 1,
+  "cache_bust": 0,
+  "duration_seconds": 137,
+  "tokens": {
+    "input": 377441,
+    "cached": 254720,
+    "output": 8379,
+    "total": 385820
+  },
+  "quota_before": {
+    "5h_pct_left": 93,
+    "weekly_pct_left": 97,
+    "account": "er@desktopcommander.app (Business)",
+    "plan": "Business",
+    "model": "gpt-5.5 (reasoning xhigh, summaries auto)"
+  },
+  "quota_after": {
+    "5h_pct_left": 78,
+    "weekly_pct_left": 94,
+    "account": "er@desktopcommander.app (Business)",
+    "plan": "Business",
+    "model": "gpt-5.5 (reasoning xhigh, summaries auto)"
+  },
+  "quota_consumed": {
+    "5h_pct": 15,
+    "weekly_pct": 3,
+    "target_meter_pct": 3
+  },
+  "meter_flips": [
+    {
+      "flip_index": 1,
+      "meter_value": 96,
+      "cumulative_tokens": 192333,
+      "runs": 1,
+      "batch": 1
+    },
+    {
+      "flip_index": 2,
+      "meter_value": 95,
+      "cumulative_tokens": 385820,
+      "runs": 2,
+      "batch": 2
+    },
+    {
+      "flip_index": 3,
+      "meter_value": 94,
+      "cumulative_tokens": 385820,
+      "runs": 2,
+      "batch": 2
+    }
+  ],
+  "estimates": {
+    "5h_tokens": 2572133,
+    "weekly_tokens": 12860666,
+    "daily_tokens": 1837238,
+    "target_meter_mean_tokens_per_1pct": 96744,
+    "target_meter_median_tokens_per_1pct": 96744,
+    "target_meter_estimate_mean": 9674350,
+    "target_meter_estimate_median": 9674350,
+    "target_meter_flip_count": 2,
+    "target_meter_flip_deltas": [
+      193487,
+      0
+    ],
+    "target_meter_all_flip_deltas": [
+      192333,
+      193487,
+      0
+    ],
+    "target_meter_ignored_first_flip": true
+  }
+}

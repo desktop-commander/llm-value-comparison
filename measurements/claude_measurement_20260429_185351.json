@@ -1,0 +1,88 @@
+{
+  "tool": "claude-code",
+  "version": "2.1.123 (Claude Code)",
+  "plan": "Claude Pro",
+  "requested_model_alias": "opus",
+  "captured_model": "Opus 4.7",
+  "target_meter": "weekly_all_pct_used",
+  "target_flips_requested": 3,
+  "model": "Opus 4.7",
+  "timestamp": "2026-04-29T15:58:44Z",
+  "task": "doubly-linked-list-with-tests",
+  "num_runs": 14,
+  "parallel": 2,
+  "cache_bust": 1,
+  "duration_seconds": 143,
+  "schema_version": 2,
+  "tokens": {
+    "fresh_input": 70,
+    "cache_creation": 99596,
+    "cache_read": 228480,
+    "output": 28729,
+    "total": 356875,
+    "input": 328146,
+    "cached": 228480
+  },
+  "quota_before": {
+    "session_pct_used": 33,
+    "weekly_all_pct_used": 3,
+    "requested_model_alias": "opus",
+    "model": "Opus 4.7",
+    "plan": "Claude Pro"
+  },
+  "quota_after": {
+    "session_pct_used": 79,
+    "weekly_all_pct_used": 6,
+    "requested_model_alias": "opus",
+    "model": "Opus 4.7",
+    "plan": "Claude Pro"
+  },
+  "quota_consumed": {
+    "session_pct": 46,
+    "weekly_all_pct": 3,
+    "target_meter_pct": 3
+  },
+  "meter_flips": [
+    {
+      "flip_index": 1,
+      "meter_value": 4,
+      "cumulative_tokens": 153276,
+      "runs": 6,
+      "batch": 3
+    },
+    {
+      "flip_index": 2,
+      "meter_value": 5,
+      "cumulative_tokens": 255087,
+      "runs": 10,
+      "batch": 5
+    },
+    {
+      "flip_index": 3,
+      "meter_value": 6,
+      "cumulative_tokens": 356875,
+      "runs": 14,
+      "batch": 7
+    }
+  ],
+  "estimates": {
+    "session_tokens": 775815,
+    "weekly_tokens": 11895833,
+    "daily_tokens": 1699404,
+    "target_meter_mean_tokens_per_1pct": 101800,
+    "target_meter_median_tokens_per_1pct": 101800,
+    "target_meter_estimate_mean": 10179950,
+    "target_meter_estimate_median": 10179950,
+    "target_meter_flip_count": 2,
+    "target_meter_flip_deltas": [
+      101811,
+      101788
+    ],
+    "target_meter_all_flip_deltas": [
+      153276,
+      101811,
+      101788
+    ],
+    "target_meter_ignored_first_flip": true
+  }
+}
