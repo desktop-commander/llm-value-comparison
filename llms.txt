@@ -14,12 +14,12 @@
 2. **GPT-5.2** (Subscription) — 43.9M tok/$ · ChatGPT Pro $200 · $200/mo · 📐 est.
 3. **GPT-5.2 Codex (xhigh)** (Subscription) — 39.4M tok/$ · ChatGPT Pro $200 · $200/mo · 📐 est.
 4. **GPT-4o** (Subscription) — 29.7M tok/$ · ChatGPT Pro $200 · $200/mo · 📐 est.
-5. **GPT-5.5 (xhigh)** (Subscription) — 28.6M tok/$ · ChatGPT Pro $200 · $200/mo · 📐 est.
-6. **GPT-5.4 (xhigh)** (Subscription) — 24.5M tok/$ · ChatGPT Plus · $20/mo
-7. **GPT-5.4 (xhigh)** (Subscription) — 24.5M tok/$ · ChatGPT Pro $100 · $100/mo · 📐 est.
-8. **GPT-5.2** (Subscription) — 22.0M tok/$ · ChatGPT Plus · $20/mo
-9. **GPT-5.2** (Subscription) — 22.0M tok/$ · ChatGPT Pro $100 · $100/mo · 📐 est.
-10. **GPT-5.2 Codex (xhigh)** (Subscription) — 19.7M tok/$ · ChatGPT Plus · $20/mo
+5. **GPT-5.4 (xhigh)** (Subscription) — 24.5M tok/$ · ChatGPT Plus · $20/mo
+6. **GPT-5.4 (xhigh)** (Subscription) — 24.5M tok/$ · ChatGPT Pro $100 · $100/mo · 📐 est.
+7. **GPT-5.2** (Subscription) — 22.0M tok/$ · ChatGPT Plus · $20/mo
+8. **GPT-5.2** (Subscription) — 22.0M tok/$ · ChatGPT Pro $100 · $100/mo · 📐 est.
+9. **GPT-5.2 Codex (xhigh)** (Subscription) — 19.7M tok/$ · ChatGPT Plus · $20/mo
+10. **GPT-5.2 Codex (xhigh)** (Subscription) — 19.7M tok/$ · ChatGPT Pro $100 · $100/mo · 📐 est.
 
 ## Empirical subscription measurements
 
